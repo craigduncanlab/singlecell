@@ -59,26 +59,19 @@ Ribosomal RNA typically represents the largest portion of the genetic code repre
 
 In transcribed RNA, especially those rRNA involved in DNA transcription and protein building, the types are identifiable and predictable in size. They are often found tightly located within 'units' in the ribosomes. 
 
-| Type | RNA Sequence | rRNA type | Size (~) |
-|:----------|:----------|:--------|:--------|
-| human rRNA | full | rRNA | 7216 nt |
-| eukaryotic | 5S | rRNA | 120 nt |
-| prokaryotic | 16S | rRNA | 1542 nt |
-| eukaryotic | 18S human | rRNA | 1869 nt |
+| Type | RNA Sequence | rRNA type | Size (~) | Ref Link |
+|:----------|:----------|:--------|:--------|:--------|
+| human rRNA | full | rRNA | 7216 nt | |
+| eukaryotic | 5S | rRNA | 120 nt | [5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/) |
+| prokaryotic | 16S | rRNA | 1542 nt | [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D) |
+| eukaryotic | 18S human | rRNA | 1869 nt | [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2) |
+| eukaryotic | 28S human | rRNA | ___ nt | [28S DNA link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589) |
 
 Refs:
 
 [(2018)Epigenetic expression of 5S in A. Thaliana](https://pubmed.ncbi.nlm.nih.gov/29518237/) 
 "A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region.":
 [PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5887818/)
-
-[5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/)
-
-[16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D)
-
-[18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2)
-
-[28S link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589)
 
 Two units of measurement:
 
