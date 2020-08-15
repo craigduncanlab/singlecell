@@ -15,7 +15,9 @@ A.	Obtaining a queryname-sorted BAM
 B.	Modifications to annotation files, and creating a genome index using them
 
 •	Modifying GTF files and creating a dictionary (SAM file) (*)
+
 •	Using the modified GTF files to create a refFlat file for Picard Tools.
+
 •	Using the modified GTF files to create the genome index using STAR.
 
 [Drop-seq, Picard Tools and STAR]
@@ -25,8 +27,11 @@ B.	Modifications to annotation files, and creating a genome index using them
 C.	Preparing aligned data ready for counting
 
 •	Associating cell-barcodes with data in the queryname-sorted BAM to obtain a new, coded BAM.
+
 •	Aligning BAM using the STAR-generated genome index (but losing barcodes information in process)
+
 •	Merging aligned BAM with coded BAM 
+
 •	Generating per-cell counts
 
 [Drop-seq, Picard Tools and STAR]
