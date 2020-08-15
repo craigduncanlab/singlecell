@@ -4,7 +4,8 @@
 
 
 # A short summary:
-Human genome: 3,257,319,537 bp ()
+Human genome: 3,257,319,537 bp
+
 bp = 
 
  - A-T(DNA) or A-U(RNA); or
@@ -18,7 +19,7 @@ Wheat, barley, rye, pea?
 | H. vulgare |	4.79	| barley | |
 | S. cereale |	6.67	| rye | |
 | T. dicoccoides |	10.50 |	Emmer wheat | [link](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index) |
-| T. aestivum  |	14.50 | Common wheat | |
+| T. aestivum  |	14.50 | Common wheat | [link](http://plants.ensembl.org/Triticum_aestivum/Info/Index) |
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
