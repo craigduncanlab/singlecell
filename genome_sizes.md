@@ -1,6 +1,6 @@
 # Genome sizes - some draft notes
 
-(c) Craig Duncan 2020
+(c) Craig Duncan 15 August 2020
 
 # An illustration
 
@@ -31,6 +31,11 @@ nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/bo
 
 # Relative sizes
 
+Two units of measurement:
+
+ - nt = nucleotides, which is essentially a length (a count of base pairs), and 
+ - S = Sverdberg units where this refers to settling time in a centrifuge (so S units cannot be added together meaningfully)
+
 ## DNA
 
 DNA can be much longer (terminated for each chromosome e.g. 5 centrimetres long for each, humans have 46 of them, roughly paired into 23 'sets' of chromosome pairs).
@@ -51,32 +56,7 @@ nb: A more recent (2019) academic discussion of DNA metrics is contained here:
 
 Piovesan, A., Pelleri, M.C., Antonaros, F. et al. On the length, weight and GC content of the human genome. BMC Res Notes 12, 106 (2019). https://doi.org/10.1186/s13104-019-4137-z   [link](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4137-z)
 
-## RNA
-
-RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes).
-
-Ribosomal RNA typically represents the largest portion of the genetic code representing an RNA sequence.  In the organisms's DNA sequence itself, the regions coding for the rRNA should be found in specific chromosome(s) and locations.  The codes may be repeated, and there may be several steps between initial translation of coded sequences (sometimes called 'precursor' regions) and the production of smaller units needed for biological activity.
-
-In transcribed RNA, especially those rRNA involved in DNA transcription and protein building, the types are identifiable and predictable in size. They are often found tightly located within 'units' in the ribosomes. 
-
-| Type | RNA Sequence | rRNA type | Size (~) | Ref Link |
-|:----------|:----------|:--------|:--------|:--------|
-| human rRNA | full | rRNA | 7216 nt | |
-| eukaryotic | 5S | rRNA | 120 nt | [5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/) |
-| prokaryotic | 16S | rRNA | 1542 nt | [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D) |
-| eukaryotic | 18S human | rRNA | 1869 nt | [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2) |
-| eukaryotic | 28S human | rRNA | ___ nt | [28S DNA link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589) |
-
-Refs:
-
-[(2018)Epigenetic expression of 5S in A. Thaliana](https://pubmed.ncbi.nlm.nih.gov/29518237/) 
-"A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region.":
-[PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5887818/)
-
-Two units of measurement:
-
- - nt = nucleotides, which is essentially a length, and 
-  - S = Sverdberg units where this refers to settling time in a centrifuge (so S units cannot be added together meaningfully)
+## RNA forms
 
 mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and transported to the ribosome 'factories'.  Also, the mRNA must also have non-coding regions removed (spliced) in order to become 'mature'.  Unlike the relatively predictable size of rRNA for an organism, the size and length of mRNA varies depending on the genetic material that is copied into the mRNA coding sequence.
 
@@ -84,9 +64,44 @@ tRNA - brings in amino acids so the ribosome factories can make proteins (transl
 
 rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.  Due to the persistency and consistency of rRNA across organisms, it is often used for evolutionary studies. 
 
+
+## RNA substructures and sizes
+
+RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes).
+
+Ribosomal RNA typically represents the largest portion of the genetic code representing an RNA sequence.  In the organisms's DNA sequence itself, the regions coding for the rRNA should be found in specific chromosome(s) and locations.  The codes may be repeated, and there may be several steps between initial translation of coded sequences (sometimes called 'precursor' regions) and the production of smaller units needed for biological activity.
+
+In transcribed RNA, especially those rRNA involved in DNA transcription and protein building, the types are identifiable and generally predictable in size, but there are variable and persistent regions that alter amongst species.  They are often found tightly located within 'units' in the ribosomes. 
+
+| Type | RNA SeqID | rRNA type | Species | Size (~) | Ref Link |
+|:----------|:----------|:--------|:--------|:--------|:--------|
+| eukaryotic | full | rRNA | human| 7216 nt | |
+| eukaryotic | 5S | rRNA | human | 120 nt | [5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/) |
+| prokaryotic | 16S | rRNA |  | 1542 nt | [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D) |
+| eukaryotic | 18S | rRNA | human | 1869 nt | [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2) |
+| prokaryotic | 23S | rRNA | (bacteria) | 2904 nt | |
+| eukaryotic | 28S | rRNA | human| 5025 nt | [28S DNA link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589) |
+
 Refs:
 
-https://www.technologynetworks.com/genomics/lists/what-are-the-key-differences-between-dna-and-rna-296719
+[(2018)Epigenetic expression of 5S in A. Thaliana](https://pubmed.ncbi.nlm.nih.gov/29518237/) 
+
+"A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region.":
+[PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5887818/)
+
+
+"The rapid divergence rates of variable regions in the ribosomal gene may permit answers to the question of time of separation of closely related species."
+
+Variation among human 28S ribosomal RNA genes.
+
+I L Gonzalez, J L Gorski, T J Campen, D J Dorney, J M Erickson, J E Sylvester, R D Schmickel
+Proc Natl Acad Sci U S A. 1985 Nov; 82(22): 7666–7670. doi: 10.1073/pnas.82.22.7666
+[Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC391394/)
+
+Implications of sequence variation on the evolution of rRNA
+Matthew M. Parks, Chad M. Kurylo, Jake E. Batchelder, C. Theresa Vincent, Scott C. Blanchard
+Chromosome Res. 2019; 27(1): 89–93. Published online 2019 Feb 5. doi: 10.1007/s10577-018-09602-w
+Correction in: Chromosome Res. 2019; 27(3): 285.
 
 ## Coronavirus
 
