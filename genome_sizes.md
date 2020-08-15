@@ -155,7 +155,7 @@ On the incidence of polyploidy in plants, see:
 Aversano R, Ercolano MR, Caruso I, Fasano C, Rosellini D, Carputo D. Molecular tools for exploring polyploid genomes in plants. Int J Mol Sci. 2012;13(8):10316-10335. doi:10.3390/ijms130810316
 
 
-## Implications
+## Implications for size
 
 Polyploidy doesn't increase the size of the 'genome': it increases the potential for SNPs when sampling DNA from cells, especially if it has been segmented first.
 
@@ -163,6 +163,17 @@ It usually increases cell size and organism size:
 Ploidy and Size at Multiple Scales in the Arabidopsis Sepal
 Dana O. Robinson, Jeremy E. Coate, Abhyudai Singh, Lilan Hong, Max Bush, Jeff J. Doyle, Adrienne H.K. Roeder
 The Plant Cell Oct 2018, 30 (10) 2308-2329; DOI: 10.1105/tpc.18.00344
+
+## Implications for sequence assembly
+
+Current Strategies of Polyploid Plant Genome Sequence Assembly
+Maria Kyriakidou, Helen H. Tai, Noelle L. Anglin, David Ellis, Martina V. Strömvik
+Front Plant Sci. 2018; 9: 1660. Published online 2018 Nov 21. doi: 10.3389/fpls.2018.01660
+PMCID: PMC6258962
+
+Molecular Tools for Exploring Polyploid Genomes in Plants
+Riccardo Aversano, Maria Raffaella Ercolano, Immacolata Caruso, Carlo Fasano, Daniele Rosellini, Domenico Carputo
+Int J Mol Sci. 2012; 13(8): 10316–10335. Published online 2012 Aug 17. doi: 10.3390/ijms130810316
 
 # Genome size benchmarking
 
