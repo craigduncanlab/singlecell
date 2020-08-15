@@ -1,5 +1,7 @@
 # The demultiplexing problem for raw scData 
 
+(c) Craig Duncan 2020
+
 The term ‘demultiplexing’ is often used to describe the general process of separating mixed data streams into separate output files.  Some sequence service providers describe demultiplexing as the process of providing lane-based FASTQ files from a single sequencing 'base call’ file (BCL).  See Demultiplex Ref 1.  However, in relation to single-cell analysis, it refers to the identification and possible separation of cell-specific information from within each of the FASTQ files. 
 
 There is a necessary and important data-separation and identification step involved in the sequencing process.  For one or more samples (and there may be many cells each constituting a sample), there are usually two FASTQ data files (reads) prepared, in which one has the barcodes for a cell, and a read reference, and the other has a read reference and the biological data.   It is the biological data that is aligned to the reference genomes, so there is a risk that this is done but there is no retention of information about which cell was involved. 
