@@ -36,26 +36,46 @@ RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) 
 
 | Type | RNA Sequence | rRNA type | Size (~) |
 |:----------|:----------|:--------|:--------|
-| | | human rRNA | 7216 nt |
+| human rRNA | full | rRNA | 7216 nt |
 | prokaryotic | 16S | rRNA | 1542 nt |
 | eukaryotic | 18S human | rRNA | 1869 nt |
 
 Refs:
 
 [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D)
+
 [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2)
 
-Two units of measurement (nt = nucleotides, S = Sverdberg units where this refers to settling time in a centrifuge, so S units cannot be added safely)
+Two units of measurement (nt = nucleotides, S = Sverdberg units where this refers to settling time in a centrifuge, so S units cannot be added together meaningfully)
 
-mRNA - messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and takes them to the ribosome 'factories'.  Once mRNA has done its job, the DNA can be closed off again?
+mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and transported to the ribosome 'factories'.  Also, the mRNA must also have non-coding regions removed (spliced) in order to become 'mature'.  Unlike the relatively predictable size of rRNA for an organism, the size and length of mRNA varies depending on the genetic material that is copied into the mRNA coding sequence.
 
 tRNA - brings in amino acids so the ribosome factories can make proteins (translation).  Think ''amino acid transfer', 'transport'
 
-rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.
+rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.  Due to the persistency and consistency of rRNA, it is often used for evolutionary studies. 
+
+Refs:
 
 https://www.technologynetworks.com/genomics/lists/what-are-the-key-differences-between-dna-and-rna-296719
 
-Some common rRNA used in evolutionary studies.
+## Coronavirus
+
+Compare above ribosomal RNA sizes to:
+
+| Type | RNA Sequence | rRNA type | Size (~) |
+|:----------|:----------|:--------|:--------|
+| coronavirus | full | RNA | 29903 nt |
+
+SARS-Cov-2 genome size: 29,903 nt 
+
+[posting](https://virological.org/t/novel-2019-coronavirus-genome/319)
+
+[library link](https://www.ncbi.nlm.nih.gov/nuccore/MN908947)
+
+Virus stability issues:
+2020, Wakida et al, Stability of RNA sequences derived from the coronavirus genome in
+human cells, Biochemical and Biophysical Research Communications 527 (2020) 993e999
+https://doi.org/10.1016/j.bbrc.2020.05.008
 
 # Genome size definitions
 
