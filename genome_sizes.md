@@ -12,13 +12,13 @@ bp =
 
 Gbp-->
 Wheat, barley, rye, pea?
-| Species | Gbp | Name |
-|:-----|:-----|:-----|
-| H.Sapiens | 3.26 | Person |
-| H. vulgare |	4.79	| barley |
-| S. cereale |	6.67	| rye |
-| T. dicoccoides |	10.50 |	Emmer wheat |
-| T. aestivum  |	14.50 | Common wheat |
+| Species | Gbp | Name | Ensembl |
+|:-----|:-----|:-----|:-----|
+| H.Sapiens | 3.26 | Person | |
+| H. vulgare |	4.79	| barley | |
+| S. cereale |	6.67	| rye | |
+| T. dicoccoides |	10.50 |	Emmer wheat | [link](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index) |
+| T. aestivum  |	14.50 | Common wheat | |
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
@@ -121,6 +121,8 @@ Laurasiatheria (∼2.8 pg
 (546 mammalian species sized from 5,488 living species) 
 
 #  Plant genome sizes
+
+[2020 monocot](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 "Any project seeking to deliver a plant or animal reference genome sequence must address the question as to the completeness of the assembly. "
 
