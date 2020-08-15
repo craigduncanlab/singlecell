@@ -38,7 +38,9 @@ Two units of measurement:
 
 ## DNA
 
-DNA can be much longer (terminated for each chromosome e.g. 5 centrimetres long for each, humans have 46 of them, roughly paired into 23 'sets' of chromosome pairs).
+In prokaryotic organisms, the DNA molecules are present in the main cellular structure of the a single celled organism; in eurokaryotes there is a 'nuclear' membrane enclosing the genetic material in a subdivision of the cell, over which products must be transported: there is a division of both material and function.
+
+DNA can be much longer than RNA (it is terminated for each chromosome e.g. 5 centrimetres long for each, humans have 46 of them, roughly paired into 23 'sets' of chromosome pairs).
 
 It has been said that human DNA would equal a length of 2.3 metres long in every cell when unravelled.   An example, is [here](https://hypertextbook.com/facts/1998/StevenChen.shtml), where it is said that the average length of the 46 chromosomes in the human body is 5cm (46 x 5cm = 230cm = 2.3m).  In that calculation, it states that there are closer to 6 Gbp per cell (i.e. twice the human genome nt number).
 
@@ -64,7 +66,6 @@ tRNA - brings in amino acids so the ribosome factories can make proteins (transl
 
 rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.  Due to the persistency and consistency of rRNA across organisms, it is often used for evolutionary studies. 
 
-
 ## RNA substructures and sizes
 
 RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes).
@@ -77,26 +78,33 @@ In transcribed RNA, especially those rRNA involved in DNA transcription and prot
 |:----------|:----------|:--------|:--------|:--------|:--------|
 | eukaryotic | full | rRNA | human| 7216 nt | |
 | eukaryotic | 5S | rRNA | human | 120 nt | [5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/) |
-| prokaryotic | 16S | rRNA |  | 1542 nt | [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D) |
-| eukaryotic | 18S | rRNA | human | 1869 nt | [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2) |
+| prokaryotic | 16S | rRNA | E. coli (*) | 1542 nt | [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D) |
+| prokaryotic | 16S | rRNA | H.pylori | 1503 nt | [16S NCBI](https://www.ncbi.nlm.nih.gov/nuccore/NR_044761.1) |
+| eukaryotic | 18S | rRNA | human | 1869 nt | [18S5 NCBI link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2) |
 | prokaryotic | 23S | rRNA | (bacteria) | 2904 nt | |
 | eukaryotic | 28S | rRNA | human| 5025 nt | [28S DNA link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589) |
 
+nb: 16S rRNA sequence differences were the basis of the proposal by Woese to introduce a distinction between prokaryotic bacteria and prokaryotic archea.  It has subsequently been suggested that archea may have diverged from gram-positive bacteria (single lipid layer in common):
+Cavalier-Smith T (January 2002). "The neomuran origin of archaebacteria, the negibacterial root of the universal tree and bacterial megaclassification". International Journal of Systematic and Evolutionary Microbiology. 52 (Pt 1): 7–76. doi:10.1099/00207713-52-1-7. PMID 11837318.
+
 Refs:
+
+[Some indicative rRNA sizes across species](https://www.thermofisher.com/au/en/home/references/ambion-tech-support/rna-isolation/general-articles/ribosomal-rna-sizes.html)
 
 [(2018)Epigenetic expression of 5S in A. Thaliana](https://pubmed.ncbi.nlm.nih.gov/29518237/) 
 
-"A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region.":
+Quote: "A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region."
+i.e. the functional RNA that is transcribed is only 120bp, but the original DNA 'gene' within which this is contained is 500bp.
+
 [PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5887818/)
 
-
-"The rapid divergence rates of variable regions in the ribosomal gene may permit answers to the question of time of separation of closely related species."
-
-Variation among human 28S ribosomal RNA genes.
-
-I L Gonzalez, J L Gorski, T J Campen, D J Dorney, J M Erickson, J E Sylvester, R D Schmickel
+Variation among human 28S ribosomal RNA genes.  I L Gonzalez, J L Gorski, T J Campen, D J Dorney, J M Erickson, J E Sylvester, R D Schmickel
 Proc Natl Acad Sci U S A. 1985 Nov; 82(22): 7666–7670. doi: 10.1073/pnas.82.22.7666
 [Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC391394/)
+
+[wet lab discussion 28S](https://www.researchgate.net/topic/28S-RNA)
+
+Quote: "The rapid divergence rates of variable regions in the ribosomal gene may permit answers to the question of time of separation of closely related species."
 
 Implications of sequence variation on the evolution of rRNA
 Matthew M. Parks, Chad M. Kurylo, Jake E. Batchelder, C. Theresa Vincent, Scott C. Blanchard
@@ -105,17 +113,19 @@ Correction in: Chromosome Res. 2019; 27(3): 285.
 
 ## Coronavirus
 
-Compare above ribosomal RNA sizes to:
+Compare above ribosomal RNA sizes to full SARS-Cov-2 genome:
 
 | Type | RNA Sequence | rRNA type | Size (~) |
 |:----------|:----------|:--------|:--------|
 | coronavirus | full | RNA | 29903 nt |
 
-SARS-Cov-2 genome size: 29,903 nt 
+i.e. 5 to 6 times larger than the very small intra-cellular protein-building apparatus.  We should not expect coding similarities due to different evolutionary histories.
 
 [posting](https://virological.org/t/novel-2019-coronavirus-genome/319)
 
 [library link](https://www.ncbi.nlm.nih.gov/nuccore/MN908947)
+
+[sampling background](https://genomemedicine.biomedcentral.com/articles/10.1186/s13073-020-00751-4)
 
 Virus stability issues:
 2020, Wakida et al, Stability of RNA sequences derived from the coronavirus genome in
