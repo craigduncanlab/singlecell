@@ -34,21 +34,35 @@ DNA can be much longer (terminated for each chromosome e.g. centrimetres long fo
 
 RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes).
 
-Portions of specific types of RNA, especially those rRNA involved in DNA transcription and protein building, are identifiable and predictable in size.
+Ribosomal RNA typically represents the largest portion of the genetic code representing an RNA sequence.  In the organisms's DNA sequence itself, the regions coding for the rRNA should be found in specific chromosome(s) and locations.  The codes may be repeated, and there may be several steps between initial translation of coded sequences (sometimes called 'precursor' regions) and the production of smaller units needed for biological activity.
+
+In transcribed RNA, especially those rRNA involved in DNA transcription and protein building, the types are identifiable and predictable in size. They are often found tightly located within 'units' in the ribosomes. 
 
 | Type | RNA Sequence | rRNA type | Size (~) |
 |:----------|:----------|:--------|:--------|
 | human rRNA | full | rRNA | 7216 nt |
+| eukaryotic | 5S | rRNA | 120 nt |
 | prokaryotic | 16S | rRNA | 1542 nt |
 | eukaryotic | 18S human | rRNA | 1869 nt |
 
 Refs:
 
+[(2018)Epigenetic expression of 5S in A. Thaliana](https://pubmed.ncbi.nlm.nih.gov/29518237/) 
+"A typical Arabidopsis 5S rRNA gene is 500 bp long, comprising a 120 bp transcribed sequence and a 380 bp spacer region.":
+[PMC](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5887818/)
+
+[5S RNA database](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC99124/)
+
 [16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D)
 
 [18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2)
 
-Two units of measurement (nt = nucleotides, S = Sverdberg units where this refers to settling time in a centrifuge, so S units cannot be added together meaningfully)
+[28S link](https://www.ncbi.nlm.nih.gov/gene?Cmd=DetailsSearch&Term=100008589)
+
+Two units of measurement:
+
+ - nt = nucleotides, which is essentially a length, and 
+  - S = Sverdberg units where this refers to settling time in a centrifuge (so S units cannot be added together meaningfully)
 
 mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and transported to the ribosome 'factories'.  Also, the mRNA must also have non-coding regions removed (spliced) in order to become 'mature'.  Unlike the relatively predictable size of rRNA for an organism, the size and length of mRNA varies depending on the genetic material that is copied into the mRNA coding sequence.
 
