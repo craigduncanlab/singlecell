@@ -33,10 +33,9 @@ C.	Preparing aligned data ready for counting
 
 D.	Output of cell-count ready expression matrices.
 
-
 There are some published pipelines slightly different to the pipeline assumed in the Dropseq manual.  See for example: https://github.com/mccrowjp/Dropseq (MIT Licence).  Here is another more modified pipeline based on Dropseq: https://bioinformatics.mdc-berlin.de/pigx_docs/pigx-scrna-seq.html#introduction 
 
-Create metadata (including STAR index) for use in later pipeline
+# How to create metadata (including STAR index) for use in later pipeline (Steps A, B above)
 
 Only steps marked (*) below are essential to the Drop-seq/Picard pipeline.  
 
@@ -57,7 +56,7 @@ The rest are considered useful by Broad Institute (e.g. filtering gene_biotypes,
 | bgzip | | |
 | samtools | | Zipped fasta? |
 
-A note on Drop-seq programs
+# A note on Drop-seq programs
 
 The Drop-seq ‘programs’ are, in fact, shell scripts that call on the main Dropseq .jar file with certain program names passed as parameters.  The relevant line in the shell script is:
 java -Xmx${xmx} -jar $jar_deploy_dir/dropseq.jar $progname -h
