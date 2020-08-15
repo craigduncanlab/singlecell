@@ -15,6 +15,7 @@ Gbp-->
 Wheat, barley, rye, pea?
 | Species | Gbp | Name | Ensembl |
 |:-----|:-----|:-----|:-----|
+| A. Thaliana |0.125 | thale cress | [link](http://plants.ensembl.org/Arabidopsis_thaliana/Info/Index) |
 | H.Sapiens | 3.26 | Person | |
 | H. vulgare |	4.79	| barley | |
 | S. cereale |	6.67	| rye | |
@@ -23,6 +24,10 @@ Wheat, barley, rye, pea?
 | P. polyphylla (PPY) | 82.55 | Paris | | 
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
+
+[Arabidopis genome paper (2000)](https://www.nature.com/articles/35048692)
+
+[P. Polyphylla paper (2020)](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 # Relative sizes
 
@@ -140,7 +145,11 @@ Suda, Jan & Krahulcová, Anna & Trávníček, Pavel & Krahulec, František. (200
 
 Diploid organisms:
  - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp DNA haploid content needed to define the human 'genome')
- - Drosopila
+ - Drosophila
+ - Arabidopsis Thaliana 
+ 
+ Ref:
+Kaul, S., Koo, H. L., Jenkins, J., Rizzo, M., Rooney, T., Tallon, L. J., ... Somerville, C. (2000). Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature, 408(6814), 796-815. https://doi.org/10.1038/35048692 [Link](https://www.nature.com/articles/35048692)
 
 Haploids:
  - bee
