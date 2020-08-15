@@ -113,6 +113,10 @@ intra- and intergenomic transfer of this noncoding DNA?
 What, if any, are the functions (at any hierarchical orga-
 nization level) that these DNA sequences provide?"
 
+Ref: 
+Redi C, A, Capanna E: Genome Size Evolution: Sizing Mammalian Genomes. Cytogenet Genome Res 2012;137:97-112. doi: 10.1159/000338820
+[link](https://www.karger.com/Article/Abstract/338820)
+
 Summary :
 A hypothetical ancestral mammalian-like GS of 2.9-3.7 pg (picograms)
 Monotremata (∼2.97 pg) 
