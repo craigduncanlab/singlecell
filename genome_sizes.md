@@ -25,9 +25,9 @@ Wheat, barley, rye, pea?
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
-[Arabidopis genome paper (2000)](https://www.nature.com/articles/35048692)
+[Arabidopsis genome paper (2000)](https://www.nature.com/articles/35048692)
 
-[P. Polyphylla paper (2020)](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
+[Paris Polyphylla paper (2020)](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 # Relative sizes
 
