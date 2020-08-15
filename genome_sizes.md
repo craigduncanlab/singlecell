@@ -2,7 +2,8 @@
 
 (c) Craig Duncan 2020
 
-# A short summary:
+# An illustration
+
 Human genome: 3,257,319,537 bp
 
 bp = 
@@ -23,11 +24,29 @@ Wheat, barley, rye, pea?
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
-## Size:
-RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes)
+# Relative sizes
+
+## DNA
+
 DNA can be much longer (terminated for each chromosome e.g. centrimetres long for each, humans have 46 of them, roughly paired, in total about 2.3 metres long in every cell when unravelled!)
 
-Function:
+## RNA
+
+RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes)
+
+| Type | RNA Sequence | rRNA type | Size (~) |
+|:----------|:----------|:--------|:--------|
+| | | human rRNA | 7216 nt |
+| prokaryotic | 16S | rRNA | 1542 nt |
+| eukaryotic | 18S human | rRNA | 1869 nt |
+
+Refs:
+
+[16S examples](https://www.ncbi.nlm.nih.gov/nuccore?term=33175%5BBioProject%5D+OR+33317%5BBioProject%5D)
+[18S5 link](https://www.ncbi.nlm.nih.gov/nuccore/NR_003286.2)
+
+Two units of measurement (nt = nucleotides, S = Sverdberg units where this refers to settling time in a centrifuge, so S units cannot be added safely)
+
 mRNA - messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and takes them to the ribosome 'factories'.  Once mRNA has done its job, the DNA can be closed off again?
 
 tRNA - brings in amino acids so the ribosome factories can make proteins (translation).  Think ''amino acid transfer', 'transport'
@@ -36,21 +55,19 @@ rRNA - the RNA that is part of the structure of the ribosome factories: initiate
 
 https://www.technologynetworks.com/genomics/lists/what-are-the-key-differences-between-dna-and-rna-296719
 
-# Genome size (wiki)
+Some common rRNA used in evolutionary studies.
+
+# Genome size definitions
 
 "Genome size is the total amount of DNA contained within one copy of a single genome. It is typically measured in terms of mass in picograms (trillionths (10−12) of a gram, abbreviated pg) or less frequently in Daltons or as the total number of nucleotide base pairs typically in megabases (millions of base pairs, abbreviated Mb or Mbp). One picogram equals 978 megabases.[1] In diploid organisms, genome size is used interchangeably with the term C-value. An organism's complexity is not directly proportional to its genome size; some single cell organisms have much more DNA than humans (see Junk DNA and C-value enigma). "
 
 Genome size discussion : [P. Polyphylla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
-# Definition
-
 "Today, the term is used in 2 distinct ways to indicate either the total number of genes or the whole amount of nuclear DNA"
 see (2012) Cytogenet Genome Res 2012;137:97–112
 DOI: 10.1159/000338820
 
-Big difference?
-
-# Chromosomal patterns and assembly
+# Chromosomal explanations for genome size
 
 Assembly Issues
 
@@ -72,7 +89,7 @@ Polyploids:
  - Wheat
  - Paris Polyphilla (tetraploid; some are diploid)
 
-# Genome size intro
+# Genome size benchmarking
 
 In any case genome size (GS) varies enormously, without apparent 'patterns' ... 
 
