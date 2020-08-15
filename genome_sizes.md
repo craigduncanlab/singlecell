@@ -119,19 +119,27 @@ Genome size discussion : [P. Polyphylla](https://www.biorxiv.org/content/10.1101
 see (2012) Cytogenet Genome Res 2012;137:97–112
 DOI: 10.1159/000338820
 
-# Chromosomal explanations for genome size
+# Ploidy and genetic data quantity
 
 Assembly Issues
-
  - Sequencing - entire genome is sequenced many times over
  - Assembly : attempt to assemble connected (contiguous) bases (for all chromosomes)
- - SNPs : For diploid organism, this is differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*. 
+ - SNPs : For diploid organism, this is a reference to differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*. 
  - phased assembly: ability to identify gamete sources for all SNPs. 
 
-Examples of differing chromosome sets.  These categories tell us how many replicated sequencies of DNA material we are likely to find.  Not that they are identical in each chromosome set, but that the sequence in each chromosome is comparable and potentially involves the ability to swap out genetic material at the same place in the sequence.
+The tendency or organisms to inherit more than one 'genome' sequences tell us how many replicated sequencies of DNA material we are likely to find.  The sequence in each chromosome is comparable (i.e. this explains SNPs) and so involves the potential to swap out genetic material at the same place in the sequence.   Bearing this in mind, there is a difference between:
+
+(a) the size of the genome in haploid cells; and
+(b) the genetic material based on the number of complete sets of chromosomes (i.e the carriers of the full genome) that appear in somatic cells ("ploidy").
+
+This might create confusion in terminology when referring to 'DNA Content':
+
+Suda, Jan & Krahulcová, Anna & Trávníček, Pavel & Krahulec, František. (2006). Ploidy Level versus DNA Ploidy Level: An Appeal for Consistent Terminology. TAXON. 55. 447-450. 10.2307/25065591. 
+
+'Ploidy' itself is just a multiple of the chromosome, expressed per cell.  e.g. 'Diploid' means two sets of chromosomes *per cell*.  We can then infer twice the amount of base pairs per cell as comparied to the haploid genome.
 
 Diploid organisms:
- - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp needed to define the human 'genome')
+ - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp DNA haploid content needed to define the human 'genome')
  - Drosopila
 
 Haploids:
@@ -141,9 +149,24 @@ Polyploids:
  - Wheat
  - Paris Polyphilla (tetraploid; some are diploid)
 
+On the incidence of polyploidy in plants, see:
+
+"Polyploidization is considered a major evolutionary force in plants."
+Aversano R, Ercolano MR, Caruso I, Fasano C, Rosellini D, Carputo D. Molecular tools for exploring polyploid genomes in plants. Int J Mol Sci. 2012;13(8):10316-10335. doi:10.3390/ijms130810316
+
+
+## Implications
+
+Polyploidy doesn't increase the size of the 'genome': it increases the potential for SNPs when sampling DNA from cells, especially if it has been segmented first.
+
+It usually increases cell size and organism size:
+Ploidy and Size at Multiple Scales in the Arabidopsis Sepal
+Dana O. Robinson, Jeremy E. Coate, Abhyudai Singh, Lilan Hong, Max Bush, Jeff J. Doyle, Adrienne H.K. Roeder
+The Plant Cell Oct 2018, 30 (10) 2308-2329; DOI: 10.1105/tpc.18.00344
+
 # Genome size benchmarking
 
-In any case genome size (GS) varies enormously, without apparent 'patterns' ... 
+In any case genome size (GS) varies enormously, without apparent 'patterns' .
 
 ## Mammalian
 
