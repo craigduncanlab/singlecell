@@ -76,7 +76,7 @@ Polyploids:
 
 In any case genome size (GS) varies enormously, without apparent 'patterns' ... 
 
-(are we looking at it from the macro first?  Then we see only the outcomes....)
+## Mammalian
 
 "It has been found from data-mining GS databases
 that GS is a useful cyto-taxonomical instrument at the level
@@ -114,10 +114,13 @@ What, if any, are the functions (at any hierarchical orga-
 nization level) that these DNA sequences provide?"
 
 Ref: 
+
 Redi C, A, Capanna E: Genome Size Evolution: Sizing Mammalian Genomes. Cytogenet Genome Res 2012;137:97-112. doi: 10.1159/000338820
+
 [link](https://www.karger.com/Article/Abstract/338820)
 
 Summary :
+
 A hypothetical ancestral mammalian-like GS of 2.9-3.7 pg (picograms)
 Monotremata (∼2.97 pg) 
 --->Afrotheria (∼5.5 pg) and Xenarthra (∼4.5 pg)
@@ -126,17 +129,16 @@ Euarchontoglires (∼3.4 pg)
 Laurasiatheria (∼2.8 pg
 (546 mammalian species sized from 5,488 living species) 
 
-#  Plant genome sizes
+##  Plants
 
 [P.Polyphilla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
+### Wheat, Barley and Rye
+
 "Any project seeking to deliver a plant or animal reference genome sequence must address the question as to the completeness of the assembly. "
 
-Int J Mol Sci. 2018 Nov; 19(11): 3554.
-Published online 2018 Nov 11. doi: 10.3390/ijms19113554
-PMCID: PMC6274785
-PMID: 30423889
-
-https://www-ncbi-nlm-nih-gov.ezproxy.library.uwa.edu.au/pmc/articles/PMC6274785/
-
 "Seventeen years have passed since the joint announcement of the human genome sequence [14,15]. This period has seen a number of attempts to complete the assembly, applying a variety of technologies [16,17]. All of these have reported a smaller genome size than what has, as of the end of 2017, been suggested in GRCh38.p12, the most recently released Genome Reference Consortium version, which comprises 3,257,319,537 bp. Assuming the Doležel et al. [18] conversion of 1 pg = 0.978 Gbp, 3.5 pg 1C DNA is equivalent to 3,423,000,000 bases. Thus, the 7 pg value represents an ~5.1% over-estimate of the GRCh38.p12 assembly prediction. This difference lies at the lower end of the error range predicted by Doležel and Greilhuber [13]. Given that the human reference genome is still incomplete, the expectation is that the gap between the 7 pg figure and the “real” human genome size will continue to diminish. Nevertheless, a 5% error is not dissimilar to the variation observed between estimates of nuclear DNA amounts of a given species produced by different laboratories [19,20]. Thus, the recommendation remains that the 7 pg figure continue to be used as the reference for measuring 2C values of both animal and plant genomes."
+
+Dolezel, Jaroslav & Janačížková, Janačížková & Simkova, Hana & Bartoš, Jan. (2018). One Major Challenge of Sequencing Large Plant Genomes Is to Know How Big They Really Are. International Journal of Molecular Sciences. 19. 19113554. 10.3390/ijms19113554. 
+
+[link](https://www.researchgate.net/publication/328875915_One_Major_Challenge_of_Sequencing_Large_Plant_Genomes_Is_to_Know_How_Big_They_Really_Are)
