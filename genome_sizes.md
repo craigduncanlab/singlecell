@@ -32,7 +32,9 @@ DNA can be much longer (terminated for each chromosome e.g. centrimetres long fo
 
 ## RNA
 
-RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes)
+RNA might only be a few thousand base pairs long (also, it has a ribose (sugar) backbone and is less stable than the 'de-oxyribose' DNA, especially in alkaline conditions; RNA gets attacked by enzymes).
+
+Portions of specific types of RNA, especially those rRNA involved in DNA transcription and protein building, are identifiable and predictable in size.
 
 | Type | RNA Sequence | rRNA type | Size (~) |
 |:----------|:----------|:--------|:--------|
@@ -52,7 +54,7 @@ mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. i
 
 tRNA - brings in amino acids so the ribosome factories can make proteins (translation).  Think ''amino acid transfer', 'transport'
 
-rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.  Due to the persistency and consistency of rRNA, it is often used for evolutionary studies. 
+rRNA - the RNA that is part of the structure of the ribosome factories: initiates the protein building functions. i.e. you know this is localised to the mRNA.  Due to the persistency and consistency of rRNA across organisms, it is often used for evolutionary studies. 
 
 Refs:
 
