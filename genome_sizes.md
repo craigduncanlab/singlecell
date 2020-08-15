@@ -2,7 +2,6 @@
 
 (c) Craig Duncan 2020
 
-
 # A short summary:
 Human genome: 3,257,319,537 bp
 
@@ -20,6 +19,7 @@ Wheat, barley, rye, pea?
 | S. cereale |	6.67	| rye | |
 | T. dicoccoides |	10.50 |	Emmer wheat | [link](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index) |
 | T. aestivum  |	14.50 | Common wheat | [link](http://plants.ensembl.org/Triticum_aestivum/Info/Index) |
+| P. polyphylla (PPY) | 82.55 | Paris | | 
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
@@ -40,7 +40,7 @@ https://www.technologynetworks.com/genomics/lists/what-are-the-key-differences-b
 
 "Genome size is the total amount of DNA contained within one copy of a single genome. It is typically measured in terms of mass in picograms (trillionths (10−12) of a gram, abbreviated pg) or less frequently in Daltons or as the total number of nucleotide base pairs typically in megabases (millions of base pairs, abbreviated Mb or Mbp). One picogram equals 978 megabases.[1] In diploid organisms, genome size is used interchangeably with the term C-value. An organism's complexity is not directly proportional to its genome size; some single cell organisms have much more DNA than humans (see Junk DNA and C-value enigma). "
 
-Genome size discussion : [monocot](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
+Genome size discussion : [P. Polyphylla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 # Definition
 
@@ -68,8 +68,9 @@ Diploid organisms:
 Haploids:
  - bee
 
-Polyploidy:
+Polyploids:
  - Wheat
+ - Paris Polyphilla (tetraploid; some are diploid)
 
 # Genome size intro
 
@@ -123,7 +124,7 @@ Laurasiatheria (∼2.8 pg
 
 #  Plant genome sizes
 
-[2020 monocot](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
+[P.Polyphilla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 "Any project seeking to deliver a plant or animal reference genome sequence must address the question as to the completeness of the assembly. "
 
