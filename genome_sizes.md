@@ -28,7 +28,19 @@ nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/bo
 
 ## DNA
 
-DNA can be much longer (terminated for each chromosome e.g. centrimetres long for each, humans have 46 of them, roughly paired, in total about 2.3 metres long in every cell when unravelled!)
+DNA can be much longer (terminated for each chromosome e.g. 5 centrimetres long for each, humans have 46 of them, roughly paired into 23 'sets' of chromosome pairs).
+
+It has been said that human DNA would equal a length of 2.3 metres long in every cell when unravelled.   An example, is [here](https://hypertextbook.com/facts/1998/StevenChen.shtml), where it is said that the average length of the 46 chromosomes in the human body is 5cm (46 x 5cm = 230cm = 2.3m).  In that calculation, it states that there are closer to 6 Gbp per cell (i.e. twice the human genome nt number).
+
+Does this make sense?
+
+2.3m = 2.3 x 10^9 nanometres (nm)
+
+If for human DNA, there are 3.26 Gbp (3.26 x 10^9 nt) in a length of 2.3 x 10^9 nanometres, then this equals only about 1.4 nt per nanometre.
+
+Conventional wisdom [e.g.](http://www.dietzellab.de/goodies/numbers.html) is that the base pairs are 0.34 nm apart (so closer to 3 nt per nanometre)
+
+So why the difference?   The reference to base pairs in the 'human genome' is to the amount of genetic material needed to define the human species in 'haploid' cells (like germ cells: eggs and sperm).  This is the minimum amount of sequential 'code' that describes the genetic material, but that's not actually how DNA is packed into most of the other, 'somatic' cells, which contain two copies of DNA, inherited from each of the parents, and this explains our chromosome 'pairs'.  So in somatic cells, there is 2 x 3.26Gb of genetic material and this is the total 'amount' of DNA that is commonly referred to when the length comparisons for ~2.3m are made.
 
 ## RNA
 
@@ -112,10 +124,10 @@ Assembly Issues
  - SNPs : For diploid organism, this is differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*. 
  - phased assembly: ability to identify gamete sources for all SNPs. 
 
-Examples of differing chromosome sets.
+Examples of differing chromosome sets.  These categories tell us how many replicated sequencies of DNA material we are likely to find.  Not that they are identical in each chromosome set, but that the sequence in each chromosome is comparable and potentially involves the ability to swap out genetic material at the same place in the sequence.
 
 Diploid organisms:
- - H. Sapiens
+ - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp needed to define the human 'genome')
  - Drosopila
 
 Haploids:
