@@ -60,7 +60,7 @@ Piovesan, A., Pelleri, M.C., Antonaros, F. et al. On the length, weight and GC c
 
 ## RNA forms
 
-mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and transported to the ribosome 'factories'.  Also, the mRNA must also have non-coding regions removed (spliced) in order to become 'mature'.  Unlike the relatively predictable size of rRNA for an organism, the size and length of mRNA varies depending on the genetic material that is copied into the mRNA coding sequence.
+mRNA - in eukaryotes, messenger RNA copies (transcribes) portions of DNA (i.e. it is assembled at DNA sites) and transported to the ribosome 'factories'.  Also, the mRNA must also have non-coding regions removed (spliced) in order to become 'mature'.  The size and length of mRNA varies depending on the genetic material that is copied into the mRNA coding sequence.  nb: 'positive sense' viral RNA is a strand of RNA that is already in the right orientation to be translated.
 
 tRNA - brings in amino acids so the ribosome factories can make proteins (translation).  Think ''amino acid transfer', 'transport'
 
@@ -119,7 +119,7 @@ Compare above ribosomal RNA sizes to full SARS-Cov-2 genome:
 |:----------|:----------|:--------|:--------|
 | coronavirus | full | RNA | 29903 nt |
 
-i.e. 5 to 6 times larger than the very small intra-cellular protein-building apparatus.  We should not expect coding similarities due to different evolutionary histories.
+i.e. 5 to 6 times larger than the very small intra-cellular protein-building apparatus.  Still 5 times smaller than phage T4 genome (see below).
 
 [posting](https://virological.org/t/novel-2019-coronavirus-genome/319)
 
@@ -131,6 +131,23 @@ Virus stability issues:
 2020, Wakida et al, Stability of RNA sequences derived from the coronavirus genome in
 human cells, Biochemical and Biophysical Research Communications 527 (2020) 993e999
 https://doi.org/10.1016/j.bbrc.2020.05.008
+
+## Bacteriophages
+
+| Name | Notes| Genome size | Researcher |
+|:-----|:-----|:-----|:-----|
+|T4 | Attacks E.Coli | 168,903 bp | Miller |
+|A9 |  Bacteroidetes(?) | 735,000 bp | Al-Shayeb |
+
+Miller et al. Bacteriophage T4 Genome.  MICROBIOLOGY AND MOLECULAR BIOLOGY REVIEWS, Mar. 2003, p. 86–156 1092-2172/03/$08.00􏰀0 DOI: 10.1128/MMBR.67.1.86–156.2003
+[Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC150520/pdf/0005.pdf)
+
+Miller's work suggests the origins of the T4 phage are ancient (before prokaryote and eukaryote division).
+
+Megaphages:
+(2020). Al-Shayeb et al. Clades of huge phages from across Earth's ecosystems, Nature (2020). DOI: 10.1038/s41586-020-2007-4 , https://nature.com/articles/s41586-020-2007-4  [Link](https://phys.org/news/2020-02-huge-bacteria-eating-viruses-gap-life.html)
+
+nb - see extensive reproducibility information at end, including [Github link](https://github.com/rohansachdeva/assembly_repeats/blob/master/assembly_repeats.py)
 
 # Genome size definitions
 
