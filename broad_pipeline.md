@@ -132,7 +132,7 @@ The information obtained is more detailed than the current Drop-seq manual, and 
 
 # A note on the STAR program (this stage: for index creation)
 
-The use of STAR in this pipeline is currently scripted in create_Dropseqmeta_UWA.sh
+The use of STAR in this pipeline should be created in a *shell file* that sequences the use of the tools, and the required parameters. 
 
 If the STAR index creation process works, you should have these files (or similar), in the dropseq/STAR directory, including genomeParameters.txt as well as the Genome and SA files:
 
