@@ -27,6 +27,10 @@ Wheat, barley, rye, pea?
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
+The Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are diploid, so there are 5 chromosome pairs (10 chromosomes) per cell.
+Arabidopsis Genome Initiative. Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature. 2000 Dec;408(6814):796-815. DOI: 10.1038/35048692.
+
+https://www.nature.com/articles/35048692.pdf
 [Arabidopsis genome paper (2000)](https://www.nature.com/articles/35048692)
 
 [Paris Polyphylla paper (2020)](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
@@ -44,21 +48,33 @@ In prokaryotic organisms, the DNA molecules are present in the main cellular str
 
 DNA can be much longer than RNA (it is terminated for each chromosome e.g. 5 centrimetres long for each, humans have 46 of them, roughly paired into 23 'sets' of chromosome pairs).
 
-It has been said that human DNA would equal a length of 2.3 metres long in every cell when unravelled.   An example, is [here](https://hypertextbook.com/facts/1998/StevenChen.shtml), where it is said that the average length of the 46 chromosomes in the human body is 5cm (46 x 5cm = 230cm = 2.3m).  In that calculation, it states that there are closer to 6 Gbp per cell (i.e. twice the human genome nt number).
+It has been said that human DNA would equal a length of 2.3 metres long in every cell when unravelled.   An example, is [here](https://hypertextbook.com/facts/1998/StevenChen.shtml), where it is said that the average length of the 46 chromosomes in the human body is 5cm (46 x 5cm = 230cm = 2.3m).  In that calculation, it states that there are closer to 6 Gbp per cell (i.e. twice the human genome nt number).  The assumption here is that there a 2 x 23 chromosome *pairs* in every cell, and so the number of pairs to be laid out (>6Gbp) is twice as many as in the haploid genome per se.  
 
 Does this make sense?
 
-2.3m = 2.3 x 10^9 nanometres (nm)
+Number of base pairs (diploid genome) x distance between base pairs = total length 
 
-If for human DNA, there are 3.26 Gbp (3.26 x 10^9 nt) in a length of 2.3 x 10^9 nanometres, then this equals only about 1.4 nt per nanometre.
+e.g. (2 x 3 x 10^9) bp x 0.34 x 10^-9 (nanometres, nm) = 6 x 0.34 = 2.04m
 
 Conventional wisdom [e.g.](http://www.dietzellab.de/goodies/numbers.html) is that the base pairs are 0.34 nm apart (so closer to 3 nt per nanometre)
 
-So why the difference?   The reference to base pairs in the 'human genome' is to the amount of genetic material needed to define the human species in 'haploid' cells (like germ cells: eggs and sperm).  This is the minimum amount of sequential 'code' that describes the genetic material, but that's not actually how DNA is packed into most of the other, 'somatic' cells, which contain two copies of helical DNA, inherited from each of the parents, and this explains our chromosome 'pairs'.  So in somatic cells, there is 2 x 3.26Gb of genetic material and this is the total 'amount' of DNA that is commonly referred to when the length comparisons for ~2.3m are made.
+Number of base pairs?
+
+The reference to base pairs in the 'human genome' is to the amount of genetic material needed to define the human species in 'haploid' (gamete) cells (like germ cells: eggs and sperm).  This is the minimum amount of sequential 'code' that describes the genetic material, but that's not actually how DNA is packed into most of the other, 'somatic' cells, which contain two copies of helical DNA, inherited from each of the parents, and this explains our chromosome 'pairs'.  So in somatic cells, there is 2 x 3.26Gb of genetic material and this is the total 'amount' of DNA that is commonly referred to when the length comparisons for ~2.3m are made. 
+
+(2 x 3.26 x 10^9) bp x 0.34 x 10^-9 (nanometres, nm) = 6.52 x 0.34 = 2.22m
 
 nb: A more recent (2019) academic discussion of DNA metrics is contained here:
 
 Piovesan, A., Pelleri, M.C., Antonaros, F. et al. On the length, weight and GC content of the human genome. BMC Res Notes 12, 106 (2019). https://doi.org/10.1186/s13104-019-4137-z   [link](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4137-z)
+
+Relevant data from that article:
+Base pairs (male): 6.27 Gigabase pairs (Gbp)
+Length: 205.00 cm (cm) 
+Weight: 6.41 picograms (pg).
+Deduced average gap per bp: 0.327 nm
+
+It seems that a greater level of significant figures would be needed to ensure accuracy.
 
 ## RNA forms
 
