@@ -56,7 +56,7 @@ Number of base pairs (diploid genome) x distance between base pairs = total leng
 
 e.g. (2 x 3 x 10^9) bp x 0.34 x 10^-9 (nanometres, nm) = 6 x 0.34 = 2.04m
 
-Conventional wisdom [e.g.](http://www.dietzellab.de/goodies/numbers.html) is that the base pairs are 0.34 nm apart (so closer to 3 nt per nanometre)
+Conventional wisdom [e.g. Dietzel lab](http://www.dietzellab.de/goodies/numbers.html) is that the base pairs are 0.34 nm apart (so closer to 3 nt per nanometre)
 
 Number of base pairs?
 
@@ -69,10 +69,10 @@ nb: A more recent (2019) academic discussion of DNA metrics is contained here:
 Piovesan, A., Pelleri, M.C., Antonaros, F. et al. On the length, weight and GC content of the human genome. BMC Res Notes 12, 106 (2019). https://doi.org/10.1186/s13104-019-4137-z   [link](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4137-z)
 
 Relevant data from that article:
-Base pairs (male): 6.27 Gigabase pairs (Gbp)
-Length: 205.00 cm (cm) 
-Weight: 6.41 picograms (pg).
-Deduced average gap per bp: 0.327 nm
+
+|Base pairs (male) (Gbp) |Length(m)|Weight(picograms,pg)|Deduced gap (nanometres,nm)|
+|---:|---:|---:|---:|
+| 6.27|2.05|6.41|0.327|
 
 It seems that a greater level of significant figures would be needed to ensure accuracy.
 
