@@ -139,7 +139,7 @@ https://doi.org/10.1016/j.bbrc.2020.05.008
 |T4 | Attacks E.Coli | 168,903 bp | Miller |
 |A9 |  Bacteroidetes(?) | 735,000 bp | Al-Shayeb |
 
-Miller et al. Bacteriophage T4 Genome.  MICROBIOLOGY AND MOLECULAR BIOLOGY REVIEWS, Mar. 2003, p. 86–156 1092-2172/03/$08.00􏰀0 DOI: 10.1128/MMBR.67.1.86–156.2003
+Miller et al. Bacteriophage T4 Genome.  MICROBIOLOGY AND MOLECULAR BIOLOGY REVIEWS, Mar. 2003, p. 86–156 1092-2172 DOI: 10.1128/MMBR.67.1.86–156.2003
 [Link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC150520/pdf/0005.pdf)
 
 Miller's work suggests the origins of the T4 phage are ancient (before prokaryote and eukaryote division).
@@ -176,7 +176,31 @@ This might create confusion in terminology when referring to 'DNA Content':
 
 Suda, Jan & Krahulcová, Anna & Trávníček, Pavel & Krahulec, František. (2006). Ploidy Level versus DNA Ploidy Level: An Appeal for Consistent Terminology. TAXON. 55. 447-450. 10.2307/25065591. 
 
-'Ploidy' itself is just a multiple of the chromosome, expressed per cell.  e.g. 'Diploid' means two sets of chromosomes *per cell*.  We can then infer twice the amount of base pairs per cell as comparied to the haploid genome.
+'Ploidy' itself is just a multiple of a single set of the chromosomes, expressed per cell.  e.g. 'Diploid' means two sets of chromosomes *per cell*.   In calculating the total number of chromosomes we can express this in terms of a single set of chromosomes (monoploid, often abbreviated to 'x'), or in terms of chromsomes in gametes (or haploid chromosome number 'n').  For adult organisms that are diploid, the 'x' and 'n' numbers are the same.
+
+Some examples of counting chromosomes and the terminology used:
+
+| Species | Ploidy | Chromosomes| Notes|
+|:-----|:-----|:-----|:-----|
+| *Common wheat*|Monoploid (x) | 7 | |
+| |Haploid/gamete (n) |  21 | Triploid |
+| |Somatic cells (2n)| 42|  Hexaploid |
+| *Human*|Monoploid (x) | 23 | |
+| |Haploid/gamete (n) |  23 | Monoploid |
+| |Somatic cells (2n)| 46|  Diploid |
+
+Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or genome groups.   These have been identified as follows:
+
+|Name | Group Code | Ploidy | Chromosomes| Species|
+|:-----|:-----|:-----|:-----|:-----|
+| Einkhorn Wheat|A(u)|Diploid (2n)|2x7=14| T.monoccoccum|
+| Speltoids|B|Diploid (2n)|2x7=14| |
+| Goat grass|D|Diploid (2n)|2x7=14| Aegilops Tauschii|
+
+The 'A' and 'B' genome groups came together to produce a tetraploid species, which only relatively recently (about 8,000 years) hybridised with the D genome group to form common wheat.  For this reason, the Ae.Tauschii genome (now mapped) and the D component of common wheat is much more similar than the A and B genomes refereable to those ancient species.
+
+see Zimin et al (2017), The first near-complete assembly of the hexaploid bread wheat genome, Triticum aestivum, GigaScience, Volume 6, Issue 11, November 2017, gix097, [doi](https://doi.org/10.1093/gigascience/gix097)
+URL: [Zimin link](https://academic.oup.com/gigascience/article/6/11/gix097/4561661) 
 
 Diploid organisms:
  - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp DNA haploid content needed to define the human 'genome')
@@ -187,7 +211,7 @@ Diploid organisms:
 Kaul, S., Koo, H. L., Jenkins, J., Rizzo, M., Rooney, T., Tallon, L. J., ... Somerville, C. (2000). Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature, 408(6814), 796-815. https://doi.org/10.1038/35048692 [Link](https://www.nature.com/articles/35048692)
 
 Haploids:
- - bee
+ - bee (male drones)
 
 Polyploids:
  - Wheat
