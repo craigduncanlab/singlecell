@@ -1,6 +1,8 @@
-# Genome sizes - some draft notes
+# Notes on Genome sizes 
 
-(c) Craig Duncan 15 August 2020
+(c) Craig Duncan 2020-1. A work in progress.
+
+Created 15 August 2020.  Last updated 8 February 2021.
 
 # An illustration
 
@@ -19,8 +21,8 @@ Wheat, barley, rye, pea?
 | H.Sapiens | 3.26 | Person | |
 | H. vulgare |	4.79	| barley | |
 | S. cereale |	6.67	| rye | |
-| T. dicoccoides |	10.50 |	Emmer wheat | [link](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index) |
-| T. aestivum  |	14.50 | Common wheat | [link](http://plants.ensembl.org/Triticum_aestivum/Info/Index) |
+| T. dicoccoides |	10.50 |	Emmer wheat (Tetraploid) | [link](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index) |
+| T. aestivum  |	14.50 | Common wheat (Hexaploid)| [link](http://plants.ensembl.org/Triticum_aestivum/Info/Index) |
 | P. polyphylla (PPY) | 82.55 | Paris | | 
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
@@ -189,18 +191,80 @@ Some examples of counting chromosomes and the terminology used:
 | |Haploid/gamete (n) |  23 | Monoploid |
 | |Somatic cells (2n)| 46|  Diploid |
 
-Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or genome groups.   These have been identified as follows:
+# Wheat size and relative sizes for ploidy
+
+Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or diploid genome progenitors, as follows:
 
 |Name | Group Code | Ploidy | Chromosomes| Species|
 |:-----|:-----|:-----|:-----|:-----|
-| Einkhorn Wheat|A(u)|Diploid (2n)|2x7=14| T.monoccoccum|
-| Speltoids|B|Diploid (2n)|2x7=14| |
+| Einkorn Wheat|A(u)|Diploid (2n)|2x7=14| T.monococcum|
+| Speltoids|B|Diploid (2n)|2x7=14| ~Aegilops speltoides(?)|
 | Goat grass|D|Diploid (2n)|2x7=14| Aegilops Tauschii|
 
-The 'A' and 'B' genome groups came together to produce a tetraploid species, which only relatively recently (about 8,000 years) hybridised with the D genome group to form common wheat.  For this reason, the Ae.Tauschii genome (now mapped) and the D component of common wheat is much more similar than the A and B genomes refereable to those ancient species.
+Wheat evolutionary history and size comparisons:
+
+|Name | Genome Codes | Ploidy | Chromosomes| Species| Gbp |
+|:-----|:-----|:-----|:-----|:-----|:-----|
+| Einkorn Wheat|A(m)|Diploid (2n)|2x7=14| T.monococcum| 5.6 | --> ancestor of urartu. ('einkorn' = 'single grain')
+| Red Wild Einkorn Wheat|A(u)|Diploid (2n)|2x7=14| T.urartu | 4.6 |
+|||||||
+| Speltoids|B|Diploid (2n)|2x7=14|~Aegilops speltoides(?)| |
+|||||||
+| Goat grass|D|Diploid (2n)|2x7=14| Aegilops Tauschii|4.0|
+|||||||
+| Emmer Wheat|BA(u)|Tetraploid (4n)|4x7=28| T.Dicoccoides|10.5 |
+| Common Wheat|BA(u)D|Hexaploid (6n)|6x7=42| T.aestivum|14.5*| 
+
+*possibly as high as 17Gbp based on recent research by International Wheat Genome Sequencing Consortium (IWGSC).*
+
+There is some proportionality in the number of base pairs of common wheat, as compared to its tetraploid and diploid progenitors, where the relative amounts of DNA material are known from the progressive retention of more genomic material from the earlier species (A(u), B and D respectively).
+
+Should even these stated base pairs for the DNA of each listed species be higher? Based on converting 1 chromosome of DNA equivalent weight into base pairs, and multiplying by the weight of the reference chromosome samples, there is reason to believe the actual number of base pairs in selected species of wheat are higher than historical assemblies shown above (as at 2018). 
+
+"Any project seeking to deliver a plant or animal reference genome sequence must address the question as to the completeness of the assembly. "
+
+"Seventeen years have passed since the joint announcement of the human genome sequence [14,15]. This period has seen a number of attempts to complete the assembly, applying a variety of technologies [16,17]. All of these have reported a smaller genome size than what has, as of the end of 2017, been suggested in GRCh38.p12, the most recently released Genome Reference Consortium version, which comprises 3,257,319,537 bp. Assuming the Doležel et al. [18] conversion of 1 pg = 0.978 Gbp, 3.5 pg 1C DNA is equivalent to 3,423,000,000 bases. Thus, the 7 pg value represents an ~5.1% over-estimate of the GRCh38.p12 assembly prediction. This difference lies at the lower end of the error range predicted by Doležel and Greilhuber [13]. Given that the human reference genome is still incomplete, the expectation is that the gap between the 7 pg figure and the “real” human genome size will continue to diminish. Nevertheless, a 5% error is not dissimilar to the variation observed between estimates of nuclear DNA amounts of a given species produced by different laboratories [19,20]. Thus, the recommendation remains that the 7 pg figure continue to be used as the reference for measuring 2C values of both animal and plant genomes."
+
+Dolezel, Jaroslav & Janačížková, Janačížková & Simkova, Hana & Bartoš, Jan. (2018). One Major Challenge of Sequencing Large Plant Genomes Is to Know How Big They Really Are. International Journal of Molecular Sciences. 19. 19113554. 10.3390/ijms19113554. 
+
+[link](https://www.researchgate.net/publication/328875915_One_Major_Challenge_of_Sequencing_Large_Plant_Genomes_Is_to_Know_How_Big_They_Really_Are)
+
+## Triticum aestivum (Common Wheat)
+
+This explanation about the evolutionary history of common wheat is also found at genome assembly library site enSemble: [enSembl](http://plants.ensembl.org/Triticum_aestivum/Info/Index).  Consistently, the relative sizes (base pairs) of each of the A, B and D genomic groups is proportionately smaller than the hybridised (and hexaploidy) common wheat.
+
+The 'A' and 'B' genome groups came together to produce a tetraploid species, which only relatively recently (about 8,000 years) hybridised with the D genome group to form common wheat.  For this reason, the Ae.Tauschii genome (now mapped) and the D component of common wheat are more similar than the A and B genomes referable to those ancient species.
 
 see Zimin et al (2017), The first near-complete assembly of the hexaploid bread wheat genome, Triticum aestivum, GigaScience, Volume 6, Issue 11, November 2017, gix097, [doi](https://doi.org/10.1093/gigascience/gix097)
 URL: [Zimin link](https://academic.oup.com/gigascience/article/6/11/gix097/4561661) 
+
+## Triticum urartu (Red Wild Einkorn Wheat)
+
+[EnsemblUrartu](http://plants.ensembl.org/Triticum_urartu/Info/Index)
+
+http://www.plosone.org/article/info%3Adoi%2F10.1371%2Fjournal.pone.0096855
+
+## Triticum monococcum (Einkorn Wheat)
+
+There is an excellent genomics resource on 'Einkorn Wheat' at the Jaiswal Lab at Oregan State University: URL [JaiswalLab](http://jaiswallab.cgrb.oregonstate.edu/genomics/wheat)
+
+Fox SE, Geniza M, Hanumappa M, Naithani S, Sullivan C, et al. (2014) De Novo Transcriptome Assembly and Analyses of Gene Expression during Photomorphogenesis in Diploid Wheat Triticum monococcum. PLoS ONE 9(5): e96855. doi:10.1371/journal.pone.0096855
+
+## Triricum dicoccum (Emmer Wheat)
+
+Genomic resource : [EnsemblerEmmer](http://plants.ensembl.org/Triticum_dicoccoides/Info/Index)
+(size/statistics): [EnsemblEmmerAnnot](http://plants.ensembl.org/Triticum_dicoccoides/Info/Annotation/#assembly)
+
+## Aegilops tauschii (Tausch's goat grass)
+
+genomic resource: [Nature](https://www.nature.com/articles/nature24486)
+[doi](doi:10.1038/nature24486)
+
+Ref:
+Genome sequence of the progenitor of the wheat D genome Aegilops tauschii.
+Ming-Cheng Luo, Yong Q. Gu, Daniela Puiu, Hao Wang, Sven O. Twardziok, Karin R. Deal, Naxin Huo, Tingting Zhu, Le Wang, Yi Wang et al. 2017. Nature. 551:498502.
+
+# Comparative ploidy
 
 Diploid organisms:
  - H. Sapiens. (i.e. 23 'paired' chromosomes = 6Gbp in total, but say only 3.26Gbp DNA haploid content needed to define the human 'genome')
@@ -304,12 +368,4 @@ Laurasiatheria (∼2.8 pg
 
 [P.Polyphilla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
-### Wheat, Barley and Rye
 
-"Any project seeking to deliver a plant or animal reference genome sequence must address the question as to the completeness of the assembly. "
-
-"Seventeen years have passed since the joint announcement of the human genome sequence [14,15]. This period has seen a number of attempts to complete the assembly, applying a variety of technologies [16,17]. All of these have reported a smaller genome size than what has, as of the end of 2017, been suggested in GRCh38.p12, the most recently released Genome Reference Consortium version, which comprises 3,257,319,537 bp. Assuming the Doležel et al. [18] conversion of 1 pg = 0.978 Gbp, 3.5 pg 1C DNA is equivalent to 3,423,000,000 bases. Thus, the 7 pg value represents an ~5.1% over-estimate of the GRCh38.p12 assembly prediction. This difference lies at the lower end of the error range predicted by Doležel and Greilhuber [13]. Given that the human reference genome is still incomplete, the expectation is that the gap between the 7 pg figure and the “real” human genome size will continue to diminish. Nevertheless, a 5% error is not dissimilar to the variation observed between estimates of nuclear DNA amounts of a given species produced by different laboratories [19,20]. Thus, the recommendation remains that the 7 pg figure continue to be used as the reference for measuring 2C values of both animal and plant genomes."
-
-Dolezel, Jaroslav & Janačížková, Janačížková & Simkova, Hana & Bartoš, Jan. (2018). One Major Challenge of Sequencing Large Plant Genomes Is to Know How Big They Really Are. International Journal of Molecular Sciences. 19. 19113554. 10.3390/ijms19113554. 
-
-[link](https://www.researchgate.net/publication/328875915_One_Major_Challenge_of_Sequencing_Large_Plant_Genomes_Is_to_Know_How_Big_They_Really_Are)
