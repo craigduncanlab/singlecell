@@ -8,7 +8,8 @@ output: html_notebook
 # Relevance of CellRanger software to Seurat workflows
 
 This site confirms that Seurat is generally set up to work with CellRanger-specific files (if you have those barcodes etc).  This should be born in mind when starting with some of the Seurat tutorials
-https://adinasarapu.github.io/posts/2019/01/blog-post-sc-ranseq/
+
+[Link](https://adinasarapu.github.io/posts/2019/01/blog-post-sc-ranseq/)
 
 # What is done to obtain the 10X count-data files from say raw base-call sequencing data?
 
@@ -19,10 +20,11 @@ Work is done in the initial sequencing process or the initial genes-per-cell cou
 If you are only given the 'lanes' of FASTQ files, then is that an order of magnitude more difficult to use for a count matrix or not?  And why would that be the case?  What workarounds are necessary?
 
 This site (by Andrew Severin, Iowa) does a pretty good job of explaining how to go from raw data in FASTA files through to raw data in the raw_feature_bc_matrix folder (produced by CellRanger).  (nb features.tsv is renamed to genes.tsv to work with Seurat):
-https://bioinformaticsworkbook.org/dataAnalysis/RNA-Seq/Single_Cell_RNAseq/Chromium_Cell_Ranger.html#gsc.tab=0
+
+[Link](https://bioinformaticsworkbook.org/dataAnalysis/RNA-Seq/Single_Cell_RNAseq/Chromium_Cell_Ranger.html#gsc.tab=0)
 
 There's even a reference to Dave Tang on that page:
-https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/
+[Link](https://davetang.org/muse/2018/08/09/getting-started-with-cell-ranger/)
 
 On Dave's page he stated that CellRanger is used to generate counts from the FASTQ files produced by the Chromium process.   
 
@@ -51,7 +53,7 @@ If you aren't working with that (e.g. plants), you will need a reference genome 
 Internally, CellRanger is using STAR, which brings in its own compatibility issues for these FASTA, GTF files.
 
 Some further information is here:
-https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#gtf
+[Link](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references#gtf)
 
 "The single-nuclei RNA-seq assay captures unspliced pre-mRNA as well as mature mRNA. However, after alignment, cellranger count only counts reads aligned to exons."
 
@@ -64,7 +66,9 @@ HT-seq or FeatureCounts.  FeatureCounts can count genes, exons, promoter gene bo
 
 *Also note that STARsolo, integrated with STAR, can do gene quantification for 10X and other droplet-based scRNA-seq.  It can be up to 10 times faster than the CellRanger Count*.
 
-(Here's a 2019 benchmarking paper, discussing BUS, by Melsted et al: https://www.biorxiv.org/content/10.1101/673285v2.full) and https://academic.oup.com/bioinformatics/article-abstract/35/21/4472/5487510?redirectedFrom=fulltext
+(Here's a 2019 benchmarking paper, discussing BUS, by Melsted et al: 
+[Link1](https://www.biorxiv.org/content/10.1101/673285v2.full) and 
+[Link2](https://academic.oup.com/bioinformatics/article-abstract/35/21/4472/5487510?redirectedFrom=fulltext)
 
 The barcode approach is designed to gropu together results with similar barcodes (but there may be errors), which is why they use a 'whitelist' of barcodes to verify the barcodes detected, and correct small errors.  Collapsing of duplicate UMIs (assuming they are all PCR duplicates and not actual du0plicates) is naive, but the usual approach because natural variation is considered minimal.
 
@@ -78,7 +82,7 @@ CellRanger requires time and memory to get the job done.  {Specifically, its use
 
 You will need to supply a 'Cell Ranger compatible transcriptome reference'
 
-https://bioinformatics.uconn.edu/single-cell-rna-sequencing-cell-ranger-2/#
+[Link](https://bioinformatics.uconn.edu/single-cell-rna-sequencing-cell-ranger-2/#)
 
 For quick results, CellRanger not only provides a summary of the count results, but also some further downstream analysis like dimension reduction can be performed using the Cell Ranger R Kit (an R package).
 
@@ -101,20 +105,20 @@ There is a further detailed explanation about these final steps here:
 e.g.
 "After these two filtering steps, each observed barcode, UMI, gene combination is recorded as a UMI count in the unfiltered feature-barcode matrix. The number of reads supporting each counted UMI is also recorded in the molecule info file."
 
-https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/algorithms/overview
+[10x](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/algorithms/overview)
 
 This page contains a detailed explanation of the contents of the 3 files (.csv)
 
-https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices
+[10x_2](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices)
 
-The 3 files represent the 'Market Exchange Format (MEX)' which is a method of representing sparse matrices in an abbreviated form (https://math.nist.gov/MatrixMarket/formats.html)
+The 3 files represent the 'Market Exchange Format (MEX)' which is a method of representing sparse matrices in an abbreviated form [NIST](https://math.nist.gov/MatrixMarket/formats.html)
 
 Both R and Python support MEX format.
 
 ## 10x (CellRanger) output to data files, before being imported into R, and then into Seurat
 
 Seurat has a function Read10X(), that can take in the 3 source files that are output (including the .mtx file) and transform all three of them into a matrix object within the R software.  The dGC Matrix is a sparce matrix object in R that has some attributes (i, p, x) to hold the data.  There's a good discussion of the dgC matrix here:
-https://www.r-bloggers.com/2020/03/what-is-a-dgcmatrix-object-made-of-sparse-matrix-format-in-r/
+[RBloggers](https://www.r-bloggers.com/2020/03/what-is-a-dgcmatrix-object-made-of-sparse-matrix-format-in-r/)
 
 ## Why a sparse matrix in R?
 

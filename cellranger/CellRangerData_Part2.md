@@ -8,10 +8,12 @@ output: html_notebook
 # Turning raw data into a count matrix
 
 Here is an example of a dataset of blood cell data:
-https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html
 
-The raw data for this investigation of human genome is available here.  
-https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz
+[SatijaTute](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html)
+
+The raw data for this investigation of human genome is available here (gzip file).  
+
+[Sample](https://s3-us-west-2.amazonaws.com/10x.files/samples/cell/pbmc3k/pbmc3k_filtered_gene_bc_matrices.tar.gz)
 
 When these are unpacked, you will find a hg19 folder with these files:
  - barcodes.tsv
@@ -19,7 +21,8 @@ When these are unpacked, you will find a hg19 folder with these files:
  - matrix.mtx
 
  It turns out that this is a very common set of files for single cell RNA-seq datasets, as discussed here:
- https://hbctraining.github.io/scRNA-seq/lessons/readMM_loadData.html
+ 
+ [hbc](https://hbctraining.github.io/scRNA-seq/lessons/readMM_loadData.html)
 
 (those files, or similar, are produced by the 'CellRanger program used by 10X genomics with its Chromium data')
 
@@ -27,7 +30,7 @@ When these are unpacked, you will find a hg19 folder with these files:
 
 ## (cellular) Barcodes
 
-This is a list of barcodes that determine which *cell* the reads originated from.
+This tab-separated-values file is a list of barcodes that determine which *cell* the reads originated from.
 
 barcodes.tsv
 
@@ -39,19 +42,27 @@ AAACATACAACCAC-1
 
 The file is arranged alphabetically (the last few codes start with TTT)
 
-To quickly count how many lines (in this case, entries) there are:
+To quickly count how many lines (in this case, entries) enter this at console
+
+```
 echo $(cat barcodes.tsv|wc -l)
+```
 
 Ans: 2700
 
 In the setup, CellRanger seems to need a 'fixed list of known-good barcode sequences.', from which it will show the unfiltered list, or the filtered list of only those that are detected.
 
-
-See https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices
+Ref:
+[10x_2](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices)
 
 ## genes file
+
+Console output:
+
+```
 $ echo $(cat genes.tsv|wc -l)
 32738
+```
 
 This file is of this form:
 
@@ -70,7 +81,7 @@ The explanation given for the genes in a  'features.tsv' file at 10X is:
 
 "For Gene Expression data, the ID corresponds to gene_id in the annotation field of the reference GTF. Similarly, the name corresponds to gene_name in the annotation field of the reference GTF. If no gene_name field is present in the reference GTF, gene name is equivalent to gene ID."
 
-https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices
+[10x](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices)
 
 You can see the importance of the presence of suitable GTF reference files if you are attempting to perform the alignment and count with your own custom references files.
 
@@ -83,7 +94,8 @@ This determines which *transcript molecule* the read originated from.  It will a
 The data may contain duplicated read sequences but you know for sure it is a PCR duplicate if the UMIs are the same (since UMIs are unique per molecule *before* PCR takes place.)
 
 The matrix file is the largest -> 28MB
-Terminal: 
+
+Console: 
 
 ```
 $ echo $(cat matrix.mtx|wc -l)
@@ -94,6 +106,7 @@ $ echo $(cat matrix.mtx|wc -l)
 
 This file is of this form:
 
+```
 "%%MatrixMarket matrix coordinate real general
 %
 32738 2700 2286884
@@ -107,6 +120,7 @@ This file is of this form:
 32699 1 25
 32698 1 3
 32697 1 8"
+```
 
 The first line shows the number of genes (32738), the barcodes(2700), and then the lines in the matrix (3 lines are used for the headings and these totals, so there are 2286884 entries, 3 less than total number of lines)
 
