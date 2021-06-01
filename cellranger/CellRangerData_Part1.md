@@ -34,7 +34,7 @@ The processing involves a first step:
 1. `cellranger mkfastq` runs base call (bcl) files into FASTQ (this is demultiplexing and conversion; it uses a sample_sheet.csv to name the FASTQ files based on libraries and lanes)
 2. 'cellranger count' will work with the FASTQ files and produce the 1 directory with 3 files suitable for inputting into Seurat.  A 9 hour process (on a PC?).  The count produces a BAM file as part of the process.
 
-Demultiplexing is only necessary if you push through multiple samples on one lane (in which case you can separate samples before you create the FASTQ files): see https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/processing-raw-scrna-seq-data.html
+Demultiplexing is only necessary if you push through multiple samples on one lane (in which case you can separate samples before you create the FASTQ files): see [ref](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/processing-raw-scrna-seq-data.html)
 
 CellRanger does some quality checking, and if you are getting some poor results, then trimming those poor quality reads or some adapter content might be necessary (but not otherwise).
 
@@ -44,7 +44,7 @@ CellRanger works easily with human reference genome, or mouse data:
 
 "Cell Ranger provides pre-built human (hg19, GRCh38), mouse (mm10), and ercc92 reference packages for read alignment and gene expression quantification in cellranger count."
 
-https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references
+[Ref](https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/advanced/references)
 
 If you aren't working with that (e.g. plants), you will need a reference genome and gtd file.  In other words, you need to create your own reference package file:
 
@@ -74,7 +74,9 @@ The barcode approach is designed to gropu together results with similar barcodes
 
 The premise of tools like Kallisto is that precision is not necessary, and results in time-saving.  As Melsted puts it: "Since detailed base-pair alignment is not necessary to generate a count matrix, pseudoalignment to a reference transcriptome8 suffices."
 
-CellRanger requires time and memory to get the job done.  {Specifically, its use of STAR is the main issue.   STAR is even considered to use significant memory for human or mouse (para 5.8.1, https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/processing-raw-scrna-seq-data.html), so something like Wheat will be even more demanding}.  It may not even be feasible for something like Wheat?  How do people working with Wheat overcome these difficulties?
+CellRanger requires time and memory to get the job done.  
+
+{Specifically, its use of STAR is the main issue.   STAR is even considered to use significant memory for human or mouse (para 5.8.1, [BioCellGen](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/processing-raw-scrna-seq-data.html), so something like Wheat will be even more demanding}.  
 
 ## What Cellranger count does (internally)
 
@@ -153,7 +155,8 @@ Kallisto with BUStools claims that the memory intensity is much smaller and more
 "In benchmarks on the panel described in this paper, kallisto’s running time was comparable to that of the word count (wc) command applied to the FASTQ files,"
 
 There's a kallisto/BUStools workflow here with the use of Seurat.  Not sure about data flows yet.
-https://bustools.github.io/BUS_notebooks_R/velocity.html
+
+Ref:[bustools](https://bustools.github.io/BUS_notebooks_R/velocity.html)
 
 ### Kallisto as a pseudo-aligner
 
