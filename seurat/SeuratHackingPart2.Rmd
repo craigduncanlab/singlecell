@@ -1,0 +1,1106 @@
+---
+title: "Seurat Hacking Part 2:  - An In Depth Look"
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+# Introduction to single cell, gene expression analysis
+
+THe Seurat package is used by scientists who are investigating biological processes, using data that sequences the amount of genetic material (RNA) present in a laboratory experiment.   This genetic material is called 'expression data', and the analysis of this is a type of data analysis within the field of bioinformatics.   The work being done is best described as 'gene expression analysis', using data obtained from single-cell sequencing processes.  However, this is often lazily called 'single cell analysis'.  To more accurately describe this in a way that any data analyst can understand, we need to remember that the data set is a set of gene-based rows, with counts per cell.  
+
+Even this gene-expression data has to be derived, in a complex procedure, from what sequencing machines produce. It is a significant step in itself to prepare the 'count matrices' (which are, more correctly, gene-v-cells count matrices) from the output of a sequencing machine, based on a laboratory-prepared experiment.  The conversion of raw sequencing data to expression data is not a step that should be taken lightly.  It is only the first step in the data analysis of 'gene expression' data, and is an end in itself: it is the fundamental 'raw data' to the gene expression data analyst.  These matrices may have hundreds of genes, and thousands or millions of cells.  Even working out how to store them in a computer (using a 'sparce matrix' rather than a fully represented grid) is an exercise in itself.
+
+The Seurat package is a non-commercial software package for the R language, whose principal offering (but not its only benefit) is the ability to create 'Seurat objects' in the R language, for scientists who wish to perform gene expression analysis.  "Seurat was originally developed as a clustering tool for scRNA-seq data" per [SVICambridgeCourse](https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/seurat-chapter.html)
+
+By 'clustering tool', the authors mean a visualisation tool that will help scientists to represent, in just two dimensions, the underlying similarity or *variability* of the gene expression data for the cells in the experiment (with respect to the other cells).  True variability, on such a simple basis, is not immediately apparent in the data, and the relationships between thousands of cells may be complex.  A clustering tool is, however, something useful that can be implemented near the end of the down-stream analysis.   Preceding steps to prepare the data (already in the form of genes per cell counts) still need to be done, drawing on statistical knowledge, as it would for any general data analysis.
+
+Seurat offers one way of working with (performing statistical analysis upon) this data, in which there is a custom 'Seurat object' at the centre of the analysis.  The Seurat 'ecosystem' is based on the R programming language and its custom 'Seurat object', but even this is different to the Bioconductor 'ecosystem', also based on the R language, but using its own custom 'SingleCellExperiment object'.  Both these software worlds work with the same general set of single cell (expression) data, and many of the same scientific goals and steps.  Much of the general knowledge for single cell analysis can be used interchangeably to work with these two packages, yet the software setup, and the precise scripts and code for Seurat and SingleCellExperiment objects will be slightly different.  It is possible to convert data from a Seurat object to a SingleCellExperiment object.  Aside from these two software ecosystems, there are other ways, to analyse the single cell data, drawing more broadly from the R and python ecosystems.  If you understand what the data is, and how it was obtained, you can even use basic R and statistical functions, for discrete steps.  The larger packages like Seurat and the Bioconductor tools are designed to reduce labour and time.
+
+Some general data analysis methods will always need to be applied to the single cell data, even before specific dimension reduction and clustering methods are used.  These include quality filtering, and also 'normalisation' (transforming the data so that it can be compared to other data sets, regardless of the size, or specific variance of the data).  
+
+Normalisation often involves adjustments to individual data entries that take into account the range, and the mean of the raw data, and then returning a modified set of data that fits certain desired properties (like a mean of '1' for the counts, but prepared on a float basis: this need to scale is why the data type for the Seurat 'nCount' is 'numeric' and not an integer, as noted later).
+
+Even before PCA is attempted, some attempts at simplifying and organising the data can and should be made.  Some genes form sets of variability, but within these, some genes are more variable than others, around some average variability for that set (or 'bin').   The notion of 'high dimensions' here is the fact that each gene can be compared to its variability to some other gene, but as there are thousands or millions of genes, this becomes an extremely complex interaction to describe statistically, let alone visualise.  
+
+Find an optimal way to visualise this variability in the most optimal way for 2 dimensions involves iterative attempts to optimise certain statistical parameters, and intermediate steps to construct sub-sets of cells that are more alike in their gene expression.   These techniques involve what is called 'machine learning', and specifically, gradient descent is often employed.   
+
+Some of the ground work for the methods of dimension-reduced visualisation was done over a decade ago, outside the single cell context:  van der Maaten, L., and Hinton, G. (2008). Visualizing Data using t-SNE. Journal of Machine Learning Research 9, 2579-2605.  This work followd on from the Stochastic Neighbour Embedding (SNE) work done earlier, in 2002, by Hinton and Roweis.
+
+Both SNE and Principal Components Analysis are techniques for representing data in lower dimensions, but we'll see that using PCA in combination with SNE or t-SNE produces more useful results for single cell analysis.  That is, you can do some work to reduce dimensions in PCA even before applying the t-SNE methods that result in a 2D representation of the cells.
+
+Once visualisation has been done, some retrospective identification of the cells, based on genes that might be activated, is usually undertaken (check that Seurat does it this way, rather than reverse).  The identification of these 'marker genes' (that mark the cell types we might have detected) is discussed, in the context of a non-Seurat workflow, [here](http://bioconductor.org/books/release/OSCA/marker-detection.html)
+
+## Seurat's role
+
+A tool like Seurat is customised for performing the statistical transformations and analyses easily, from conversion of data through to visualisation and retrospective interpretation. The authors of Seurat have made choices based on current statistical techniques, and, in particular, choosing those like t-SNE that seem to provide more useful data visualisations.
+
+The net result is that Seurat provides a set of functions that summarise a number of complicated statistically-based data analysis techniques or goals in just a few lines of code.  They are really the tip of the iceberg in terms of what is being performed mathematically, but that is the point.   A user of the system needs to be able to summarise the complexity of the statistical steps and data analysis, in order to wisely leverage the power of the work invested in the development of Seurat.  
+
+The purpose of this review is to offer some high-level comments on the Seurat package, derived from my inspection and experimentation with the package and R language. The 'Seurat object' is the major custom R 'object' provided to users as part of the package.  
+
+This manual is ultimately intended to help with single cell analysis at the point in the workflow at which Seurat becomes applicable.  I have also made some introductory comments about the earlier stages in the sequencing process, because it helps explain the inputs to Seurat objects (gene-vs-cell counts), including how they are prepared and the extent to which quality controls should have been implemented prior to that stage of analysis.  
+
+As explained further below, this manual is not designed to merely teach you how to use Seurat, but how to practice as a bioinformatician, and to carry out single cell analysis in the context of being a scientist.
+
+You can directly compare the workflow for the pbmc data discussed in the Seurat tutorials with the same data in the OSCA/[Bioconductor workflow](http://bioconductor.org/books/release/OSCA/filtered-human-pbmcs-10x-genomics.html), that uses libraries such as scater, scran and a specific 10X data loading package called TENxPBCMData.
+
+# Pre-requisite knowledge/knowledge broadening
+
+To master working on single cell genomics analysis with Seurat, users or teams will need to have some or all of these skills (a program for grad students working in bioinformatics):
+
+- biological knowledge of how sequencing is conducted, and how this affects data, errors in sequencing data collection 
+- detailed knowldge of formats for sequencing data (digital)
+- detailed knowldge of gene libraries for common genomes (plant, animal)
+- detailed knowledge of the preparation of gene-v-cell-count matrices, and data formats for this
+- detailed knowledge of statistics, probability distributions, dimension reduction (PCA, t-SNE) and clustering (for data science in general)
+- knowledge of R language and base data structures (for scripting and also understanding Seurat package itself)
+- understanding of how Seurat object is custom data object
+- understanding of functions provided with Seurat package work with normal scientific research/data analysis workflow
+- knowledge of marker genes that will be useful for retrospective identification of cell types
+
+Bioinformatics presents a specific (but not unique) problem in that it requires sophisticated solutions to problems of working with large data sets and memory limitations or speed on computation hardware.  It is therefore advisable that any scientist who happens to be using Seurat should also learn the high-level features of the process and whether they can be implemented in a different hardware or software ecosystem, possibly (but not necessarily) with some trade-offs in terms of speed and precision. For example, the workflow in Satija lab's Seurat tutorials for single cell analysis from reading in .mtx data through to clustering can be substantially repeated in a python language environment using pandas and scanpy packages, as illustrated by the single cell sequencing Clustering Tutorial for pbcm10k data, in this [webnotebook](https://crc.pitt.edu/sites/default/files/scrnaseq/pbmc10k.html).
+
+# When to learn/use Seurat?
+
+In my view, because Seurat is an all-inclusive package designed to it is best to use and familiarise yourself with Seurat *after* you are already familiar with the biological and statistical procedures it is designed to present to the user in summary form.   These processes should look familiar enough to you that you understand the difficulty that Seurat is attempting to overcome, and you understand why it is a labour-saving choice.   You should understand the alternatives to it (both in terms of the more laborious, mathematical techniques and also the software prepared in competition with it). (If you arrive at Seurat first, you have to go about this backwards: understanding the context for it, then returning to it with fresh eyes).
+
+By all means, use Seurat to speed up the process of exploring and comparing data-sets.  However, you can't usefully do this (or do it quickly and accurately) until you have the underlying knowledge.  You do not 'learn single cell analysis' or 'statistics' or even 'machine learning' merely by following Seurat tutorials. In fact, Seurat is really just a high-level shortcut for those who already understand, broadly, what single cell analysis is, and why you would want (need) tools to provide statistical analysis and visualisation.  A tool like Seurat lowers the bar for how much work you do, and might even offer some possibilities of non-specialists getting the same outputs, but doesn't really lower the bar for the general knowledge you need for single cell analysis.  Statistical analysis can provide a way of selecting, reasonably, subsets of the data set, and Seurat is merely a tool to help take out some of the labour.  
+
+Do not expect to use Seurat to quickly enable you to do an analysis and write a paper (on your first use or even your 10th use of it).  The more experience you have in exploring different data sets with similar processes (and testing, observing natural variation), the more insights you can bring to any particular data sets you are investigating.   Alternatively, if you are merely using Seurat to help someone 'get things done', then you will need to be supervised by a person with the pre-requisite knowledge described above.
+
+# Evolution of Seurat through the tutorials
+
+A useful index to old materials:
+https://satijalab.org/seurat/articles/archive.html
+
+One of the original tutorials (version 1, when the input was a matrix) is here:
+https://www.dropbox.com/s/dl/bwbjelhrhf8cxq8/pbmc-tutorial.Rmd
+
+# This manual focusses on Seurat, and the R environment, but it is not an ordinary tutorial
+
+My personal preference is to include some information about software implementation and scientific methodology which might not be strictly necessary to Seurat, but broadens the reader's appreciation of the software environments, alternative methods or software, and useful observations in a particular context.   This is motivated by a concern for developing skilled users of Seurat.  It will probably be less interesting to people who are using Seurat and are not interested in playing with the data any more than they have to.  Users should be able to independently compare and contrast this approach in a different software language, or with different datasets or scientific questions.  Once the knowledge in the manual is acquired, then team-members will be in a position to present the simple Seurat workflow knowing its limitations and assumptions, and to answer questions outside of that specific recipe, including how the same analysis might be done using a different language/package or hardware system.
+
+Whilst the initial review is top-down, I will also provide some in-depth review of what a Seurat object is and how to use it, within each general topic.  I have illustrated how some of the statistical functions provided by Seurat would be implemented in the R language, to help understand what the Seurat package is offering help with, and why.  This is also helpful for getting inside the mindset of regular users of Seurat, who use it knowing how it stores data, and why it stores particular data in particular objects.
+
+This manual will help to illustrate how much assumed knowledge is generally required even before you create your first command to use a Seurat object or function, and how much knowledge is required to fully utilise the Seurat package.  This will enable teams, especially novices in this process, to work at their own pace to understand the relationship between the R language, R scripts, Seurat objects and reproducible research at a level of detail beyond simple recipe-following.   
+
+This manual's contents are more detailed than the usual tutorial-styled introduction to Seurat with a simple 'follow this recipe' approach like the [GencoreTute](https://learn.gencore.bio.nyu.edu/single-cell-rnaseq/seurat-part-1-loading-the-data/).
+
+On the other hand, some of what I think useful (such as understanding how a Seurat object is put together, so you can manipulate the data wisely with R if you need to), will require being familiar with some of R's concepts regarding classes,objects and slots, and how R utilises them (for example, how does the code on Github actually make the Seurat S4 object : it's S4 not S3 in the latest version).  Be aware that these sort of questions may also be answered by reading the Seurat developer's guide, which is actually a wiki page attached to the main code pages: [DevGuide](https://github.com/satijalab/seurat/wiki).  Pages are in different states of update.  Content on that main page includes this description (and other info relevant to version 3.0 not 4.0):
+
+```
+This guide is to help developers understand how the Seurat object is structured, how to interact with the object and access data from it, and how to develop new methods for Seurat objects.
+```
+
+One of the people working on this is Paul Hoffman. [LinkedIn](https://www.linkedin.com/in/pauljhoffman), and he answers technical development questions on github using the name @mohaveazure.  He's based in 2 labs in New York [HoffmanGithub](https://github.com/mojaveazure) [HoffmanWeb](https://keybase.io/mojaveazure) [HoffmanTwitter](https://twitter.com/mojaveazure) [RepositoryGGSeurat](https://mojaveazure.github.io/ggseurat/)
+
+# What is a Seurat object?  
+
+A Seurat object is a large, complex, customised R Class with built-in features for single cell genomic analysis and visualisation.  Since the object itself is full of many custom functions and data-structures for analysis, it is offered by its authors as a 'turn-key' software solution for biological scientists engaged in single-cell analysis, starting at the point at which gene-vs-cell counts have been obtained from a genetic sequencing provider (or have been self-generated in other ways).  
+
+A Seurat object is also an R language object.  It is therefore dependent upon, and integrated with, the use of the R programming language, functions, data types and operators.  These will be familiar to those who are already familiar with the R environment.  
+
+The Seurat object anticipates the needs of scientists for data storage of genes-v-cell counts, analysis of gene expression data, and visualisation.  To make this easier, it provides a standard scheme for storing existing count data (using Assays), and also provides a set of simple procedures and functions to help carry out the scientific analysis.  This script-based system does not prompt the user, so the user's ability to set up the data, apply functions in the correct order, and write useful scripts depends on the user's own knowledge and understanding.  
+
+# How Seurat objects are put together
+
+The developer's guide has a useful list of what's inside: [SeuratObject](https://github.com/satijalab/seurat/wiki/Seurat).  R Developers can note that "Most functions in Seurat are written using S3-style generics and methods, but the package is compatible with both the S3 and S4 object systems." [S3generics](https://github.com/satijalab/seurat/wiki/S3-methods)
+
+The entire file structure is usefully explained here: [SeuratFileStruct](https://github.com/satijalab/seurat/wiki/Source-Code-File-Structure-and-Organization).  My own notes on this, before I located the Developer's guide, appear below:
+
+## notes on the S3/S4 aspects of Seurat objects
+
+At some point, Seurat object was S3?  https://rdrr.io/cran/SeuratObject/man/CreateSeuratObject.html
+But there are S4 references here: [CRAN](https://rdrr.io/cran/SeuratObject/f/README.md)
+It seems that by Seurat v3.0 there was a 'Seurat' (uppercase) object in S4, and this was exported to allow other packages to use it by including it as an export in the NAMESPACE commands (see [issues990](https://github.com/satijalab/seurat/issues/990))
+It turns out the Developer's Guide (rather than User Guide) is very good with this sort of internal stuff: [DevGuide](https://github.com/satijalab/seurat/wiki)
+
+It seems that in v3 at least, the S4 Seurat object was created like this:
+new(Class = "seurat", raw.data = raw.data, is.expr = is.expr,...
+[source](https://github.com/satijalab/seurat/issues/1411)
+
+If interested in what is going on in the code module that produces violin plots, you can have  look at the source file here:
+https://github.com/satijalab/seurat/blob/master/R/visualization.R
+There is a line about 570 lines in that starts with:
+VlnPlot <- function(
+
+The 'Read10X' function definition code is found in this file:
+https://github.com/satijalab/seurat/blob/master/R/preprocessing.R
+It doesn't rely on a Seurat object at this stage.  As it says, its purpose is to "Combine all the data from different directories into one big matrix".  There is a reference to 'CellRanger' in this code, so it presupposes that the input files are CellRanger output.
+
+There is another significant file that contains details for intermediate formats, converting from other formats to Seurat (as functions)
+https://github.com/satijalab/seurat/blob/master/R/objects.R
+The first 300 lines set s4 classes e.g. with lines like: 
+IntegrationData <- setClass(...
+
+After that, there are function definitions
+e.g. the line:
+as.SingleCellExperiment.Seurat <- function(x, assay = NULL, ...) {
+
+You can also see the CalcN function here (line 2292), which performs the automatic calculation of counts of nCount and nFeature from the Seurat object's 'count' slot:
+CalcN <- function(object) {
+
+'nb CalcN and ExtractField look like functions needed for CreateSeuratObject'
+
+In original version, namespace/scope was expressed in R with Seurat:: and this would pick up any functions defined inside the package's .R files??  Like this: 
+raw_data <- Seurat::Read10X( data.dir = "~/outs/filtered_feature_bc_matrix/" )
+
+The use of R's generics here, to indirectly call functions with respect to the input object:
+https://github.com/satijalab/seurat/blob/master/R/generics.R
+
+A little bit of data/discussion in this file about the SeuratObject class, and the Assay class etc.
+Seems to create an interface for SeuratObject but nothing concrete:
+https://github.com/satijalab/seurat/blob/master/R/reexports.R
+Includes scope lines like:
+SeuratObject::CreateSeuratObject
+
+Documentation for specific functions is generated by roxygen2 from comments in the .R files code (a bit like the javadocs workflow).
+The result is found in .Rd files like this:
+https://github.com/satijalab/seurat/blob/master/man/Read10X.Rd
+
+As a minimum, when working with R these packages should be installed and available:
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+```
+
+# Scientific and reproducibility goals
+
+The predominant goal of a Seurat object is for scientific research related to 'single-cell-gene expression-data analysis'.   This means it has to practically store cell data and meta-data, and provide functions to users when they are performing statistical analysis from data input through to visualisation.  This includes:
+1. Manage R objects holding gene-and-cell count data called 'Assays', each of which may hold matrices with thousands of genes and thousands of cells. 
+2. Allow the user to classify individual cells by category labels (statistical, dimension reduction).
+3. To facilitate visual inspection and analysis of 'clustering'. 
+4. To manage or use groups of 'markers' for classification of unknown cell types i.e. typical genes that identify cell types, or typical patterns of gene expression that identify cell types.
+
+As it states in this simpler blogs/vigenettes for training:
+
+[UCDavis_Seurat](https://ucdavis-bioinformatics-training.github.io/2019-single-cell-RNA-sequencing-Workshop-UCD_UCSF/scrnaseq_analysis/scRNA_Workshop-PART1.html)
+
+# Overview of the Seurat object
+
+The Seurat object is not the only R Class (object) provided by the package, but it is the one that encapsulates all the other custom R objects.  It is the outermost R-language object in the complex data structures offered by the package.  Internally, it has several data objects and book-keeping structures.  These can be used individually, and together, to hold information, to update gene and cell information, and to use this information for visualisation and filtering through to the end of the analysis.
+
+Before discussing the Seurat object further, it is useful to discuss what gene-vs-cell count information it is designed to accept, and how that information might need to be verified and filtered before deciding to import it into a Seurat object.
+
+Here's the Satija lab's [wiki description](https://github.com/satijalab/seurat/wiki):
+
+```
+The Seurat object is a class allowing for the storage and manipulation of single-cell data. Previous version of the Seurat object were designed primarily with scRNA-seq data in mind. However, with the development of new technologies allowing for multiple modes of data to be collected from the same set of cells, we have redesigned the Seurat 3.0 object to allow for greater flexibility to work with all these data types in a cohesive framework.
+
+At the top level, the Seurat object serves as a collection of Assay and DimReduc objects, representing expression data and dimensionality reductions of the expression data, respectively. The Assay objects are designed to hold expression data of a single type, such as RNA-seq gene expression, CITE-seq ADTs, cell hashtags, or imputed gene values. DimReduc objects represent transformations of the data contained within the Assay object(s) via various dimensional reduction techniques such as PCA. For class-specific details, including more in depth description of the slots, please see the wiki sections for each class.
+```
+
+## Classes, objects and slots in R
+
+At this point, it is worth a brief note to say that Seurat is using class and object-orientated concepts that have specific names in R.
+
+R has 3 types of classes, not one.  S3, S4 and reference.
+
+S3 are simple classes (everything in R is an 'object' anyway).  By setting a name for your object, you create a class for it:
+Let's say your object 's' is already a 'list'.  You create a class S3 like this:
+class(s) = "Student".  There are no getters and setters.
+
+S4 objects are more complex than S3: more like conventional OOP classes in OOP languages like Java. 
+
+The S4 class is explicitly defined by the setClass() method. It takes arguments for the name of the class and the list of 'slots' (in R, data fields/member variables are called slots.  They must have existing data types before being specified for the class constructor/design)
+
+if you see the function setOldClass() then this means an S3 class is being included in an S4 class.[tute](https://astrostatistics.psu.edu/su07/R/html/methods/html/setClass.html)
+
+There are some other odd features with class creation in R (it seems to resemble prototyping in javascript a bit).  Functions that specify functions of the class with setMethod must override an existing function: [tute](https://programmingpages.wordpress.com/2014/08/31/creating-classes-in-r/)
+
+To create an object of this class, use the new() method.
+
+# Creating and saving Seurat objects
+
+A Seurat object can be created from suitable gene-vs-cell count data.  This can be, for example, (a) 10X data (with 3 source files), or (b) a raw sparse matrix with cell names for row names and genes for the column names, with the gene expression counts filling up the data in the matrix.
+
+The Seurat package is designed so that any further analysis, filtering and classification, the 'state' of the scientific work will be captured in the state of the Seurat object.  
+
+Irrespective of whether or not this 'snapshot' of the Seurat object's state can be saved and reloaded, if a user has maintained an R script file recording all the steps taken to create, update and use the Seurat object, then this scientist or another user can follow the path taken to arrive at the same state of data analysis.
+
+# What the Seurat package cannot do
+
+The Seurat package is not designed for producing the initial gene-vs-cell counts from sequencing data.  These data files with gene-cell counts usually require higher computing resources and information about the genes that are being counted, as well as the cell identification markers (barcodes) in source sequencing data.   That means that if only raw transcriptome sequences have been obtained from a sequencing provider (FASTQ files or even BCL files) then users wanting to work with Seurat will have to carry out additional work to obtain gene-vs-cell counts first.
+
+# Processes for sequencing and counting that need to be completed prior to using Seurat
+
+Prior to using Seurat, biological data must already have been converted to digital data, and this digital sequencing data must have also been compared to other information about genes and organism genomes to give labels to the genes that the scientists want to use to count the genes present in cells.
+
+The sequencing stage of the single-cell analysis process requires both the individual molecular fragments of RNA or DNA and the cells from which they originated (barcoded cells) to be marked with molecular identifiers (themselves biological 'codes' capable of being read in sequencing machines).  The marked-up genetic information forms a biological 'library', and from this digital data is extracted by the sequencing machine.  The output is in the form of many base-pair 'reads' (stored in computer files) which describe the genetic sequences inside the fragments, as well as the barcodes.  These reads are contained in BCL and later, FASTQ format files.  Sometimes, the reads are in 2 directions, to help with piecing together fragments later in the process.
+
+The single cell analysis for gene sequencing data will often begin by completing a count of the thousands of individually identified cells, and thousands of genes that are present in the digital sequencing data produced on high-throughput sequencing matchines.  However, this counting cannot be done immediately, due to the need to re-assemble genetic information from fragments (e.g. in FASTQ files), and also to link that information to libraries containing information about 'genes', their source, and their functions.
+
+## FASTQ files and quality testing
+
+The production of the digital sequencing reads is very early in the single cell analysis process. This digital output might itself contain evidence that the process has not been carried out as intended, or data is missing.   
+
+Some kind of quality assessment of this information is necessary, both to validate the intentions of the experiment, as well as the practical achievement of converting biological information to digital data.  The ways in which biological quality or experimental problems can be tested, identified and satisfied requires a knowledge of the library-preparation process, and some ability to indentify signs of bias, experimental failure, or unusual quantities in the sequencing data.  When a certain read-length is expected, for example, then outlying lengths of fragments in the data would need further attention.
+
+## Gene reference files (GFF3, GTF)
+
+Genes are representations of our knowledge of genetic sequences (sub-parts of an entire genome of an organism) that have a biological significance.  Over time, they have been given names that allow them to be identified within, and sometimes across, different species of organism.  
+
+Genes are not automatically identified as such in the output of a sequencing machine.  At the moment, part of the reason is that the sequencing machine produces random fragments of genetic information (even if the length is constant).  These fragments could be parts of one or more genes, and initially it is not known which.  
+
+Another important aspect of genes is that they were initially associated mostly with the 1-dimensional sequence of DNA or RNA codes, rather than the three-dimensional structure of DNA, and how it was being transcribed in general or at any given time.  This is changing, and RNA sequencing is part of an effort to understand what is happening in the transmission of genetic information in active cells.  Counting the amount of RNA material in a cell that relates to specific genes is an important goal of RNA sequencing.
+
+## Assembled 'model' genomes
+
+The full genetic sequence for an organism (or a model sequence, since all individual organisms have slightly different DNA) can be stored in an agreed library, available for researchers who want to work from this model (for genetic counting etc).  To carry out counting this is usually (though not always?) required.
+
+A full genome can be a large computer file, since billions of genetic 'base pairs' are often found in the sequence.
+
+Some scientists are working on even more basic science, like assembling genomes for plant animal organisms that have not been assembled before, to pave the way for further analysis like gene expression etc.  Announcements of new genomes for organisms are now much more frequent and common than they were (weekly), but a few decades ago, it took a significant amount of time to assemble even the first version of the human genome.
+
+## Integrating this information to carry out gene-counting.
+
+Provided we are only going to use the fragments that meet the quality thresholds, then the next step is to work out what these fragments refer to, in the context of the entire genome.  The large 'assembly' task that must occur before counting can occur is to assemble fragments of genes sufficiently and compare them against:
+1. A pre-existing reference genome; and 
+2. A reference file of genes (whether general or organism specific).
+
+The counting process itself must consider the relationship between fragments and genes, and the conventional approach is to relate the genes to a genome, and the fragments to both of these.  The setup is:
+1. We have a source genome.
+2. A format exists in which genes of interest are 'annotated' along the whole source of the source genome. (the creation of an 'index').
+3. Each fragment in the reads is located on the reference genome at a suitable place.
+4. The number of fragments that are wholly (or in some cases, partly) overlapping these gene sections can be counted.
+
+Of these, steps 2 and 3 may be time-consuming (3 in particular?). 
+
+## How do we do the counts?
+
+Programs like "STAR" have been written to carry out this complex task on a high-performance computer with both large memory, several processors, and high speed.   (The output of 1 and 2 could be saved as a composite for repeated 'counting' of fragments?). 
+
+Whatever method is used, the end goal of these steps is to produce a list of genes (itself derived from the reference list of genes used with programs like STAR), and a list of cells (derived from the barcodes used in the library for the sequencing process), and then a count of every time a gene is matched to a cell.   
+
+Even though there are thousands of genes and cells in some experiments, the number of combinations of these that actually carries any count value is quite low (...%?).  This fact is relevant to experimental design, because there has to be sufficient depth of reads to ensure that there are not only sufficient numbers of results, but that they are large enough to provide discrimination between low-levels of gene expression and high-levels of gene expression.
+
+# What does a gene-vs-cell count matrix look like?
+
+The conventional way to record how many times a gene sequence appears in a given molecule or cell is to use a large matrix, with gene names/identifiers as rownames, and cells/barcodes as column names.  Counts of the number of genes-detected-in-fragment are recorded for each (gene,cell) coordinate.  
+
+There is more than one way to do carry out such a count, and more than one way of recording the resultant matrices in files on a computer.   
+
+The output of gene counting processes stored in an explicit 2D matrix would, in theory, be a matrix with incredibly large dimensions, and many entries where there is no gene detected for a given cell.  One of the computational solutions to this is to work with sparse matrices, which are ways of describing matrices by reference to the data that is actually there.   
+
+## pbmc10k data and Seurat
+
+The pbmc10k data is explained in some 2019 Seurat source code [GitSource](https://github.com/satijalab/Integration2019/blob/master/preprocessing_scripts/pbmc_10k_v3.R) and uses this line to read in the data, in that case in H5 format:
+
+```
+counts <- Read10X_h5("raw_data/10x_scrna/pbmc10k_v3/pbmc_10k_v3_filtered_feature_bc_matrix.h5")
+```
+
+The actual code base there is linked to a paper bny Tim Stuart et al, 'Comprehensive integration of single-cell data', described here [Seurat2019](https://github.com/satijalab/Integration2019).  This information is very helpful in attempting to recreate the experimental analysis using the package, and gives some insights into how it might be combined with C3 type data (chromatin accessibility).
+
+## Example 10X Genomics count data (sparse Matrix Market format)
+
+A common format for a sparse matrix is the "Market Matrix" format, in which the genes for rownames are contained in one file, with names listed vertically, and another file in which the cells for colnames are contained in one file, with names listed vertically.   A third file contains only the coordinates of the output matrix (which correspond to the line numbers of the rowname and colname files) that have entries >0.  
+
+Current practice is that 10X Genomics count data is provided in 3 files and uses the Market Matrix format - it essentially is a simple format to record sparse matrices (where there are lots of zero entries).   10X Genomics supplies data in the form of 3 files (.mtx and .tsv) that together make up the "Market Matrix" format.  {I have prepared a separate note on preparing count matrices and reading in Market Matrices}.
+
+The .mtx format has a header line, with the matrix dimensions and the total number of entries in the .mtx file.  
+
+The remainder of the entries are three columns, with:
+```row col count```
+
+# Bottlenecks
+
+The contemporary problem, and bottlenecks were caused by the sudden availability of large amounts of sequencing 'read' data produced by 10X Genomics output using programs like CellRanger (and implicitly, STAR).  
+
+When reading any paper on single cell analysis it helps to equate the number of reads to the number of cells in the experiment.  The number of reads will usually be mutliples of the number of cells.  This is based on the fact that each cell has several molecules, and reads are only fragments of molecules.
+
+The scale of data is indicated by the fact there could be 1,000 reads per cell, and 1 thousand to a million cells in the analysis.  So keeping all of these initially unassembled read fragments in memory is onerous.  {Techniques for dealing with less of them are helpful, inspired by biological knowledge, but this also resembles a pure computer science problem}
+
+The Kallisto article (2019) gives benchmark times for processing 785 million reads in 22 hours (and 1.5Tb of disk space) using CellRanger software (for 10X Genomics). The pbmc3k experiment often referred to for Seurat tutorials (discussed further below) has over 13,000 cells for example (which implies perhaps several hours of this pre-processing time, if done in that way). 
+
+Part of the limitations in the processing time when doing full alignment before the counting occurs is that the memory usage is high (implying large amounts of the raw data have to be held within in-memory data structures to perform the task).   
+
+## Kallisto and the pseudo-count approach : overcoming some bottlenecks
+
+For those with access to (free/cheap) supercomputer time, and machines with lots of memory (e.g. > ) may not be immediately be averse to running full CellRanger/STAR alignment to obtain their read counts.   But what if you do not have time or resources, or simply want to do more with the resources you have under your control?
+
+Kallisto's authors looked for way to reduce the instantaneous demands on memory (thereby helping to improve performance).  To do this, they chose to modify some of the assumptions about what needed to be done to achieve adequate gene 'counts', specifically full genome alignment.
+
+In any case, kallisto is designed to apply the de Bruijn graph techniques to k-mers, instead of full reads, and thereby save on resources (it is called 'pseudo-alignment).  As a result, Kallisto and Salmon are capable of running quantification on a laptop computer, in reasonable time:
+
+"kallisto, can be used to analyze 30 million unaligned paired-end RNA-Seq reads in less than 5 minutes on a standard laptop computer while providing results as accurate as those of the best existing tools."  (pre-print: https://arxiv.org/pdf/1505.02710.pdf) and published in [Nature2016](https://www.nature.com/articles/nbt.3519/)
+
+Internally, Kallisto uses a new data structure for computation (involving cell barcodes, the molecular identifiers for fragments, and something called 'set': BUS=barcodes, umi, set).  The worktools were given the name "BUStools". [kallistobustools](https://www.kallistobus.tools)
+
+Other programs like Kallisto/Salmon adopt a different approach to STAR, in that they try to eliminate the need to do steps 1 and 2, resulting in some time-saving.  The rationale is that the primary goal is 'counting', not specific alignment and indexing, so that steps 2 and 3 can be prioritised (or altered/substituted without significance effect on the outcome).
+
+In the context of a workflow of single cell analysis and Seurat, it is worth noting that since Kallisto was developed, it has now applied the pseudo-counting idea specifically to single-cell analysis (2019).  See this: [2019bioXriv_paper](https://www.biorxiv.org/content/10.1101/673285v2.full.pdf).  In that paper the authors say:
+
+"The quantification of transcript or gene abundances in individual cells from a single-cell RNA-seq(scRNA-seq) experiment is referred to as pre-processing"
+
+'Pre-processing' is a term better understood  by an audience who already knows what they are doing, but the article is useful in explaining the motives for creating Kallisto, and why it works.  It helps to understand what the UMI markers mean, and how they might relate to 'transcripts' and original cell biology.  The article has some examples using the 'pbmc10k_v3' dataset (which differs slightly from pbmc3k used in pre 2019 Seurat tutorials, but is essentially same type of human data). 
+Kallisto was created to assist by reducing the need for long time-delays and substantial computing power to achieve counts for analysis (ultimately, to do things like differential expression analysis).   
+
+# Reading in Matrix Market count data to R
+
+The R language ecosystem has different solutions for working with .mtx files, including the Matrix package.  Seurat objects can also work with sparse matrices created from 10X Genomics as an input source.
+
+To begin your Seurat experiments with Market Matrix formatted count-data, download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small).  That tutorial illustrates the usefulness of Seurat to the specific goal of 'clustering', in order to find patterns in gene expression.
+
+The Seurat package's main R fuction to create a Seurat object is 'CreateSeuratObject()'.  This uses matrix, or sparse matrix count data you already have available (in a data type recognisable to the R language environment), as an input parameter.  Before this occurs:
+
+1. You can read in some count data into an intermediate matrix format.
+2. Pre-processing of count data is still possible.
+
+If you are using, for example, 10X Genomics *count data*, prepared by CellRanger or otherwise, then the data is not immediately available in a base R object, or in a format that can be used immediately to create a Seurat object. 
+
+If you already have the required three Market Matrix files in a folder, you can first read them into an object recognised by R (a sparse matrix) using the Read10X function provided by Seurat.  Once you have this data object, you can then use it with the 'CreateSeuratObject' function to create the Seurat object.  
+
+```{R}
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the folders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "../data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+```
+
+
+## Further processing of matrix output of Read10X and creation of Seurat object
+
+By the time that some gene-vs-cell count data has been prepared, quality control of the sequencing data will already have been done, based on the 'Q' (quality) scores in FASTQ format files.  This does not mean that further quality-control is not necessary or possible once the gene-vs-cell count data is obtained.  It may be difficult to do this on raw format like .mtx, so it seems best to do it once you have been able to read the data into R in some way.
+
+Some minor pre-processing of *count data* before creation of a Seurat object can be done by the R programming language; it can even be done as part of using functions like 'Read10X', which is provided by the 'Seurat' package, but is not dependent upon the prior creation of a Seurat object.
+
+If there are basic concerns with the quality of the *count data* (e.g. very low counts, or genes), then these can be filtered out of the data that is used to create the initial Seurat object.  
+
+The Seurat package provides for this by allowing some parameters in its CreateSeuratObject to be used to filter some cells. (e.g. low cell numbers or features)
+
+```{R}
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+
+## The count data once it is inside the Seurat object
+
+Rather than rely on R's matrices alone, the Seurat object manages the gene-vs-cell count information within smaller objects called Assays.   Assays also contain one or more versions of cell count information, each being R's "Matrix" data type or similar.  All of these Matrices will have the genes as rownames, and then the cell names as columns with the count data (number of times a gene was counted in a given cell).  The columns represent numeric vectors in R.  
+
+Whilst Seurat can filter cell rows based on conditions, the intention seems to be not to vary the dimensions of the matrices presents in the Assay objects (throughout the further filtering work (otherwise Seurat package complains). 
+
+The use of the CreateSeuratObject() function actually does two things: 1. It creates an Assay object to hold the data 2. It creates a Seurat object and includes this new Assay as the DefaultAssay() in the Seurat object.
+
+Once a Seurat object has been created, and an Assay object has also been created to hold the gene-v-cell count data, that data is available to both the Assay object functions and the Seurat object functions.  It is also a data type that can be accessed using R's ordinary matrix functions.
+
+```{R}
+# How to get your default 'counts' matrix data
+myassay<-GetAssayData(pbmc,slot="counts")
+# Or the fuller form is:
+myassay<-GetAssayData(pbmc,assay="RNA",slot="counts")
+```
+
+## Modification and updating of count data inside the Seurat object
+
+The Seurat object has been designed to wrap these matrix-like data arrays inside an object called an "Assay", and then to store Assays inside the Seurat object.   For small projects, the Assay object might hold 3 similar data matrices, each one differing by some transformation such as scaling or normalistion (thereby preserving the experimenter's work methods).   In larger projects, there may be more than one Assay object.
+
+# Managing user-defined categories and cell-specific information.
+
+The Seurat object has two main different forms of data structures, distinguished by:
+1. The matrices containing gene-vs-cell counts (contained in the Assay objects).  These have genes as rownames; and 
+2. The data.frame with cells as rownames (contained in the meta.data slot of the main Seurat object).
+
+A data.frame is the main 2D data structure in base R.  
+
+# Comparison of Seurat obejct to another popular Object for single cell analysis
+
+Seurat is not the only package-based set of tools for holding single cell analysis data.  What is common, by necessity, is that the object hold raw counts in 'assays', and has some capacity to hold metadata (and category information) for individual cells and/or genes.
+
+For comparison, see [SCE_Bioconductor](http://bioconductor.org/books/release/OSCA/data-infrastructure.html#background).  You can compare the Seurat object to the R Object called a 'singleCellExperiment' (SCE), created by David Risso and Aaron Lun, used in the Bioconductor projects.   There is a similarity in that the SCE object an 'assay' matrix(?) for raw data that has genes as rows, and cells as collumns, but there are also independent meta-data objects for both cells and features.   Recognising the need for converting these objects, Satija lab has a [ConversionGuide](https://satijalab.org/seurat/articles/conversion_vignette.html) on how to convert from Seurat over to singleCellExperiment (and vice versa).
+
+# The main data.frame in the Seurat object
+
+There is one central data.frame in the main Seurat object which is intended to help manage information specific to each cell.  This is the data.frame contained in the objectname@meta.data slot.  
+
+```
+NB: There was a deliberate change in Seurat v3 compared to Seurat v2, which modifies the normal operation of accessing the data.frame object inside the @meta.data slot (something that might confuse regular R users).  See https://satijalab.org/seurat/articles/essential_commands.html  The 'pbmc@meta.data' data frame can be referenced just by 'pbmc' and a column in that data.frame can, for example, be referenced by pbmc$nCount_RNA instead of pbmc@meta.data@nCount_RNA.  This shorthand is possible because the data.frame in the @meta.data slot is the only data.frame in the Seurat object that is used for management of cellular information, outside of Assays.  Users do not even need to name this data-frame in R: they simply refer to the slot it is held in.  
+```
+
+As soon as a Seurat object has a valid Assay object, with count data, added to it, the main data.frame will be populated with at least 3 columns, which if our Assay was called 'RNA', would be named:
+
+```orig.ident nCount_RNA nFeatures_RNA ```
+
+In the simplest case, there will be one raw count Matrix inside an Assay (e.g. an Assay called 'RNA'), which will not yet have been scaled or altered.  This one Assay will initially be the only Assay inside the Seurat Project object. 
+
+The Seurat object as a whole is more complicated, with several slots (properties), including "assay", which is merely a list of the enclosed Assay object.  The reason it is more complicated is that the Seurat object has been designed to record changes in the state of the cell filtering (identity) information, as well as the transformations of the raw count data.  It has also been designed to provide functions to make these changes easier.
+
+## Management of identities for clustering 
+
+The Seurat object has been designed on the basis that (at least) one of its main data.frame's columns will contain classification or identity information about each cell, for subsetting, filtering, clustering or other analysis goals.  
+
+The Seurat object,by its main data.frame, allows users to keep entire vectors or factors corresponding to all cells, which have individual classification schemes held within them.  Users may wish to switch between these, or copy from them, for different purposes. 
+
+The Seurat object leverages the base R 'factor' type for this classification and clustering: it expects that each one of the thousands of cells will be coded with a 'level', drawn from the master set of 'levels'.  This mapping of cells to 'levels' is captured in a single 'factor', similar to a numerical vector, which can be stored in a column of the main data.frame (the one held in the Seurat object's meta.data slot).  The main data.frame has all the cellnames as rownames.  
+
+The Seurat object function 'Idents()' facilitates consistency and re-use by forcing any data.frame column that is used to specify an identity data column to take on R's 'factor' type, even if the column is not a factor type.  The default factor ('orig.ident') is, however, already a factor type.
+
+```{R}
+
+head(pbmc@meta.data,20) # check first 20 entries of 2700
+```
+
+## Internal structure of Seurat object
+
+```{R}
+# General exploration of the features of the Seurat object
+nrow(pbmc) #13714  - this is the Assay dimension, since rows = number of genes/features here
+ncol(pbmc) #2700
+slotNames(pbmc) # helpful command for understanding Seurat object's general properties
+```
+
+The 'assays' slot comprises a list of one or more Assay objects
+```{R}
+pbmc@project.name # same name as project name given at time of creation of Seurat object
+pbmc@assays
+class(pbmc@assays) # this is a list
+pbmc@active.assay  # 'RNA' ; just a name that describes the current Assay object
+class(pbmc@active.assay)  #  (character) 
+ # this is summary description of the first Assay
+class(pbmc@assays[1]) # first line is 'list' because that's what's being expanded
+pbmc@assays['RNA']  # This is one way of accessing an Assay, but we can also use pbmc@assays[1]
+```
+
+The internal structure of a Seurat object (version 4) will look something like this:
+
+-->meta.data (holding a dataframe)
+	-->rows include: cell names (barcodes)
+	-->1 column is : orig.ident (a factor, which may initially only have 1 level: projectname)
+	-->2 columns include : $nCount_RNA, $nFeatures_RNA (for the Assay 'RNA')
+	(each having statistics about the counts in the current Assay)
+	
+--->assay (list of Assay objects)
+		--->Assay[1]
+			--->counts(default Matrix), scale.data, data
+			(rownames are gene/feature names)
+			(colnames are cell barcodes)
+			
+--->active.ident  (pointer to the active 'identity' data for clustering)
+                 (may be created from column in main data.frame, e.g. orig.ident)
+                 (may also be changed to point to another column of data.frame, later in project)
+
+
+If we refer specifically to the active.ident (extract it from the data.frame, as a factor), it is single dimension, with cells as rownames:
+
+```{R}
+head(pbmc@active.ident,20)  #  list all Cells and their identity (i.e. here, a subset, and only 1 level)
+```
+
+## Using filtering by inspection of cell-names and counts (e.g. counts for MT cells)
+
+Further recommended pre-processing for quality control [see Ref in Dave Tang's blog] is to inspect for consequences of cells leaking mitochondrial material i.e. *relatively* high MT gene percentages per cell.
+
+The suggestion is to use the count matrix that is already read in to an Assay (i.e. already R object created by Read10X).    By preparing a quantiative measure of MT-gene concentration in gene counts, and putting this into the main data.frame, there is a convenient property to filter cells by (ie thresholds, or percentages).  This makes use of Seurat's data.frame that already has all the cells listed as rownames.
+
+Note that this is a fairly simple approach.  Genes that might have originated in mitichondria but associated with nucleus might not have been named in this way.  See [SeuratMT](https://github.com/satijalab/seurat/issues/3508)
+
+```{R}
+# mitochondria genes conveniently start with MT
+myassay<-GetAssayData(pbmc,slot="counts") # already done at line 186 above
+mito.genes <- grep(pattern = "^MT-", x = rownames(x = myassay), value = TRUE)
+length(mito.genes) # 13 genes with MT (mitochondrial name)
+
+# now to perform vector division on colnames (i.e. colSums = horizontal vector calculations).
+# in effect, this is the gene count subtotal - only MT-filtered rownames for each barcode
+mygenecount<-Matrix::colSums(myassay[mito.genes, ]) 
+mycellcount<-Matrix::colSums(myassay)  # this is the total gene count (all rows, by cell)
+mt.perc<-mygenecount/mycellcount # vector division, element by element
+
+# end result is a single vector having as many entries as there are columns (i.e. cell barcodes)
+head(mt.perc,20) # just first 20 of 2700 entries
+```
+
+
+How is this filter captured for persistence?  Is there an identity created?  See below.
+
+```{R}
+# We conveniently have a vector with a score for each cell. Orientation irrelevant in 1D.
+# We can store the mt.perc (but now vertically) in the main data.frame, using new colName 'mt.pc'
+pbmc@meta.data$mt.pc<-mt.perc
+
+```
+
+The Seurat object's main data.frame will now contain an extra column, with these entries:
+
+```{R}
+head(pbmc@meta.data,20) # check first 20 entries of 2700
+```
+
+Now we may want to interpret this information for quality purposes.  When using Seurat, be aware that its custom functions (like Violin Plot) will often attempt to help users by making use of the main data.frame (since it uses cells as rownames).  Also, the ability to put Violin Plots side by side is that each one is essentially a distribution plot, so relative shapes, skewness can be compared, even if absolute values of the data are different.
+
+```{R}
+# We can do a Violin plot, using the data.frame vectors as the input vector
+# This will show the distribution of each type of numeric vector, as well as median, mean
+# Skewness is apparent, as well as outliers (that lie outside the boundary of the plot)
+# See: https://towardsdatascience.com/violin-plots-explained-fb1d115e023d
+# This is Seurat 4.0's implementation of the function, and it uses the meta.data data.frame
+VlnPlot(pbmc,features=c("nCount_RNA","nFeature_RNA","mt.pc"),assay="RNA",ncol=3)
+```
+
+
+```{R}
+# Now that we have this quantitative metric, we can do further filtering on cellnames if we want topo.colors()
+# Seurat makes this easier by including a function 'FilterCells()' that accepts the data.frame columns, and the thresholds (high,low) for each
+```
+
+# Graphical inspection of the genes (features) data in the Seurat object
+
+The Seurat object has a few functions allowing us to examine specific genes, or gene groups.  In each of these, the cells will be coloured as per the legend, with whatever the current 'identity' levels are.  Also, the underlying gnee-v-cells count matrix used for the specified Seurat object will be extracted via the 2 levels of Seurat objects in this way:
+(a) the Default Assay is used;
+(b) the 'counts' matrix inside that Assay is used by default.   
+
+Both these settings can be changed by modifying the parameters in the functions, and is likely to be necessary as the work progresses.
+
+Some of the functions in Seurat have been derived from particular examples or calculation needs at a particular point in the assumed process, like being able to calculate the percentage of genes with a certain name pattern (e.g. MT something, for mitochondrial genes), or a particular feature (gene).   The authors have generalised about this use case, but they have retained the original context, by assuming that the assay chosen will be using its 'counts' slot (and not scaled.data etc).   As explained in the Seurat Help, a function like 'PercentageFeatureSet' has these features and context:
+```
+This function enables you to easily calculate the percentage of all the counts belonging to a subset of the possible features for each cell. This is useful when trying to compute the percentage of transcripts that map to mitochondrial genes for example. The calculation here is simply the column sum of the matrix present in the counts slot for features belonging to the set divided by the column sum for all features times 100.
+```
+
+The Help manual also goes on to explain that you can set another column in the meta.data data.frame, but in that case it will return a completely new 'Seurat object'  with the proportion of the feature set now in the meta.data??
+
+To check this function we can carry out these vector calcs in base R:
+Remember: "The calculation here is simply the column sum of the matrix present in the counts slot for features belonging to the set divided by the column sum for all features times 100."  This means 'the counts slot' of the currently selected Assay.
+
+
+```{R}
+myassay<-GetAssayData(pbmc) # default Assay, default sparse counts matrix
+```
+
+When we test the output of the PercentageFeatureSet function, notice that the output is not completely precise.   For a start, we obtain a 'data.frame', with 'nCount_RNA' as the colname.  The output actually contains percentages, not the nCount of genes.  Also, it provides you with a data.frame format, because it is useful for inserting into the Seurat object's data.frame.  But the 'counts' in the Assay object is not a data.frame, so the program has to do more work.
+
+If we didn't have this function how we would work on the Seurat data matrices in the Assay object, using base R, to return the feature count percentage for a single gene (single row in the Assay matrices)?  In base R, if we wanted to work on the Assay's count object, and return the same information, we would specify:
+(1) drop=FALSE when subsetting the Assay's matrix, which preserves its original dimensions, otherwise it just returns a numeric vector for single row
+(2) force the 'matrix' to be a data.frame (i.e. unlike vector, has 'column names' for indexing)
+(3) Fix the orientation/shape of the output data.frame
+
+Here the data.frame we produce is a wide one (lots of columns), which means that the data.frames 'list' of column vectors is 1 row and 2700 columns, as per the matrix, but the desired orientation for the Seurat data.frame is 2700 (cellname) rows and 1 column).  
+
+Since we are just doing rotation (and not collecting repeated entries as per reshape() or melt() we can use the base R transpose function: t())
+
+(4) Fix the column heading.  
+
+```{R}
+# single row of counts for for this gene across 2700 cells, as a dataframe
+# c<-b['SCAMP3']  # This [ ] method retains the single column data.frame.  c<-b$SCAMP3 would not
+#genecounts1<-as.data.frame(myassay['RPL13A',,drop=FALSE])
+# myassay<-as.data.frame(GetAssayData(pbmc,slot='counts')) #obtain specific matrix (huge)
+# pull just the column at the outset 
+myassay<-GetAssayData(pbmc,slot = 'counts')
+genecounts1<-as.data.frame(myassay['RPL13A',,drop=FALSE])
+class(genecounts1) # dataframe
+#denom<-sum(genecounts)    # Matrix::colSums(myassay) # sums of counts for all genes, all columns
+countstotal<-Matrix::colSums(myassay) # summing a vector by cells (total of counts for all genes)
+percFeature<-(genecounts1/countstotal)*100 # the calculation
+newdf<-t(percFeature) # transpose to make a long, not a wide data.frame and store it in newdf
+colnames(newdf)<-'nCount_RNA' # optional, for Seurat object comparison
+head(newdf,10) # show first few entries of result, to compare to Seurat function
+```
+
+Seurat makes all of this easier by having a 'PercentageFeatureSet()' function to return the same data, but this time as a data frame.  You can do this for genes matching a pattern but also for single gene (feature):
+
+```{R}
+output<-PercentageFeatureSet(object=pbmc,features='RPL13A')
+class(output) # dataframe
+head(output,10)
+```
+
+To see how it was actually implemented in Seurat, you can visit [SeuratGithub](https://github.com/satijalab/seurat/tree/master/R)
+
+If we plot two different genes (features) against one another we can see if they have a linear relationship, or independence. The pearson correlation for these is displayed automatically.
+```{R}
+# visualisation of selected genes (features)
+# Pearson correlation between the two features is displayed above the plot.
+FeatureScatter(object=pbmc,feature1="RPL13A", feature2="MRPL9")  # feature 1 on x axis
+FeatureScatter(object=pbmc,feature1="RPL13A", feature2="SCAMP3") # gap at scamp 0.5?
+```
+
+Does this data make sense?  There appears to be plot 'dithering', in that all the SCAMP3 values are either 0,1 or 2 exactly, but they are spread out here. (can this setting be changed?).  Under the bonnet, it appears to use geom_jitter from ggplot [labinfo](https://github.com/satijalab/seurat/issues/86).
+
+The RPL13A cells vary between 0 and 150 (most are less than 100). The majority of these RPL13A are not really overlapping genes: most coincide with SCAMP3=0.  A small number are split between SCAMP3=1 and SCAMP3=2. 
+
+SCAMP3 is a human gene, one of the producers of "secretory carrier membrane proteins" (see [wiki](https://en.wikipedia.org/wiki/SCAMP3)
+
+Let's just look at results for SCAMP3, with a total of 255 counts :
+```{R}
+scampgen<-as.data.frame(myassay['SCAMP3',,drop=FALSE])
+scampgen
+sum(scampgen) #
+```
+
+
+There is a Seurat function that can calculate the row sums inside an Assay object (i,.e. number of counts of genes, which results in a vector, or you can specify the rowname):
+```{R}
+y<-rowSums(pbmc,na.rm=FALSE,dims=1,slot='counts')
+y['SCAMP3']  # 251 counts
+```
+
+It turns out that only 10% of cells show a count for this gene, and even then, any given cell's total gene counts linked to these genes is often <0.1%
+```{R}
+output<-PercentageFeatureSet(object=pbmc,features='SCAMP3')
+output
+y<-output[output$nCount_RNA>0,,drop=FALSE] # in subsetting, use drop to preserve data.frame
+y
+```
+
+So try again, plotting only those cells that have actual values for SCAMP3.  Fortunately, the FeatureScatter() function provided by Seurat allows the cells we want to be specified, so if we obtain some new cell groups (or split in some way), we might be able to group cells according to how many SCAMP3 cells they have?
+
+Before doing base R or any individual filtering by SCAMP3 genes, note that there is a way to filter by nFeatures (total gene counts per cell, rather than counts per gene), that will help by analogy:
+
+```{R}
+# This produces a new Seurat object that is a subset (replaces our original set)
+# Compare to example in https://satijalab.org/seurat/articles/pbmc3k_tutorial.html
+# old: (2019) https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html
+pbmc <- subset(pbmc, subset = nFeature_RNA > 200 & nFeature_RNA < 2500)
+```
+
+What's the count of SCAMP3 across all cells?  Need to refer to the Assay data
+```{R}
+a<-GetAssayData(pbmc,slot='counts')
+sum(a['SCAMP3',]>0,drop=FALSE) # 238
+
+```
+
+Can we create a list of cells, from the Assay data, where those cells have >1 SCAMP3 gene counts?
+
+Let's say we are using a data.frame.  A data.frame acts as a set of lists, so when a data.frame is reduced to one column (one list), R by default reduces the dimensions back to a list-like object (not a data.frame).  When using the x$name syntax you are pulling out the column as if it were a list.
+
+```{R}
+a<-GetAssayData(pbmc,slot='counts')
+#rownames(a) # list of genes
+# what if we tranpose the matrix (resource heavy), then filter ?
+b<-as.data.frame(t(a)) # making it a dataframe helps process by column, instead of list-like matrix?
+# b is a 2679 x 13714 dataframe (cells x genes)
+#keep only one column
+# [ ] method retains the single column data.frame.  c<-b$SCAMP3 would not
+# so [] with dataframe can take as argument a list of df values, using $, for expressions:
+ss<-b[b$SCAMP3>0,,]  #238 out of 2679 rows with all columns. So rownames ok.
+ss['SCAMP3']
+# one step: LHS subsets to create a new df, then the RHS select column
+ss<-b[b$SCAMP3>0,,]['SCAMP3']  # TO DO: see if subset() in base R better
+cellset<-rownames(ss)  # list of row names to use
+```
+
+The cellset defined above can be used in the WhichCells function (see below).  This is a subset of rownames from our meta.data cells.
+
+Can we obtain some stats on the SCAMP scores?
+```{R}
+summary(ss) # min, max, mean, quartile so no need for min(ss) and max(ss)
+summary(b['SCAMP3']) # This is the original column, not filtered for positives
+```
+
+The subset of SCAMP3 and RPL13A) (with only those cells with SCAMP3>0 plotted against RPL13A).  There is still an artifical scatter going on here - all the SCAMP3 counts are exactly 1 or 2.
+
+```{R}
+FeatureScatter(object=pbmc,feature1="RPL13A", feature2="SCAMP3",cells = cellset) 
+```
+
+
+Another helper function which allows you to work with a subset of cells (and then check other criteria using idents etc).  If you only specify a list of cells as the 'cells' parameter you effectively get back what you give the function:
+
+The following code needs debugging FROM HERE:--->
+
+{R}
+outcome<-WhichCells(object=pbmc,cells = cellset)
+outcome
+
+We have now succeeded in being able to work with a subset of cells, which we have not yet given an 'identity' (but could do so).   Let's modify the original identity set:
+{R}
+SetIdent(pbmc,cells=cellset,value=c("SCAMPY"))
+Check:
+
+{R}
+outcome<-WhichCells(object=pbmc,idents = "SCAMPY")
+outcome
+
+<-----TO HERE
+
+
+
+
+```{R}
+pbmc@meta.data['orig.ident'][pbmc$orig.ident!="pbmc3k",,drop=FALSE]
+```
+
+
+```{R}
+# This produces a new Seurat object that is a subset (replaces our original set)
+# Compare to example in https://satijalab.org/seurat/articles/pbmc3k_tutorial.html
+# How many total genes?
+pbmc <- subset(pbmc, subset = nFeature_RNA > 300 & nFeature_RNA < 2500)
+output<-PercentageFeatureSet(object=pbmc,features='SCAMP3')
+output
+y<-output[output$nCount_RNA>0,,drop=FALSE] # in subsetting, use drop to preserve data.frame
+y
+```
+
+# Single cell sequencing goals
+
+Chen (2016) in BMC Genomics 2016, 17(Suppl 7):508 DOI 10.1186/s12864-016-2897-6 [link](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5001205/pdf/12864_2016_Article_2897.pdf) said:
+"Unlike the objectives of conventional RNA-seq where differential expression analysis and the detection of differentially expressed genes (DEGs) are integral components, the most important goal of scRNA-seq is to identify variably expressed genes (VEGs) across a population of cells to account for the discrete nature of single-cell gene expression and uniqueness of sequencing library preparation protocol for single-cell sequencing.
+
+# Wet lab and experimental aspects of RNA seq
+
+The scientific goal is touched on in Macosko, at page 1212:
+"Ascertaining transcriptional variation across individual cells is a
+valuable way of learning about complex tissues and functional
+responses"
+
+The 2015 Macosko study into gene expression used Mouse and Human cells (creating barcoded libraries) was an early study illustrating Seurat-based analysis in the context of drop-seq methods for sequencing.  *This paper, more than any later applications  of this approach in the plant field (like Shulse etc, pointed to by those who have no better idea), provides insights into the significance and purpose of the statistical analysis which is inherent in the Seurat program's functions*  The article uses the acronym 'STAMPS' to refer to all single-cell transcriptomes (identified with barcdoes) attached to microparticles (the raw drop-seq library).  They are distinguishable from beads never
+exposed to cell lysate.  
+
+Macosko also identifies some potential features in single cell drop-seq lab processes:
+1. Potential for cells to stick together (doublets)
+2. Ambient RNA levels high due to cells damaged at start of process.
+3. PCR and sequencing errors that inflate the apparent unique UMIs (so collapse these - see page 29/51 in Supplementary Extended information with the Cell paper)
+
+In early bulk sequencing of RNA [ref](doi: 10.1093/bioinformatics/btw174) and in single cell (see Macosko et al. 2015), the majority of STAMPS were exposed to ambient RNA (i.e. not even in the experiment's cells), so the very low RNA 'read' counts in many cells (e.g.>90% with reads <500) are eliminated (cut-off point 'knee'), to leave the data with only the useful (nucleic) RNA data.  This is usually done by arranging the cumulative number of counts per cell from lowest to highest, and where there is an abrupt 'knee' and levelling off, you can eliminate all of the lower read STAMPS.
+
+Is the pbmc data pre or post this?  We can have a look at the data to see.  In Dave Tang's 2017 [intro](https://davetang.org/muse/2017/08/01/getting-started-seurat/), he noted that there were 69,000 'reads' per cell, which seems quite high, but apparently nowhere near as high as bulk RNA sequencing.
+
+The tutorial goes through and eliminates cells based on those with low numbers of detected genes (which will probably correlate to low absolute 'reads' as well, but not necessarily).  This is also influenced by the ability of the alignment/annotation process to identify a known gene.  That is, gene expression analysis is always limited by the known genes that are used for the statistical comparisons.
+
+## OSCA (Bioconductor) comparison
+
+It's interesting that the Macosko data is referred to in the OSCA (Bioconductor) quick start, and is even included in the 'scRNAseq' (R) package:
+[OSCA5.5](http://bioconductor.org/books/release/OSCA/overview.html#quick-start)
+
+There they follow a generally-recognisable gene expression data analysis workflow.  This includes filtering, normalisation, performing some PCA (initial 'low rank representation') and using t-SNE or nearest-neighbour clustering, before visualising [expression] clusters in a UMAP plot.  Seurat follows most of these steps, but the data is held in a different R object (the Bioconductor workflow there holds the data in a 'singleCellExperiment' object). 
+
+The Quickstart page has useful advice, but the specifics of how to prepare count matrices require experience, and practice in problem-solving using actual data.
+
+# Gene Expression analysis
+
+By now, we should have a Seurat object with a data matrix (or matrixes) with genes as row names and barcodes as cell/column names.  Also, there is a data.frame with meta-data by cell barcodes as rownames.
+
+The first really significant part of the gene-per-cell-count data analysis (apart from regressing or filtering out the poor quality data) that Seurat intends to help with is creating and marking sets of highly variable genes (relative to the set of genes in the data), for clustering and other visualisations.
+
+All of these approaches are grounded in statistics, but the actual process is a little more involved than looking at 'variation', and it has to work with the thousands (or millions) of cells in the original RNA seq data.  
+
+In this context, the statistical measures and steps include:
+1. The average expression (count) for each gene (across all cells) <---bulk RNA seq method
+2. The average dispersion for each gene (across all cells). 
+3. Creating 'bins' to hold these values.  i.e. groups.  Say 20 of them.
+4. Calculating the dispersion of gene expression within each bin. [z-scores, stats on subsets]
+
+The last step is used to identify the most 'highly variable' genes, in that if there are outlier genes that are highly variable even within each bin, they can be identified as highly variable. 
+
+## Reproducible data science?
+
+The Macosko 2015 paper illustrates how 'reproducible' science, extending to the practical task of software-assisted data analysis, was still in development.  In the Macosko paper, the write-up was split into 2 parts - a very brief reference to using Seurat in the main paper (but with no specific reference to functions), and then a more detailed 'extended' paper that described what was done, and the statistical basis, but not how this was integrated with the Seurat program or its workflow.
+
+By the time we have the 2016 Seurat paper, there is another broad reference to this:
+```
+The method involves calculating the average expression and dispersion for each gene, placing these genes into bins, and then calculating a z-score for dispersion within each bin. This helps control for the relationship between variability and average expression. This function is unchanged from (Macosko et al.),
+```
+## Macosko paper - reduced dimensions and 'training set'
+
+Detailed information on the statistical approach is available in Macosko et al. (2015, Cell). 
+Highly Parallel Genome-wide Expression Profiling of Individual Cells Using Nanoliter Droplets.  Cell 161, 1202–1214, May 21, 2015 (The lab of Evan Macosko is currently at the Broad Institute: https://macoskolab.com/papers/)
+
+In the Macosko analysis, there were over 44,000 cells in the original RNA seq data.
+
+The method in the Macosko paper involves working out the reduced dimensions on a smaller subset of cells, then projecting the balance of cells onto the two-dimensional map.
+
+## The t-SNE approach (via PC set generation)
+
+The idea is to compare expression levels to every other gene, to form 'classes' of cells (colour-code these) and then plot them in just two dimensions using t-SNE.
+
+The 'stochastic neighbour embedding' is a 2D visualisation technique, based on higher-dimensional points and assigning probabilities to data objects (based on similarity in the higher dimensions, and in lower dimensions).  This technique will often produce clusters in the 2D representation.  To make these clusters meaningful, the parameter setting must be reasonable.  It is a technique used in a variety of settings, not merely bioinformatics.
+
+In the single cell expression context, this may provides a visual mapping (classification scheme) for identifying cell types within the clusters. 
+
+In some contexts, this can be referred to as 'unsupervised learning', in that optimisation of the parameters in statistical models (like the t-distribution) are used to minimise the divergence between points at a stage in the analysis.   
+
+Crude application of the t-SNE approach will not work if there is too much noise in the data, or there is insufficient information to produce useful models.  In the context of single cell analysis, one of the choices that has been made by researchers (e.g. Satija lab) is to work with a training set of cells in the expression matrix first, which is based on richer information (i.e. higher gene expression counts), then to use this to model to the t-SNE stage, then to proceed with further analysis by projecting all cells into this t-SNE map.
+
+The t-SNE output is the result of a process involving PC sets on a smaller number of cells, then reducing the dimensions, then projecting the balance of the cells into this t-SNE map.
+
+## PCA in general
+
+""
+
+[ref](https://medium.com/analytics-vidhya/eigenvectors-and-eigenvalues-and-there-use-in-principal-component-analysis-machine-learning-1f97fdbdb303)
+
+There is a trade off in accuracy, for simplicity but we try to ensure that it is not enough to worry about.
+
+One simple example is the old school task of walking in a straight line, and then measuring distance to notable objects at a perpendicular distance from your origin line.
+
+The goal of PCA in 2D is to identify the origin line which optimises the data (the least walking distance).  It is a little like linear regression: minimising the mean of point distances from the chosen line. (or using the points to derive this line).  
+
+These can variously be described as mathematical models, statistical modelling. When the parameters or end goal is unknown but can be found by iteration, it is called machine learning (of the origin line).
+
+[The relationship with eigenvectors is that the origin line represents a direction that can simply 'scale' a lot of the points, as an eigenvector does, and only has to deal with a minimal number of points off that line.].  Principal components are, by nature, direction-finding lines for the data, because they aim to explain as much of the data without variance from the line, in a lower dimension than the original data
+
+PCA in general does this for whatever dimension we start with.   For 3D data, we can explain it in 2D principal components.  This is the 'PC subspace representation' of the original data.
+
+## What preparation to data is done before PC?
+
+Log-normalisation is one common method.
+
+Simple, library-size normalisation is intended to standarise the data with respect to the size of libraries that affect the resultant count data (possibly influenced by PCR amplification).   The normalisation adjustments are intended to state each cell's count on a standard scale, with respect to the total counts in the library.  This 'normalises' libraries of different size.  
+
+You might think that this is not necessary if you have only 1 library, but what this also does is standardise the way you present your data, so that it is easily comparable to other studies that use the same technique.  If all your data is normalised so that it has a mean size factor (across all cells) of '1', then you know this is proportionately comparable to another library of cell data that has also been normalised in the same way.
+
+Library size normalization does not take into account batch bias (a well known effect), but it is usually for initial applciations to identify clusters and the top markers that define each cluster.  Beyond this, some other data adjustments may be recommended.
+
+See:
+1. http://bioconductor.org/books/release/OSCA/normalization.html#motivation
+2. http://bioconductor.org/books/release/OSCA/dimensionality-reduction.html#principal-components-analysis
+
+## Which PCs are most important?
+
+Why do we end up with so many 'PC' options for single cell data?  Each cell represents a dimension.  A scatterplot of any given set of [2 genes scatterplot?] provides a method of reducing that to a lower dimension.  In the usual PC analysis tools, each successive PC is less likely to be the main explanatory PC of the data.
+
+See also:
+
+"By definition, the top PCs capture the dominant factors of heterogeneity in the data set. Thus, we can perform dimensionality reduction by restricting downstream analyses to the top PCs. This strategy is simple, highly effective and widely used throughout the data sciences.".  There is also a general assumption that if there is a structured/coordinated biological process, then it affects cells throughout the data set (whereas individual, independent factors are not likely to be reflected in the principal components description of the data).  As a result, noise is more likely to be captured in the later PCs.
+
+http://bioconductor.org/books/release/OSCA/dimensionality-reduction.html#principal-components-analysis
+
+## The initial PC sets
+
+For single cell analysis, Principal Components Analysis (PCA) is performed on a smaller 'training set'.  This is to improve the analysis, but it also reduces the work to be done.  The goal with the Macoska experiment was to find even more highly variable and statistically significant cell types.
+
+The goal was to identify 'primary structures in the data'. By this, it means principal eigenvectors (also “PC subspace representation”).
+
+The initial output of 'principal components' is 'equal to the number of profiled cells', but only a few are significant.  The goal is to then identify which of the possible PC's is explicable for the data, which involves a technique of randomised perturbation.
+
+The PCA method seems to be based on:
+1. (Shalek et al.,2013).  
+2. (Chung and Storey, 2014), applied to single-cell RNA-seq data (Shalek et al., 2014).
+3. joint-null criterion (Leek and Storey, 2011)
+
+This doesn't require Seurat for the final steps, in that they can:
+1. Identify highly variable genes using Seurat
+2. Scale and centre data along each gene
+3. Use the 'prcomp' function in R.
+4. Ascertain if there are 'canonical markers' for different cell types along PCs
+
+## basic t-sne
+
+R has a t-sne function, and the supplementary extended section of the Macosko (2015) paper makes mention of it
+
+"t-Distributed Stochastic Neighbor Embedding (tSNE) (van der Maaten and Hinton, 2008), as implemented in the tsne package in R with the “perplexity” parameter set to 30."
+
+Further, the basis for clustering is explained this way:
+
+"Cells with similar expression signatures of genes within our variable set, and therefore similar PC loadings, will likely localize near each other in the embedding, and hence distinct cell types should form two-dimensional point clouds across the tSNE map."
+
+## Clusters are defined by the 2D representation after t-SNE
+
+Using this approach, the step of finding PC's will usually generate two to 3 dozen significant PC's.   These are reduced to just two dimensions use t-SNE (stochastic neighbour embedding).  The clusters that are visible in two dimensions form the basis for the rest of the analysis.
+
+Here's another explanation of the same process in the 2016 'Seurat' paper (page 1217):
+```
+"We performed principal components analysis on
+the 13,155 largest libraries (Figure S5, Table S3), then reduced
+the 32 statistically significant PCs (Experimental Procedures)
+to two dimensions using t-Distributed Stochastic Neighbor
+Embedding (tSNE) (Amir et al., 2013; van der Maaten and Hinton,
+2008). We projected the remaining 36,145 cells in the data into
+the tSNE analysis. 
+
+We then combined a density clustering
+approach with post hoc differential expression analysis to divide
+44,808 cells among 39 transcriptionally distinct clusters (Supplemental
+Experimental Procedures) ranging from 50 to 29,400
+cells in size (Figures 5B and 5C). 
+
+Finally, we organized the 39
+cell populations into larger categories (classes) by building a
+dendrogram of similarity relationships among the 39 cell populations
+(Figure 5D, left).
+
+The cell populations inferred from this analysis were readily
+matched to the known retinal cell types, including all five
+neuronal cell classes, based on the specific expression of known
+markers for these cell types (Figure 5D, right, and Figure S6A).
+```
+There are supplementary materials that help explain how this analysis was pursued using Seurat.
+
+```
+Principal Components and Clustering Analysis of Retina Data
+The clustering algorithm for the retinal cell data was implemented and performed
+using Seurat, a recently developed R package for single-cell analysis
+(Satija et al., 2015). PCA was first performed on a 13,155-cell ‘‘training set’’
+of the 49,300-cell dataset, using single-cell libraries in which transcripts from
+>900 genes were detected. We found this approach was more effective in
+discovering structures corresponding to rare cell types than performing PCA
+on the full dataset, which was dominated by numerous, tiny rod photoreceptors
+(Supplemental Experimental Procedures). 
+
+Thirty-two statistically significant
+PCs were identified using a permutation test and independently
+confirmed using a modified resampling procedure (Chung and Storey, 2015).
+
+We projected individual cells within the training set based on their PC scores
+onto a single two-dimensional map using t-Distributed Stochastic Neighbor
+Embedding (t-SNE) (van der Maaten and Hinton, 2008). 
+
+The remaining
+36,145 single-cell libraries (<900 genes detected) were next projected on
+this t-SNE map, based on their representation within the PC-subspace of
+the training set (Berman et al., 2014; Shekhar et al., 2014). This approach mit
+mitigates
+the impact of noisy variation in the lower complexity libraries due to
+gene dropouts. It was also reliable in the sense that when we withheld from
+the t-SNE all cells from a given cluster and then tried to project them, these
+withheld cells were not spuriously assigned to another cluster by the projection
+(Table S7). Point clouds on the t-SNE map represent candidate cell types; density
+clustering (Ester et al., 1996) identified these regions. Differential expression
+testing (McDavid et al., 2013) was then used to confirm that clusters
+were distinct from each other. Hierarchical clustering based on Euclidean distance
+and complete linkage was used to build a tree relating the clusters. We
+noted expression of several rod-specific genes, such as Rho and Nrl, in every
+cell cluster, an observation that has been made in another retinal cell gene
+expression study (Siegert et al., 2012) and likely arises from solubilization
+of these high-abundance transcripts during cell suspension preparation.
+Additional information regarding retinal cell data analysis can be found in the
+Supplemental Experimental Procedures.
+```
+
+Some fine-tuning was also evident, by varying the number of cells used for analysis:
+
+```
+"We examined how the classification of cells (based on their
+patterns of gene expression) evolved as a function of the
+numbers of cells in analysis. We used 500, 2,000, or 9,731 cells
+from our dataset, and asked how (for example) cells identified as
+amacrines in the full dataset clustered in analyses of smaller
+numbers of cells (Figure 5F). As the number of cells in the data
+increased, distinctions between related clusters become clearer,
+stronger, and finer in resolution, with the result that a greater
+number of rare amacrine cell sub-populations (each representing
+0.1%–0.9% of the cells in the experiment) could ultimately
+be distinguished from one another (Figure 5F)."
+```
+
+# Clustering
+
+## Clustering is a general scientific method and concern
+
+The central importance of 'identities' to a Seurat object reflects the scientific concern with annotating, measuring or classifying cells and cell characteristics by different schemes (cell type, quantitative markers, quality cut-offs).   
+
+The usual situation is that a Seurat project will end up with many new additions to its main data.frame, to reflect new classifications useful to analysis and visualisation.  This classification and attribution may, in fact, be one of the most important outcomes of the work.
+
+See this:
+[ClusterLink](https://www.r-bloggers.com/2020/05/how-to-determine-the-number-of-clusters-for-k-means-in-r/)
+Questions: what is data set?  How do we identify inherent dependent variables?
+
+Notice how clusering, elbow-plots (which are methods identified in bioinformatics, even single cell genomics) are not unique to that area but are:
+
+1. General statistical terms/methods
+2. Useful in biological in general
+3. Still useful in relation to genetic analysis
+4. Still useful in relation to the data that is captured in a genetic sequencing analysis.
+5. The subject of software tools that are designed for any one of the above 4 areas.
+
+You may find that some custom tools in bioinformatics are, in fact, wrapping pre-existing tools into a workflow or software object, but hiding it for convenience.  
+
+## The use of cell identity schemes and modification of the main data.frame 
+
+Why is there so much attention in the Seurat object's structure to the notion of 'ident', and several different concepts?  
+
+The Seurat object seems to have evolved so that users can specify 'idents=' parameters in some general Seurat functions, in order to choose subsets of the cells.  This in turn requires users to apply a particular scheme of classification to all cells in the project.
+
+To achieve this goal, each new Seurat object has:
+1. Automatic creation of its main, default data.frame with all cellnames as rownames
+2. Automatic population of column in that data.frame with a classification scheme - 'orig.ident'.
+3. Automatic definition of that classification scheme to reflect the project name i.e. 1 level.
+4. Automatic setting of active.ident to 'orig.ident'
+5. Housekeeping functions for these identities. (DefaultIdent(), Ident() etc)
+5  General Seurat functions that take the (idents=c(...)) parameter, to set the *levels* to filter on, within the current identities scheme.
+
+The housekeeping functions are all based around the idea that any kind of cell-category list or scheme must be:
+1. Based on (or equivalent to) a column in the main data.frame, which has cellnames as the rownames. 
+2. The classification scheme will apply to all cells (even if explicit 'levels' are only given for some cells and some cells have no 'level' attached to them for the active.ident?) 
+
+Though the Seurat object does not require users to choose which data.frame to use for meta-data, it does anticipate some of the columns in that data-frame being selectively used for cell 'identities', or 'clustering groups' or just 'categories for filtering'.   Users will be able to add new data.frame columns, and to choose the active column that will be used for filtering in some of the other Seurat functions.  
+
+To use the identity scheme with Seurat functions effectively, your R code must work your way through the housekeeping functions first before calling the relevant function that has an 'idents=' parameter.
+
+The basic procedure to use idents is like this:
+1. Prepare some data column for the main data.frame (initially it's orig.ident which only has 1 level).  This will have some set of 'levels', based on the work to day.
+2. Set the active data.frame to the one you want with 'DefaultIdents()' function.
+3. At this stage, the identity 'factor' set as default will be the value that R reports is in the object@active.ident slot.  It will have the same length as number of rows with cellnames.
+4. Use your function, and choose from the available levels in order to filter the cells using those levels as a subset of the identities for the cells.  i.e. function(....idents=c('PCgroup", "mtGroup") ).
+
+The advantage of adding columns to the data.frame is that the cellnames are already contained in the rows (and these may number thousands of cells).  By manipulation of existing identity columns, users can arrive at new categories for filtering based on the existing data, rather than start from scratch.
+
+Users add data.frames in the way they would normally do in R.  Choosing the active column for the Seurat object's identity functions is done by way of the 'Idents()' function, which is used to specify which of the data.frame columns is used to specify cell clusters.
+
+One of the general assumptions that Seurat makes about what kind of data is in the column being used for 'idents' or 'identities' is that it will be one of R's 'factors'.  This means that there will always be 'levels' implicitly associated with that data.  Users can modify factor levels in base R, if required.
+
+If a data.frame column is set to be the 'identity' column with the 'Idents()' function, then it is internally stored as a 'factor' data type (somewhere), even if the source data.frame column is not a data type.  The Seurat package does not force the original data.frame column to be factor, just the information that is set as the 'Identity'
+
+## The nCount and nFeature columns in the main data.frame
+
+The other function that the Seurat object performs automatically is to populate the main data.frame with information about how many counts there are for each given cell, and also how many different genes show at least a count of '1' for that cell.  These are stored in the data.frame using this syntax: nCount_assayname and nFeature_assayname, where the 'assayname' is the currently selected, or default matrix in the current/default Assay object.
+
+When a Seurat object is created, it must contain a default Assay object, which may have one or more of the 'counts', 'data' and 'scale.data' matrices inside it, each of which will be a gene-v-cell count matrix, with genes as rownames.   The Seurat object automatically takes this information for the current Assay object, and does the calculation of total counts detected for each cell, regardless of the genes found.  It also counts the number of features (genes) present in the cell, which is the number of different types of genes, not the toal count.  
+
+For each Assay added to the Seurat object, this cell count information is converted into numeric or integer vectors and added to the main data.frame's columns.   There will be a pair of these columns (nCount_assayname and nFeature_assayname) for each Assay added.
+
+It is worth noting that over time Seurat has moved from a program that was primarily concerned with sequencing of RNA transcriptome data and 'genes' to a more general concern with 'features' (which are wider, but still inclusive of genes).  By Seurat version 4, some of the previous data.frame column references like 'nGenes' have now been renamed to 'nFeature', and 'nUMI' has been renamed to 'nCount'.  In Dave Tang's [Intro](https://davetang.org/muse/2017/08/01/getting-started-seurat/), written in 2017, the feature was still called 'nGene' and the count 'nUMI'.  The data set is still the same, so it's just a matter of getting used to using the new references to follow along his tute.
+
+# Special considerations for Multi-Assay projects
+
+## Seurat assumptions about Assay sizes and count matrices
+
+The insertion of data into a Seurat object relies on the main data.frame containing a list of all the cellnames which is consistent with the information in the Assay objects.   This means users cannot unilaterally change the data.frame or have differences between different Assay colnames or rownames for the same project.   If you want to create a smaller 'subset' of data to work from, you need to create an entirely new Seurat object for that purpose. 
+
+The expectation is that a single 'Seurat' project will update the researcher's work status (and this includes storing classes of cells that are being identified in different ways).  
+
+The Seurat program expects that each data collection will consist of several R Matrices, the second and following of which slightly transformed version of the original data.  To encapsulate these progressive versions of the original count data, Seurat creates the Class of object called an "Assay".  In line with the expected workflows, the Assay object has slots for Matrices that are called 'counts', 'scale.data' and 'data'.
+
+Also, each one of these data collections is usually accompanied by R code that will explain how the project will proceed through several work stages (e.g. raw data in 'counts' is then scaled to create the 'scale.data' matrix, normalised and so on).   There is an expectation that the researcher will, from time to time, change the 'active' version of the matrix in the Assay, and the active Assay that is being used.  This enables the researcher to retain the intermediate data (in Matrices and updating code) to enable reproducible, auditable research.
+
+## Dynamic state, updating functions of Seurat objects
+
+With more than one 'Assay' inside a Seurat object, we would expect that changing the 'active assay' would require the object to also update its meta.data information. {can this be verified?}
+
+In the design of these inter-related Seurat objects, there is conscious attention to the fact that :
+1. There may be one or more versions of the raw count data stored in each "Assay"
+2. There may be classes of cells that are sets of cell names (defined in an 'Identity' class which stores a range of cells and the identity name).
+3. The classes of cells that are created or renamed should be capable of applying to:
+(a) one or more of the Assay sets; and 
+(b) a particular version of the data (Matrices) within each of the Assays.
+4. If there is more than one Assay, the researcher may wish to change the Assay set that has the current focus, by setting the Seurat project object's 'active Assay'.
+
+# Getting to counts and beyond
+
+A useful workflow diagram in rCASC paper (Figure 1) in (2019) [GigaScience](
+https://academic.oup.com/gigascience/article/8/9/giz105/5565135)
+
+Genomics 10X and DropSeq UMI are represented as being different workflows to get you to a counts matrix.  (Presumably DropSeq one is without CellRanger).  Genomicx 10X 'freely' provided a pbmc dataset (10X) which is used by Seurat for tutorials, since it has already been processed up to the point of CellRanger output, where it can be read in (these are not zipped files in the pbmc demo).  The dataset is 'filtered' which as XGenomics explains, "Contains only detected cellular barcodes" (i.e. not based off a whitelist).  https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices
+
+TO DO: Read http://www.sthda.com/english/wiki/rna-sequencing-data-analysis-counting-normalization-and-differential-expression
+
+Also, interestingly, I've found that the CellRanger software has opensource for compilation (3 years old?).  It is found here, along with a link to downloadable binaries (subject to licensing, non-commercial use etc): https://github.com/10XGenomics/cellranger
+
+# Scientific knowledge about single cell analysis needed to use Seurat
+
+In order to arrive at the use of Seurat with the minimum information needed to understand this area of scientific research, some familiarity with these topics will be needed:
+
+1. The relationship between cell type evolution (specialisation over the life cycle), the theory that gene expression (the number of genes expressed, and therefore counted in the sequencing process) is different in different cell types.
+2. The ability to capture gene expression levels by reading the transcriptome (RNA seq, single cells).
+3. The production of a counts matrix (genes expressed versus cells, and counts).  Using STAR, Hi-Seq, FeaturesCount.  (It is helpful to know that in this context, genes are often called 'features', but in other contexts, features can refer to other things).  It is the fact that the sequencing process fragments cells into molecules, which will each contain different fragments that may contain different gene sequences, that requires a deliberate 'accounting' process to match particular genes to particular fragments, and then to collate this information for all the different cells found.   There is a need for a reference index to what gene labels can be applied to different gene sequences (transcription library file), and a procedure for recognising the barcodes associated with reading of fragments.
+4.  The idea that expression of certain genes can be used as 'markers' of certain cell types, in that they tend to vary by cell type (providing points of differentiation).  This is associated with the idea that classification can be done using the evidence of the presence/absence of genes (the available data). so gene expression can be interpreted as a 'signature' (marker) of cell type.  When this is well established these are 'canonical marker genes'.
+
+
+5. A whole host of statistical techniques might be brought to bear on the question of what 'differences' in gene expression can be correlated with known or unknown gene expression types. This includes dimension reduction, tSNE, PCA.
+6. Investigation techniques or ways of determining relevant genes are assisted by data visualisation techniques (which includes clustering, mapping onto a 'UMAP').   Depending on the state of the work, the presence of common genes in the transcriptome can be used to associate expression levels with cell types, and visualise them as 'clusters'.  Once these are identified and correlated, there can be labels attached to the clusters, either to identify the genes used for classification, or the presumed cell types associated with these clusters.
+7. The focus of the study can emphasise one or more of these elements (e.g. models for classifying cell type by gene expression, machine learning algorithms and training, or just identifying unknown cell types, or identifying new gene expression markers for cells).   To some extent, Seurat's tools can make it easier to proceed to a simple 'identification' of cell types present by choosing conventional statistical, clustering and marker sets in order to get a basic clustering and identification.  The user may still need to manually annotate some of the cells identified visually in a cluster, by creating labels and sets.
+
+The skills required for all of the above include scientific knowledge, scientific research techniques, statistical knowledge, computing knowledge and, in some cases, programming ability.

@@ -1,0 +1,197 @@
+---
+title: 'Seurat Hacking Part 1B: Assays (Data)'
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Seurat's assays slot in the Seurat Object (SO)
+
+The 'assays' slot in the SO is always a list of names of the Assay objects that have been added to the Seurat project object.
+
+## Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+## Assay creation is automatic as part of the process of Seurat Object creation.
+
+The CreateSeuratObject() function works automatically inserts raw data (e.g. a Matrix object in R) into one of these Assay properties (slots) e.g. 'counts'
+
+e.g.
+```{R}
+pbmc <- CreateSeuratObject(counts = myMatrixDataFile...)
+```
+
+## What does CreateSeuratObject() do?
+
+The last step/function call implicitly performs three steps in one: 
+1. It creates an Assay object and uses the input matrix to fill the 'counts' slot within that Assay object. 
+2. It inserts that Assay object into the Seurat Object. 
+3. It automatically adds two new columns to the Seurat Object metadata dataframe for each new Assay (these columns being with nCount and nFeature with a suffix for the Assay name in each case). 
+
+The nFeature may have been 'nGene' in an earlier version of Seurat: https://www.rdocumentation.org/packages/Seurat/versions/3.0.2/topics/Seurat-class
+
+Neither the new Assay object or Seurat object exist after the initial Read10X function returns new Matrix data.  They are added by using the CreateSeuratObject() as described above.  
+
+I note that in Dave Tang's [Intro](https://davetang.org/muse/2017/08/01/getting-started-seurat/), he does a little bit of analysis using the Matrix package on the "Read10X" data before importing it into a new Seurat object.
+
+## Exploring assay objects
+
+Say you have a Seurat object called 'pbmc' and you want to see the list of stored Assay objects, you enter this into R:
+```{R}
+pbmc@assays
+```
+
+This will give you a current list of the Assay objects.  It may just be one e.g an Assay Object called 'RNA'.   To actually capture this in a variable, you need to reference the list, and then use the double bracket notation to refer to the relevant Assay name from the list, like this:
+
+```{R}
+storedAssay<-pbmc@assays[['RNA']]
+```
+
+# Using R functions with an Assay object
+
+It's clearly better to use Seurat to access a Seurat Object's internal R objects using its helper functions, but if you want to explore using base R, read on.
+
+Once you have a reference in R to an Assay object, you can use the normal R slices, or range to interrogate the sparse matrix
+
+e.g. 
+```{R}
+mycellcount<-storedAssay[1] # row 1
+
+mycellcount<-storedAssay[,1] # column 1
+```
+
+# Changing the Seurat object's state with respect to 'active Assay'
+
+The fundamental design assumption of a Seurat object is that you can insert more than one Assay object inside it.
+
+To help manage the information inside the Seurat object, there are functions and states that can specify:
+(a) - the Assay that is active at any time; and 
+(b) - a publically-accessible data or plotting function that will not require explicit reference to the active Assay (the relevant Matrix object in the 'assay' slot) in order to use that data. 
+
+The Seurat object will internally access the active Assay object in order to use this for whatever general function is being called.
+
+e.g. this function takes the Seurat object as an argument:
+```{R}
+nrow(pbmc)
+```
+
+## Find out more about a specific Assay
+
+Now that we have stored the reference to a specific Assay to work with, we can look inside it to see what its general properties are:
+
+```{R}
+slotNames(storedAssay)
+```
+Output: Assay object: counts, data, scale.data, ...etc
+
+# Multi-modal assay data only available in Seurat 4.0+
+
+Sometimes the most specific information is provided for developers, on the assumption they want to extend the features of an existing tool like Seurat:
+
+"This guide is to help developers understand how the Seurat object is structured, how to interact with the object and access data from it, and how to develop new methods for Seurat objects."
+
+https://github.com/satijalab/seurat/wiki
+
+Significantly, the original Seurat 3.0 was developed only with single cell data in mind, but since then 'multimodal' data is available.  More specifically, the in-memory objects have been made suitable for more than RNA-seq data inputs.
+
+# Multimodal data (i.e. using more than one Assay object)
+
+To add a second array, it is necessary to be more explicit about the step of creating the Assay object, and then adding it to the Seurat object already in existence.
+
+Say we have 10X data for the second file.  Create a matrix using readx, then create an Assay object for this, setting its 'counts' slot with your new (sparse Matrix) data.
+
+```{R}
+newassay <- CreateAssayObject(counts = moredata)
+```
+
+Then add this to the existing Seurat object using the double bracket operator.  It's as simple as giving it an object name linked to the existing Seurat object.  The object automatically adds it to the assay list.
+
+```{R}
+pbmc[["smaller"]]<-newassay
+```
+
+Check:
+```{R}
+Assays(pbmc) # alternatively, do this: pbmc@assays
+```
+
+This didn't work with my cut-down .mtx file that deleted some entries because it said:
+
+"Cannot add a different number of cells than already present"
+
+This might imply that if you just delete a line or two but still have at least one cell entry that is okay?
+
+For example, in hg19c folder (otherwise a copy of hg19) I deleted the first three entries of the '1608' series in .mtx that relate to cell GAGTCAACCATTCT-1:
+
+32722 1608 1
+32709 1608 1
+32706 1608 3
+32703 1608 2
+
+(That's 7 less cell entries in hg19c than in hg19).  This also affects four features.
+
+This is confirmed by comparing these:
+
+```{R}
+barcode='GAGTCAACCATTCT-1'
+pbmc@meta.data[barcode,][,'nCount_trimmed'] # in second Assay, now only 885
+pbmc@meta.data[barcode,][,'nCount_RNA'] # original: 897
+# nb this is whole metadata row with both Assays now:
+pbmc@meta.data[barcode,]
+```
+
+Console output from last line:
+```
+                 orig.ident nCount_RNA nFeature_RNA nCount_trimmed nFeature_trimmed
+GAGTCAACCATTCT-1     pbmc3k        897          388            885              382
+
+```
+
+The change is correct magnitude and direction of counts per cell, features per cell:
+There are 12 less 'counts' for this cell barcode (897->885)
+There are 6 less genes now showing any count for this cells (388->382)
+
+notice that the number of features for cell is 6 less (we have removed gene counts for the 6 genes; the feature count is number of unique features detected for each cell)
+
+
+These are the genes at lines 32700 to 32710 inclusive of genes.tsv:
+ENSG00000198712	MT-CO2
+ENSG00000228253	MT-ATP8
+ENSG00000198899	MT-ATP6
+ENSG00000198938	MT-CO3 <--- line 32703
+ENSG00000198840	MT-ND3
+ENSG00000212907	MT-ND4L
+ENSG00000198886	MT-ND4 <--- line 32706
+ENSG00000198786	MT-ND5
+ENSG00000198695	MT-ND6
+ENSG00000198727	MT-CYB <--- line 32709
+ENSG00000215642	AL360154.1
+
+This is the gene (feature) at line 32722:
+ENSG00000220023	AL592183.1. <--- line 32722
+
+```{R}
+barcode='GAGTCAACCATTCT-1'
+raw['MT-CO3',barcode] # just show counts of this gene, in this cell
+```
+
+```
+# output is a count of 2 for that gene, and that cell:
+       GAGTCAACCATTCT-1
+ MT-CO3    			2
+```

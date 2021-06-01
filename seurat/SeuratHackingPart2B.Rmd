@@ -1,0 +1,125 @@
+---
+title: 'Seurat Hacking Part 2B: Exploring 10X Data'
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Intro
+
+Understanding your 10X data being imported into Seurat (Market Matrix Format)
+
+## Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+# Input file formats for Read10X (output: sparse matrix, with cell counts)
+
+When the Assay and the Seurat objects (with the focus being on cells, cell counts) are constructed with CreateSeuratObject() it asks for a project name, which then becomes the initial 'identity' of all the cells.  That is, there is only one class of cells.  It also asks for a data source, which is expected to be a folder containing 3 count-related files as usually output from 10X and its CellRanger software:
+
+1. matrix.mtx (custom format, designed to be space-efficient for sparse matrices)
+2. barcodes.tsv (all cell names, but the order is important as it gives the line numbers for the matrix.mtx) 
+3. features.tsv or genes.tsv (all feature names, but the order is important as it gives the line numbers for matrix.mtx) 
+
+The list of genes (geneID, genename) in the inputs to Seurat's Read10X function is originally produced from CellRanger, and, in turn, from GTF annotation files.   This information is only as good as the input.  
+
+There is also a list of barcodes (basically, cell or library material 'names').  
+
+The matrix.mtx is a MatrixMarket format file.  This is a sparse format, so it should contain a row,col coordinate, followed by the data (count). [see https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/output/matrices]  The corresponding available row and column names (genes and cell names respectively) are listed, in full sequence in the barcodes.tsv and features.tsv or genes.tsv.  
+
+Note this from CellRanger 3.0 (it uses zipped files, inconveniently):
+
+```
+Prior to Cell Ranger 3.0 the output matrix file format was different. In particular, the file genes.csv has been replaced by features.csv.gz to account for Feature Barcode technology, and the matrix and barcode files are now gzipped.
+```
+
+Has Seurat kept up with this?
+
+# Example of a count for a single identified 'gene' within the same cell
+
+So in the matrix file at line 1360272 is:
+30971 1608 32 
+It helps if you bracket the first two like this:
+(30971,1608) 32.
+This means a gene expression 'count' of 32 for a matrix reference:
+row 30971 (line 30971 in features.tsv), 
+col 1608 (line 1608 in barcodes.tsv).
+
+Cross-referencing these coordinates to the genes file, this data corresponds to the gene/feature at line '30971' and cell at line '1608'.
+
+These are:
+Gene: ENSG00000142541	RPL13A
+Cell: GAGTCAACGGGAGT-1
+
+You can operate with this kind of file using the R package 'Matrix' (see the 10X support web page above).  But that is specific to the input data.  Seurat library should be able to offer these basic functions and more.
+
+The count of 32 above is how often the gene feature (a UMI molecule) was counted for the same cell.  This is only known after the alignment/annotation stages have been done, in order to ascertain feature names for molecular sequences that have been found in the sequencing.
+
+## The detection of all the different features associated with the same cell
+
+You can see from the .mtx matrix file that the cell name at line 1608 appears multiple times (each time having a different gene 'line' for the count matrix).   This means that will be many other features detected in the sequencing of RNA in that cell.  
+
+In the .mtx file between lines 1360245 and 1360632 is the content for cell barcode 1608, and all the genes for which there is a count>0.  Think of the count as the number of molecules for the given gene counted in each cell (a UMI count). 
+
+When this cell code is extracted as a subset from the .mtx file, and the number of gene counts is 'summed' it totals 897.  There are 388 separate gene entries.  {I've prepared a separate file that does this: barcode1608}.  
+
+You could easily verify this total by importing just those matrix rows and creating 3 columns of data in Excel.  However, based on this, we should be able to verify that the data has been imported into Seurat object and the Assay.  
+
+## Seurat meta.data slot
+
+We can use some of the Seurat's object's inbuilt statistics and summary calculations.   These are initially held in the 'meta.data' slot of the Seurat object (for the currently active Assay). 
+
+You should also be able to verify this when you've loaded the data into Seurat.  You should be able to search for a gene 'RPL13A' and/or cell barcode: GAGTCAACGGGAGT-1 and then check the counts/total.
+
+What's the total expression count for cell 'GAGTCAACGGGAGT-1'?
+1. Use Seurat meta data functions for the Seurat object
+2. Query the Matrix in the sole Assay
+
+```{R}
+a<-pbmc@meta.data # use the metadata data frame
+mycell='GAGTCAACCATTCT-1' # we know rownames in metadata are cell barcodes
+myrow<-a[mycell,] # and rownames can be used as index in R
+myrow[,'nCount_RNA'] # using column name as index here
+# or in one step:
+a['GAGTCAACCATTCT-1',][,'nCount_RNA'] # output 897
+
+```
+
+## Active testing 
+
+Can we make a smaller .mtx and import it as different array?
+
+Test:
+put only some of mtx with a few cells and maybe a few entries from cell '1608' in an .mtx file.  Import this as an Array to check
+
+The first header line is 'rows columns entries'
+The last of these is the number of entries in the .mtx file so make sure you adjust this if you make a small version.  If you don't change the sparse matrix dimensions or the barcodes/features files you can leave 'rows' and 'columns' the same.
+
+MORE DATA! 
+
+I've created a very small .mtx file in a hg19b file - but the size of the sparse matrix is still the same as the original pbmc data, so they are 'equivalent' sizes, even though there are much less 'positive' data points.
+
+```{R}
+# create a new assay to store ADT information
+adt_assay <- CreateAssayObject(counts = cbmc.adt)
+
+# add this assay to the previously created Seurat object
+cbmc[["ADT"]] <- adt_assay
+
+# Validate that the object now contains multiple assays
+Assays(cbmc)
+```

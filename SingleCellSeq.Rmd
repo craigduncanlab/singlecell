@@ -1,0 +1,302 @@
+---
+title: 'Computer Scientist's Primer for Single Cell Seq Data'
+author: "Craig Duncan"
+date: "25 February 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Intro
+
+One of the first milestones in data processing for further biological analysis of data is to obtain a molecule or gene expression count.
+
+A biological fact of relevance is that specialised cells exist, with the same DNA, and yet are operating in different ways.  More recently, scientists have begun to examine how cells operate and may be transforming themselves to allow different parts of that DNA to be transcribed (expressed) at different times or as between different cells.   One way is through examining the RNA, another is through examining the histones and which parts of the DNA (Chromatin) are folded together (Hi-C).  
+
+See https://github.com/hbctraining/scRNA-seq/blob/master/lessons/02_SC_generation_of_count_matrix.md
+
+## Upstream and Downstream
+
+Single Cell Analysis (RNAseq) falls into two different work stages:
+1. The preparation of biological data, RNA sequencing and production of gene expression counts per cell.
+2. The downstream analysis of the gene-cell count data in software like Seurat, or Bionconductor packages.
+
+If you have quality count data (e.g. 10X data from CellRanger) then the Seurat package (implemented in R software) can easily import that data and allows a very quick run-through of a downstream analysis in about a dozen lines of R code.  (see my CellRanger part 4 notes).
+
+## Intro to the tech; relevance to digital work
+
+The Illumina sequencer technology for reading bulk DNA or RNA sequences (rather than single cells) arrived first.  This was based on biological material that had been prepared so as to be ready for the genetic sequencing process.  
+
+The biological material which has been prepared from source samples, and then replicated (*cloned or amplified*) to obtain useful numbers of samples to produce minimum numbers of results to analyse (i.e. laboratory-prepared DNA or RNA material) is called the 'library'.  This distinguishes it from the raw material sourced from live samples or cultures.
+
+The innovative step for improving the 'preparation' of the bulk sequencing biological 'library' to permit single cell analysis was to add molecular identifiers and cell barcodes that enabled the same bulk sequencing technology to produce digital outputs that were able to be identified with specific cells.   This was suitable for short reads sequencers.  The process is set out by the McCarroll Lab that developed the Drop-Seq, and many other places, including https://teichlab.github.io/scg_lib_structs/methods_html/Drop-seq.html
+
+All single cell workflows require you to be able to extract and sort your cell types from your original samples (if there are different cell types in the lab, it is likely that they will be mixed up in the sequencing process, but this can and must be restored by checking the digital information).
+
+The sequencing technology for single cell analysis can introduce another specific option to do 'paired-end' reads, with the benefit of assisting with goal of alignment of the short sequence reads.  To facilitate this, the library prep is slightly different.  (see Illumina's library prep using Nextera, for paired-end reads: https://thesequencingcenter.com/knowledge-base/what-are-paired-end-reads/)
+
+All of these single-cell sequencing options are made possible by how the biological library is prepared (and the quality with which this is done).
+
+In summary, all of these engineered sequence elements can be added during the library prep stage, *before* using the library in the sequencing machine:
+1. Barcodes (sequences) to identify individual cells
+2. Unique molecular identifiers (UMI sequences) to identify individual molecular (fragments?)
+3. Primers (?) (sequences) to enable end-reads to be paired during sequencing.
+
+The method used for preparing the library determines how you 'parse' the barcodes and UMIs from the sequencing reads (or how any software should approach it).  
+
+The Drop-Seq process (or 10X Genomics commercial version) was available from about 2015.  Software for processing this information has developed since this time, including the CellRanger technology developed by 10X Genomics itself.  Software like Seurat program has been developed since that time, because it is designed to work with some of the custom 10X software outputs (the count matrices, for example).
+
+Also, all droplet based methods may report smaller than expected read lengths because RNA from one droplet or sample has leaked into other droplets - resulting in a droplet with reduced amount of material, or an empty droplet.  Statistical techniques are used to detect the drop off in biological material per droplet and filter for those with low amounts of material (see Dave Tang's articles and others where the 'knee' in the graph of reads/molecules per barcode is discussed).   
+
+## The key elements of Drop-Seq and the data
+
+The 2015 paper in Cell that introduced Drop-Seq has a very useful summary and diagram for understanding the way in which the libraries are prepared, in that case it was preparation for sequencing that involved 2 reads (paired end):
+
+"(C) Molecular elements of a Drop-seq sequencing library. The first read yields the cell barcode and UMI. The second, paired read interrogates sequence from the cDNA (50 bp is typically sequenced); this sequence is then aligned to the genome to determine a transcript’s gene of origin.
+(D) In silico reconstruction of thousands of single-cell transcriptomes. Millions of paired-end reads are generated from a Drop-seq library on a high-throughput sequencer. The reads are first aligned to a reference genome to identify the gene-of-origin of the cDNA. Next, reads are organized by their cell barcodes, and individual UMIs are counted for each gene in each cell (Supplemental Experimental Procedures). The result, shown at far right, is a ‘‘digital expression matrix’’ in which each column corresponds to a cell, each row corresponds to a gene, and each entry is the integer number of transcripts detected from that gene, in that cell."
+
+The 'alignment' part of the digital processing matches the short read sequence against a portion of an annotated genome (the pre-existing knowledge of genes, at least).  This enables the read to be assigned a gene name, which is the basis for keeping track of the count of cells with that gene, and also for adding to the list of the genes that are actually detected for a given cell.  There will be other, independent and fragmented DNA 'reads' that might reveal a different part of the genome for the same cell.
+
+Gene 'expression' is increased if there are multiple cells that express the same gene.  Whether these are cells of the same type, or drawn from different tissues in the same organism, or drawn from different organisms depends on the experiment design.
+
+When the population of cells is drawn from different cell types (even if in the same organism), there are ways to try and distinguish the cells (perhaps on the basis that they exhibit different gene expression distributions in each group).  The experimental design should capture the different cell types or cells from different origin - this is needed so that information about this is not lost, and can be used to determine if there is a correlation between these and the independently identified patterns of gene expression distributions detected in the genetic data.   How would this be identified through barcoding or UMIs?  It probably isn't.  There needs to be a higher-level labelling process (samples or lanes on the sequencing machine is one way).
+
+With some experiments, it might be best to 'test' alignment of a very small sample (and not the thousands of cells).  Just try and align, for example, one 'read' (a few base pairs) to a reference genome.  Will that work?  Can you gradually bring in more data of the same cell type, and then mix in a few cells from a different source and see what the results are?  
+
+*nb: You can test a workflow with a smaller data set, as if it were a very small biological experiment, with the usual scientific methods.  Perhaps some of the larger population effects (big data) cannot be fully tested without putting the entire experimental results through the same process, but this does not mean you shouldn't test your procedures and obtain some indicative results first.*
+
+One threshold issue might be that in a large data set, you won't know if a particular read or cell will match any known genes.  If you have done enough to detect this, scale back and focus on just a few reads for a while - re-run the alignment with just that part of the data.
+
+## Different sequencing and data processing procedures
+
+2017 intro to the tech: https://academic.oup.com/bfg/article/17/4/233/4604806
+
+[Update: re-read this from Stephanie Hicks.  Very good.  https://www.stephaniehicks.com/2018-bioinfosummer-scrnaseq/introduction-to-single-cell-rna-seq.html]. Also note : "The main difference between bulk and single cell RNA-seq is that each sequencing library represents a single cell, instead of a population of cells". (libraries are the biological libraries prepared for the sequencing and quantification)  She drew distinctions between the protocols including for the sequencing including Drop-Seq (2015) and 10x Genomics Chromium (2017).  See also https://biocellgen-public.svi.edu.au/mig_2019_scrnaseq-workshop/public/introduction-to-single-cell-rna-seq.html
+
+## Intro
+
+"All scRNA-seq techniques share several common steps: single cell isolation, cell lysis and RNA capture, reverse transcription, amplification, library generation and next generation sequencing (Figure 1)."
+
+per Wu and Humphreys (2017):
+The Promise of Single Cell RNA-Sequencing for Kidney Disease Investigation
+Kidney Int. 2017 December ; 92(6): 1334–1342. doi:10.1016/j.kint.2017.06.033.
+
+One of the challenges is preparing cDNA libraries from the minute amount of RNA in a (human) cell.
+
+All of the various single-cell 'protocols' aim to address the need to clone the material into larger libraries (also known as 'amplification').   This can take different forms (some of which use a vector such as bacteria) but the main method used is PCR amplification. (see https://www.bosterbio.com/protocol-and-troubleshooting/pcr-principle)
+
+"Later amplification methods took advantage of PCR amplification but omitted gel purification, including STRT-seq,13 Smart-seq,14 Smart-seq2,15 SC3-seq,16 DropSeq,17 and SeqWell (Table 1).18 An alternative approach to amplify libraries, in vitro transcription (IVT), was developed and incorporated into CELL-Seq,19 CELL-Seq2,20 MARS-Seq21 and InDrops.22 (Table 1) The strengths and drawbacks of these protocols have been reviewed in detail by Kolodziejczyk et al.23"
+
+UMI innovation: The molecular identification technique was important for the library preparation balance - it enabled disproportionate amplification to be tracked.
+
+Barcoding innovation: the RT can be modified in the presence of oligonucleotide with complementary guanosine bases, allowing cytosines to accept material at each end of the cDNA molecule.
+
+As Wu & Humphreys state: "All of these approaches [plate/tube] require multiple steps and remain relatively laborious."  In contrast, the droplet-based methods use vastly less amount of RT reaction buffer.  Instead of needing specific chambers (as the original methods did), the numbers of droplets is practically unlimited, so the parallel processing rate is much higher (thousands of cells per hour).
+
+With Drop-seq, the microfluidic chip and channel is the chamber for combining a cell, the buffer fluids and a bead.  The bead is the second innovation that makes this possible.  The bead allows delivery of the reagents to perform the functions that allow single-cell sequencing in the original protocols: "The oligonucleotide sequences carried on DropSeq beads have four functions: primer handle for PCR amplification, cell barcodes to tag millions of individual cells, a UMI for accurate transcript counts, and oligo-dT to capture mRNA released from each cell."
+
+Drop-Seq's design is public, meaning it has achieved widespread use.
+
+{*Does this mean PCR amplification is occurring on each bead, uniquely?}
+
+As at 2018, Drop-Seq had some drawbacks (including capturing only 5% of cells, have low mapping rates and a few other things).  For this reason, it was not suitable for very small samples.  InDrops used a gel technique that achieved better performance with small samples.  InDrops' channel tech is not public and this has lessened its take-up.[https://www.illumina.com/science/sequencing-method-explorer/kits-and-arrays/indrop.html]
+
+In contrast to Drop-Seq, the commercial tech offers some advantages:
+
+(a) 10X Genomics commercial version of the library=prep technique has a capture rate that is much higher (over 65%).  Putting reagents into a material and producing a library may only take 10 minutes.
+- also, "The Chromium system also comes with a proprietary data analysis and visualization software package that greatly accelerates bioinformatic analysis for laboratories that are less familiar with coding"
+
+{as at 2018: "As a comparison, a DropSeq rig must be constructed from individual parts and mastering its operation generally takes about 6 months."}
+
+(b) Illumina is attempting to gain a foothold in this library-prep area:
+
+"Illumina announced their partnership with BioRad to bring a new high throughput scRNA platform. This system utilizes BioRad's droplet technology (ddSEQTM Single-Cell Isolator system) and Illumina's Nextera library preparation system (SureCell WTA 3′ Library Prep Kit), aiming at separating and barcoding 10,000 individual cells at $1 per cell, in a matter of hours. Illumina +BioRad also provides analytical software and computing cluster space that can be a major asset for smaller labs that lack access to sufficient computing power."
+
+see also:
+https://medicine.uiowa.edu/humangenetics/sites/medicine.uiowa.edu.humangenetics/files/ILMN_BioRad_SingleCellSeminar_Feb2017.pdf
+
+# Library and library preparation (wet lab work)
+
+Definition: In at least one context, a 'library' in molecular biology is a very special case of prepared DNA material: individual fragments, or total DNA information that has been cultivated and 'cloned' in baceteria or other 'vectors'.   This can be used for many purposes, including as part of a process of being able to sequence the material.  "There are different types of DNA libraries, including cDNA libraries (formed from reverse-transcribed RNA), genomic libraries (formed from genomic DNA) "  (see https://en.wikipedia.org/wiki/Library_(biology))
+
+A library, even of biological material, may only be a physical proxy for the original biological material.  For example, inside the cell there may be DNA and RNA present, but what will be created and stored in the library for detection will be cDNA material.  It also involves the possibility that some of the original material will not, in fact, make the library.  See Ziegenhain's 2017 paper.   As Ziegenhain explains it, the biological preparation steps, and increasing the level of precision and proportionality, is behind the development of new library preparation protocols.   It is competition intended to advance the scientific goals being attempted.
+
+## Drop-Seq (beads and 'drop-sequencing' for single-cell resolution)
+
+McCarroll Lab developed Drop-seq methods, and want to keep it open source though commercial implementations (including Illumina) are now offered: http://mccarrolllab.org/dropseq/.  
+
+One of the central technological tools for Drop-Seq is the custom microfluidics device to perform reagent and cell combination, as well as droplet separation.
+
+Drop-Seq is limited to mRNA transcripts.  
+
+In 2017, Zeigenhein (65, Molecular Cell) did a comparison of methods and concluded: "While Smart-seq2 detected the most genes per cell and across cells, CEL-seq2, Drop-seq, MARS-seq, and SCRB-seq quantified mRNA levels with less amplification noise due to the use of unique molecular identifiers (UMIs)."
+
+Zeigenhein also noted, in relation to their Drop-Seq tests, that "The ratio of beads to cells (20:1) ensured that the vast majority of beads had either no cell or one cell in its droplet. Hence, similar to SCRB-seq, each cDNA molecule was labeled with a bead-specific (i.e., cell-specific) barcode and a UMI. We confirmed that the Drop-seq protocol worked well in our setup by mixing mouse and human T cells, as recommended by Macosko et al. (2015) (Figure S1A). The main advantage of the protocol is that a high number of scRNA-seq libraries can be generated at low cost."
+
+The reagents are oil, cells, beads and these need individual flow rates in order to produce the outflow, with an acceptable level of bead contact with cells (e.g. 5% of beads might contact cells, not 100%).  The reverse transcription (RT) fluid containing the cells is prepared in advance (with some incubation time), before using it for inflow.
+
+Once beads have come into contact with cells, the beads are treated to differentiate those that haven't come into contact with cells, then PCR is used to amplify results.
+
+[Small benchtop devices like Mi-SeqDs and NextGen-550 from Illumina enabled whole genome sequencing in a lab environment? e.g. fertility, IVD (in-vitro diagnostic) applications https://www.illumina.com/systems/sequencing-platforms/nextseq.html#. not a bulk sequencing device?]. NextSeq1000/2000 are latest models: https://www.illumina.com/systems/sequencing-platforms/nextseq-1000-2000/specifications.html
+
+The NovaSeq 6000 is like a photocopier-sized device, to allow whole genome sequencing steps (reading up to 250 bp at one time)  on one device, in tens of hours: https://www.illumina.com/systems/sequencing-platforms/novaseq.html
+
+## Tagging
+
+In conjunction with PCR, 'tagging' step is carried out.  For this step more reagents are used eg. Nextera
+TD buffer and 5 ul of Amplicon Tagment enzyme. 
+
+At this stage, you have reached the 'library' stage, and now, prior to the sequencing, libraries are prepared in the requisite sizes.
+
+This depends, it seems on whether you are using "MiSeq" or "NextSeq-500".  For MiSeq it seems the library concentration in HT1 buffer is higher.
+
+## Library
+
+The 'library' is the reference to the biologically-derived reference material (e.g. sequenced of nucleotides, with tagging or other markers) to be used for digital sequencing.  The generation of a library (in fact, many libraries) is:
+ - the goal of the wet lab protocols for scRNAseq;
+ - inclusive of attached UMI tags (in the case of Drop-Seq) and inclusive of PCR amplification of the interim library with tags.
+ - the last (most downstream) physical evidence of the experiment.   By this stage, the original cell material has been transformed, chemically, into information-rich segments or sequences that can be converted to digital codes.
+
+This is the end of the 'sequencing' step.  From here on, it is the 'digital expression' of this data and further digital processing.
+
+For example, using Illumina's NextTera Kit, you can prepare libraries compatible with all Illumina's sequenciers: https://www.illumina.com/products/by-type/sequencing-kits/library-prep-kits/nextera-xt-dna.html
+
+# Sequencing tech (desktop) - 2021
+
+Here is a list of various sequencers, for different applications.  http://genomics.sahmri.com/genomics/equipment/illumina-nextseq-500 e.g. 
+- NovaSeq 6000 - high data output makes it suited for experiments requiring higher read depth or larger sample numbers. 2 x 150 bp paired-end 
+
+- Illumina NextSeq500 - "high output flowcell each run generates 400 million reads making this instrument ideal for small to medium sized sequencing projects (eg. 8-12 samples mRNA-seq, 36+ samples smallRNA-seq).
+"
+- Illumina MiSeq (longer reads, but smaller output) "Applications include sequencing 16S metagenomic libraries, smaller genomes, CRISPR library screening"
+
+- the 10X Genomics "Chromium" machine (for single cell and high throughput). "The Chromium instrument is the current market leader for generating sequencing libraries from single cells."
+
+- Oxford Nanopore for long reads
+
+## 10X Genomics library prep and 10X post-sequencing software
+
+"The Chromium™ Single Cell Gene Expression Solution with Feature Barcoding technology produces Illumina® sequencer-ready libraries."
+
+This is a commercial implementation of the wet lab library prep first developed as 'Drop-Seq'.  It is slightly modified?  In essence, it uses the same ideas about tagging, barcoding but may have slight differences that are relevant for the digital steps?
+
+https://support.10xgenomics.com/single-cell-gene-expression/sequencing/doc/specifications-sequencing-requirements-for-single-cell-3
+
+What 10X have done is insert 'library prep' protocols for 100-1000's of single cells (the bar-coding, tagging), and then these 'libraries' are run through existing sequencers (short-read sequencers, like those that Illumina make and researchers use for normal bulk sequencing).  At the end of this process, there are base call libaries (digital libraries), and 10X then provides software solutions to prepare FASTQ files and (through CellRanger) the count matrices.
+
+Input (cells)--->10X prep process (Drop-Seq, tagging, barcoding,output flow)-->libraries (single cell prep)
+Libraries--->Illumina sequencer--->Sequencing data (BCL and then FASTQ)
+
+
+Then:
+10X software (e.g. CellRanger)--->Count matrices (sparce matrices)--->input to Seurat.
+
+If you don't have CellRanger, then use STAR + other software to achieve the same outcome, but possibly with more data steps.
+
+https://www.10xgenomics.com/products/single-cell-gene-expression
+
+## Features of FASTQ files
+
+Once you see the digital FASTQ files etc you will have several features to indicate the library prep that was done?  e.g. if you have paired end reads that tells you that something was done at library-prep stage to faciltitate this.
+
+So if you have obtained FASTQ files that look like (a) Illumina generated files yet (b) said to be produced from 10X methods then you know you have single cell, tagged data, which has nonetheless something in common with data produced by Illumina sequencing machines in general.
+
+## Sequencing services
+
+In South Australia, for example, the research institute can do the whole process (from library prep to sequencing), or it can take client libraries:
+
+"Illumina sequencing is done on either the Miseq, Nextseq or Novaseq instruments. There may be a wait for sequencing on Novaseq flowcells when all lanes are not being used (shared Xp workflow). The facility is also able to sequence client prepared libraries (sequencing only) but takes no responsibility for sub-optimal preparations.Illumina sequencing is done on either the Miseq, Nextseq or Novaseq instruments. There may be a wait for sequencing on Novaseq flowcells when all lanes are not being used (shared Xp workflow). The facility is also able to sequence client prepared libraries (sequencing only) but takes no responsibility for sub-optimal preparations."
+
+## Different tech and Calibration
+
+For calibration of the equipment, the lab recommends mixing species (e.g. human/mouse) and then working through to determine if the system can resolve different cell origins in the output analysis.
+
+(nb Seurat package developed by same lab member?).  10X Genomics Chromium (commercial implementation) is also based on Drop-Seq: see "The Chromium 10x Genomics instrument enables the automation of single cell studies based on the drop-seq method." (https://corefacilities.isbscience.org/genomics/chromium-10x/).  The 10x is a reference to the fact that its machine can put through 10,000 cells *per sample*.   i.e. there informs you about about your sample to cell ratio in your digital data.
+
+There are some threshold differences in what data is produced, and slight differences in format.  You *must* take note of what technology produced the data.  
+
+Illumina (which now has the genome sequencing cost down to <$10000) has been around since about 2000, whereas 10X has only been around since 2012.
+
+Both Nextera (Smart-SEQ) and 10X Genomics use Illumina technology [??], but they involve different protocols and nature of studies i.e. the number of cells for which data can be returned, and the manner of sequencing.  
+ - Nextera (Smart-seq2)" captures the full-length mRNA, although with significant 30 bias because of oligo dT primers used during cDNA generation, while the 10x protocol is based on a 30-tag sequencing method" 
+- Nextera can provide a few hundred, 10X claims to be able to do say 100-100,000
+
+"Overall, the 10x Chromium system offers convenience and requires less manual handling compared with Smart-Seq2, simplifying the collection of data sets containing large numbers of cells. "  :
+2018,  Experimental design for single-cell RNA sequencing, Jeanette Baran-Gale, Tamir Chandra, and Kristina Kirschner,  Briefings In Functional Genomics, 17(4), 2018, 233–239
+
+Experimental setup may affect bias depending on the machine.  In a 10X machine there is the possibility of putting different samples in different lanes, but in order to ensure there are comparisons of any batch/machine effects it has been suggested that a better experimental design is to distribute the samples across plates, and then to distribute the plates across all lanes of the machine (see Baran-Gale's paper for a diagram)
+
+There is also a statistical aspect in experimental design, in which it is necessary to calculate the minimum number of cells to have a 90% chance of sampling at least 50 cells of each type (depth of coverage)
+
+The different commercial implementations have also resulted in some slightly different software implementations for data processing as well, for example:
+
+(a)	10X data has a distinctive workflow, and CellRanger is used to progress this data from BCL to FASTQ to alignment with reference genome and [sparse] count matrices.  Later, Seurat even has specific inputs for this.
+
+(b) Drop-Seq (e.g. Broad Institute via Illumina) is a similar, but not identical workflow.   It has its own set of tools or wrappers to handle alignment and cell counts (Picard, Drop Utils that also use STAR).  https://cumulus.readthedocs.io/en/latest/drop_seq.html and https://github.com/broadinstitute/Drop-seq/blob/master/doc/Drop-seq_Alignment_Cookbook.pdf
+
+One of the differences between the above 2 workflows is that the creation of the BAM files is handled largely within the Cell Ranger program, and is not something the user has to be directly involved with (the user runs cellranger count and it handles the internal use of STAR)
+
+In each of the above cases, the typical structures of the count matrices will be different.
+
+## Illumina
+
+Illumina provides 'Drop-Seq' product, and this can be run through to FASTQ files: https://www.illumina.com/science/sequencing-method-explorer/kits-and-arrays/drop-seq.html. It also has 'inDrop' (https://www.illumina.com/science/sequencing-method-explorer/kits-and-arrays/indrop.html).  InDrop: "Single cells from a cell suspension are isolated into droplets containing lysis buffer. After cell lysis, cell droplets are fused with a hydrogel microsphere containing cell-specific barcodes and another droplet with enzymes for RT."
+
+Illumina describes the use of bcl2fastq where necessary, but can produce FASTQ for you.  https://support.illumina.com/sequencing/sequencing_software/bcl2fastq-conversion-software.html
+
+## 10X and its use
+
+General comments on 10x: https://www.biostars.org/p/389095/
+Seurat program has functions specifically for 10X data: https://rdrr.io/github/satijalab/seurat/man/Read10X.html
+
+(10X is providing a service that always(?) uses Illumina hardware e.g. NextSeq?  Not clear?)
+Example: 10X data produced on an Illumina NextSeq 500: https://satijalab.org/seurat/archive/v3.1/pbmc3k_tutorial.html
+
+## Relative data set sizes, with biological constraints
+
+One way of demonstrating you understand the biological data well enough to discuss expected quantities and results of different data types relates to the way in which data is assigned to different features of the experiment.  A useful perspective is that the 'barcodes' are used for each cell, and the UMI or 'reads' are the data gathered from each cell.   So we have samples (i.e. groups of cells of different type)--->barcodes for each individual cell-->UMI tags for each read/molecular fragment-->individual letters for nucleotide sequences.   This should also give us an indication of the expected quantities of each of these types of data.  The data can be audited to see how many of each fit into each of the larger data boxes.
+
+# How not to blog about a Pipeline
+
+From FASTQ to counts: this is a specific suggestion:
+
+https://blog.dolomite-bio.com/visualization-of-single-cell-data-from-seurat-object-to-umap/
+
+The DropSeqPipe:
+https://blog.dolomite-bio.com/keep-calm-and-dropseqpipe/
+(This is an independent guide to McCarroll Lab's pipeline, from the start)
+
+The article is almost silent on the first stage of FASTQ to Seurat, which is an unfortunate omission.
+
+# R Objects/Packages for analysis in single cell workflows 
+
+These are two different kinds of R 'objects' created for single cell analysis by popular software packages that we can study to prepare ourselves for further downstream analysis.  These are Seurat (by Satija Lab) and Single Cell Experiment (the authors created the 'Bioconductor' ecosystem), which is based on the older 'Summarised Experiment'.
+
+We'll look at what data is stored, and what 'slots' or variables are used.   After that, statistical techniques like normalisation can be applied, knowing what data sets will be modified and/or created by that process.
+
+[Dave Tang very helpfully and articulately explained some of this for an older version of Seurat
+ https://davetang.org/muse/2017/08/01/getting-started-seurat/]
+
+# SummarizedExperiment.
+
+See here:
+
+http://www.sthda.com/english/wiki/rna-sequencing-data-analysis-counting-normalization-and-differential-expression
+
+# Threshold 'choices'
+
+In the data pathways, the work pipelines that exist depend on whether you use particular software or not.  Underlying reference information may be the same, but the extent to which the internals are 'exposed' will vary.  
+
+It will be useful to compare a workflow that used CellRanger to produce gene expression counts to one that did not.
+
+Perhaps more importantly, if someone is asked to pick up a workflow that *partly* uses the CellRanger workflow (e.g. CellRanger is used to produce FASTQ files from BCL data), but then does *not* use CellRanger for alignment/counts, then it is necessary to know what the options for the further processing are.
+
+Seurat, for example, has several functions that are designed to take the outputs of CellRanger (e.g. MEX format matrices of barcodes, genes, ) as its inputs.
+
+If we don't have those CellRanger outputs, but only the FASTQ from ealier stage, then can we do these things:
+(a) construct an alternative pipeline and 
+(b) use a different function in Seurat to get the data in and carry on the process?
+
+Further to (a), if we're not using human or mouse information, then we might need to further customise the 'reference' information for internal steps like alignment.  This is because CellRanger uses STAR, and star will require reference genome and annotation files, which may not be in existence the less 'model' your organism is (e.g. for plants, with custom refs required, and less developed GTF files?).
+
+GTF is based on annotation data for genes.  Possibly, where GTF is not appropriate (e.g. you are not looking at gene expression per se), users must also supply other 'feature' reference files (see https://support.10xgenomics.com/single-cell-gene-expression/software/pipelines/latest/using/feature-bc-analysis#feature-ref)

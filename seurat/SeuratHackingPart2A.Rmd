@@ -1,0 +1,72 @@
+---
+title: 'Seurat Hacking Part 2A: Importing Raw Data'
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Getting Data into Seurat
+
+## Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+## Procedure for creating an Assay and Seurat Object
+
+If you are creating a Seurat Object from a 10X (CellRanger) counts matrix (or similar data), then you need to be aware that the Seurat program will expect you to have this sparse matrix available first, before importing it into the first 'Assay' object and the Seurat 'project' object that encapsulates that Assay.  
+
+Part of the reason for choosing a sparse matrix at the outset to store the counts is size/memory.  If you have >30000 genes being expressed and 2000 cells in your sample it is a large matrix.   However, the number of genes for a given cell is probably only a small % of the total genes (see https://www.biostars.org/p/326757/), leading to sparsity.  For this, memory-efficient matrix storage (where zero entries are ignored) is beneficial. 
+
+In summary, you must work from the inside out: first you wrap your raw count data (e.g. a Matrix created in R, possibly from CellRanger's .mtx, .tsv data) inside Seurat's Assay object, which is then wrapped inside a Seurat (project) object.  You give the outermost Seurat object a variable name, but the actual project can have a separate 'project name', stored as an attribute of the object. 
+
+There may be several steps, depending on how you obtain the raw count data.  
+
+e.g.
+1. Obtain .mtx, .tsv files from 10X (or as output from CellRanger)
+2. Read this into R to create a matrix (Seurat's Read10X function is a helper function)
+3. Decide the conditions you may want to use to filter the cells from the outset (e.g. a feature must have at least 3 cells expressing it)
+4. use the "CreateSeuratObject()" function to read in the matrix into an Assay object *and* create a Seurat object.  It takes parameters relevant to both these steps in the function arguments (including the 'project.name' parameter for the SeuratObject being created).
+
+## 10X Files
+
+The second step is necessary if you have 10X files, because they always work with sparse matrices and the set of 3 files.  If you have a gene x cell matrix already, you can proceed to the CreateSeuratObject() and go from there.
+
+## Additional Assays
+
+You can add another Assay to this Seurat Object, *provided it has the same list of cells in the CellRanger output files* (this includes the list in the .mtx file).
+
+The only parameters that you may be able to change for Assays in the same project object are the 'counts'(?).  It seems that you may be able to modify the feature names for the second assay (the most important data characteristic that must persist is the list of barcodes/cells in all Assays in a single project?  See https://satijalab.org/seurat/archive/v3.1/multimodal_vignette.html)
+
+You can experiment with this by creating a new count matrix .mtx file (for example, re-use the Read10X function with different counts data), then follow that up with CreateAssayObject function, add then assign a new 'name' for your Assay to the Seurat Object assay list with double bracket notation. 
+
+Since you can filter the original matrix data, the Matrix that is found inside the counts slot of an Assay object may not, in fact, be exactly the same as the Matrix created by Read10X for example.  Any filters must be preserved for subsequent Assays added to the Seurat object?  Is this a problem for multimodal?
+
+## A workflow using a .txt file as input?
+
+It seems if you have a .txt file with counts, you can get Seurat to work with it, but if you want to, you can use DropletUtils to write it to a sparse matrix and then to the 3 'CellRanger' type files that can be read in using the Read10X function.
+
+See https://www.biostars.org/p/431255/
+
+## Other data - not exactly 10X files etc
+
+This is a good discussion on how you might be able to work with Seurat even if you don't have custom 10X data, but still data sequenced on something like Illumina HiSeq2500.
+
+https://learn.gencore.bio.nyu.edu/single-cell-rnaseq/loading-your-own-data-in-seurat-reanalyze-a-different-dataset/
+
+[nb this is good for specialised area of metagenomics: https://learn.gencore.bio.nyu.edu/metgenomics/]
+In metagenomic workflows, biol issues like removing host DNA are present and need to be dealt with:
+https://learn.gencore.bio.nyu.edu/metgenomics/quality-control/

@@ -1,0 +1,286 @@
+---
+title: 'Seurat Hacking Part 1: Inside Seurat Objects'
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Motivation and introduction:
+
+The Seurat package was developed by the Satija Lab for use in single cell analysis, and has evolved through different versions.
+
+I am not in any way associated with the Seurat package or Satija lab.  I'm just an interested user of the package and learning about it, and I'm making some notes as I go, which might be useful to people coming along to Hacky Hour sessions and other newer users of the package.  
+
+My notes on CellRangerData contain a simple summary of the Seurat workflow in Part3.
+
+This instalment of notes is focussed on how a Seurat Object looks from the perspective of a base R user.
+
+# Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+# Some preliminary knowledge you need about base R data types and functions
+
+## R "Classes"
+
+An 'S4' object in R is something like a 'Class' in other programming languages.  It is a custom object, defined in code, with properties and attributes (slots).  An S3 object is an earlier implementation of an object in R, not as complex, but still used by developers for simple object-based coding.
+
+## Slots in 'R'
+
+Firstly, a 'slot' is a general term used for the properties/attributes of Classes (often, custom objects) in R.   There may be more than one of these 'pointers' to internal objects in a Seurat object.
+
+The general syntax for slots is 
+objectname@slotname
+
+R calls something a 'slot' when it would be called a 'property' or 'attribute' in other OOP languages.  Similar to the syntax in Objective C, it uses the @ operator to access these properties (as distinct from $ operator which is used to access columns in a dataframe).
+
+There are some basic functions which also help to inspect what slots are contained within objects and the names of columns in data frames, for example:
+slotNames(object) # retrieve properties
+names(dataframe) # retrieves column names
+
+e.g.
+```{R}
+slotNames(pbmc)
+```
+
+```{R}
+names(pbmc@meta.data) # the column names of the Seurat object's main data frame, which you are accessing via its slot
+```
+
+This is not well explained in R documentation, but is explained better here:
+https://stackoverflow.com/questions/4713968/r-what-are-slots
+(and in documentation dealing with R classes.   try reading ?Classes, )
+
+## Slots that are inherited (generic) R object properties
+
+Other more general R commands to retrive information about R objects like sparse matrices, or matrices, or data frames include the properties 'i', 'p' and Dimnames.  You can pull out lists of index values, or column headings from the generic R 'object' class, but in most cases you would use the helper functions like rownames, colnames to do this.
+
+## Structure of the Seurat object's 'design'
+
+As at Seurat v4, this is the position.
+
+Seurat project object {with several slots, including "assay"}
+-->meta.data (to hold a dataframe with information about the statistics of the counts in the current Assay)
+	-->rows include: cell names (barcodes)
+	-->columns include : $nCount_RNA, $nFeatures_RNA, orig.ident
+--->assay (list of Assay objects)
+		--->Assay[1]
+				--->counts(default Matrix), scale.data, data
+--->active.ident  (pointer to the active 'identity' data for clustering; expected to be a column in the meta.data slot's data.frame, of 'factor' type)
+
+In the simplest case, there will be one raw count Matrix inside an Assay, which will not yet have been scaled or altered, and there will be only one Assay inside the Seurat Project object. 
+
+Some of the above information can be verified by using:
+1. the @ operator to access properties (slots) inside an R object
+2. the class() function in R to investigate what object classes exist inside the different Seurat objects.
+
+Some of the older tutorials might reference the 'counts' object of the Seurat object using, for example:
+pbmc@counts
+
+However, it seems that there is no object-wide slot for this now, and it needs to be accessed through the current Assay object. i.e. pbmc@RNA@counts might work.
+
+A shortcut function for the Seurat object is : 
+
+```{R}
+myassay<-GetAssayData(pbmc,slot="counts") 
+# Defaults to the assay set by DefaultAssay(). This may assume the assay.active?
+# The fuller form is:
+myassay<-GetAssayData(pbmc,assay="RNA",slot="counts")
+```
+
+# Accessing the Assay Data in Seurat objects
+
+Being able to access data within the Seurat environment is made possible by R's general functions, but object-orientated programming principles are still applicable:
+
+i.e. specific getter and setter methods for the "Assay" object.
+
+(These are called S3 or S4 'methods' in R)
+
+e.g. GetAssayData(object, slot = "data", ...)
+
+However, in order to use this function, you end up having to be quite specific about what level of object you reference.  So, for example, if you do this it will work but pull a sparse matrix:
+
+```{R}
+mycount2<-GetAssayData(pbmc, slot = "counts")
+```
+
+whereas this will pull the data directly:
+
+```{R}
+mycount3<-GetAssayData(object=pbmc[['RNA']], slot = "counts")
+mycount3
+class(mycount3)
+```
+
+The documentation does not explain the data type of the return values very well!
+
+"Returns info from requested slot"
+
+https://www.rdocumentation.org/packages/Seurat/versions/3.0.2/topics/GetAssayData
+
+It appears that the return type for this is a sparse matrix, and if you subset the data with row and column ranges, you can return a smaller sparse matrix eg.
+
+```{R}
+GetAssayData(object = pbmc, assay = "RNA", slot = "counts")[1:5,1:5] # produces 5 x 5 sparse matrix```
+```
+
+Question: why does myassay@counts return a matrix but the above GetAssayData return a sparse matrix?
+
+Ans:
+
+# Dissection of the Seurat Object Class, and the Assay Class
+
+Since the Seurat 'project' object is the most general, there is a Seurat Object (I use SO in the example below, but insert your object name) slot to store your project name:
+
+SO@project.name 
+
+The Seurat object may contain one or more data collections (objects/Classes) it calls "Assays".   To keep track of these, the Seurat object includes a list of these Assays in its 'Assay' property.   
+
+Two of the Seurat object slots are used for these:
+
+```{R}
+ SO@assays
+ SO@active.assay
+```
+
+The SO@assays property returns a list of "Assays" Classes (which hold, as a minimum, the raw count data).  
+
+## Individual 'assay' objects
+
+Objects in the Assays class (stored internally in the SO) are themselves complex data objects.  That is, each is also an S4 R object, with its own slots.  It is important to be aware of this difference.  For example, you might have an Assays list (e.g. 'RNA') that contains 'assay' objects, like 'data', 'normal', 'scaled'.  These assay objects are intended to be similar in size and dimension, but the data in each will usually be a transformed version of the preceding assay's data.  In this way, the sequence of work can be tracked and identified.
+
+In Base R, you can progressively unpack the SO using the slot reference, and then using list and [[]] extraction to access an Assay object.  Once you have an Assay object reference, you can systematically unpack that with Assay object slot references.
+
+nb double brackets [[]] can be used to get or set.
+For set, it can be used to add a column to a dataframe (like the metadata slot)
+For get, it will return raw element of a list (including an "Assay" object in the assays slot)
+https://stackoverflow.com/questions/1169456/the-difference-between-bracket-and-double-bracket-for-accessing-the-el
+
+The Satija Lab itself uses the double bracket notation to access the assay, and then @ to access the required assay slot e.g. this is a Seurat Object called 'pbmc', with an Assay slot holding 'RNA', accessing the 'data' assay.
+
+```{R}
+pbmc[["RNA"]]@data
+```
+
+(https://satijalab.org/seurat/articles/pbmc3k_tutorial.html)
+
+# Distinguish Seurat object 'Assay' and its sparse matrix from each Assay's counts Matrix
+
+To examine gene counts and gene-to-cell count relationships you need to look at an Assay objet's matrix object (counts).
+
+Be careful to distinguish working with the Seurat object's Assay pointer (which returns the  'sparse matrix' for the chosen Assay) and an Assay object's counts Matrix.
+
+The double bracket 'extraction' operator e.g. pbmc[['RNA']] will extract or give access to the relevant 'Assay', at least when interfacing with the Seurat Object.  But since an Assay has slots for counts, scale.data and data, how would this operator know which set of data we want to access?
+
+The truth is it doesn't.  It gives you a reference to the Assay object.   The default object returned when accessing this relates to the sparse matrix (this is similar to the .mtx originally read in). 
+
+## If you wanted to refer to the sparse matrices (Seurat package usually assumes this is unnecessary)
+
+If you want to access just a simple 'Matrix', as you might in base R, then you need to explicitly refer to the 'counts' matrix inside the Assay object you have just extracted.  You need two steps from the level of the Seurat object:
+
+```{R}
+# 1. Get the Assay object you want from Seurat object
+myassay<-pbmc[['trimmed']] 
+# 2. Get the 'counts' object (slot) from your Assay object
+mycount<-myassay@counts
+
+```
+
+What you have now is a 'Matrix' class object with genes as rownames, cells (barcodes) as column names. 
+
+The Matrix object is recognisable from base R.  When you access a row or column by name, you can extract the numeric values as a vector (i.e. they have only 1 dimension, and any limiting references apply to a vector e.g. head (, x) will apply to the number of elements in the vector, not the number of rows returned in the original Matrix)
+
+```{R}
+raw<-pbmc@assays[['RNA']] # The assay Matrix has genes as rownames now.  By default, this is the 'sparse' matrix.
+# MT-CO3 is a mitochondrial gene
+x1<-raw['MT-CO3',] # this is a subset (filter) of a sparse matrix. #  nb there are still 2700 columns!
+class(x1) # still a sparse matrix i.e. dimensions unchanged
+head(x1,20) # attempts to limit rows returned to 20 (each being up to 2700 wide)
+```
+
+When you work with the Assay and its counts slot you are working with R's Matrix class (just values).
+With an R Matrix you can concentrate on extracting numeric vectors, not Class subsets.
+You may not be concerned to do this, because Seurat handles summarising the counts for cells across all genes and puts it into the Seurat object meta.data slot.
+
+```{R}
+mycount<-raw@counts # counts slot.  
+class(mycount) # this is a regular R Matrix inside Assays.
+length(mycount)
+x<-mycount['MT-CO3',] # Operation on Matrix: extracts this row as a numeric vector (reduced dimensions)
+x # displays numeric vector values, but also column name
+head(x,20) # limits the first numeric vector elements to 20 (i.e. cell barcodes)
+class(x)
+mycount['MT-CO3',barcode] # just show counts of this gene, in this cell
+```
+output:
+
+```
+#        GAGTCAACCATTCT-1
+# MT-CO3                2
+```
+
+# DefaultAssay
+
+If you are going to be working with the new assay more often, the way to change it is with giving the name to the function with the Seurat object as argument {nb this syntax is R specific}:
+
+DefaultAssay(pbmc)<-"smaller"
+
+Notice, however, that when new Assays are added, there are new nCount and nFeature columns added to the Seurat Object metadata dataframe(with "_projectname" added to the these respectively)_ This means that we can (and should) specifically reference these column names without needing to change the Assay with the active focus.
+
+Would this be the same if we had a new identity?
+
+See https://satijalab.org/seurat/archive/v3.1/multimodal_vignette.html
+
+{that vignette also has details on loading csv into sparse matrix}
+
+## Matrices and subsetting
+
+Seurat stores the sparse matrix data as a 'matrix', but stores the metadata as a 'dataframe'.  This is because the metadata, for each cell, could include categorical or numerical data and so you can't use a matrix file (requires heterogenous data, i.e. numerical values for counts)
+
+Specifically, he Seurat data is stored in an S4 object (Object orientated in R).  This is useful if you want to know how to get your referencing right.
+
+In Seurat, SubsetData is a function that can subset on cells, or on genes (depending on what parameters you give it)
+
+## How to get rownames of certain type?
+
+Filter or subset Seurat object for rownames (i.e. keep expression data etc)
+Some refs:
+https://github.com/satijalab/seurat/issues/246
+
+# Unpacking existing Seurat Object Class in R/Seurat
+
+If you already have access to a Seurat object, you can inspect/examine its contents, which should have properties that resemble this structure:
+
+Seurat object: Assays, Project Name, ....
+
+With Seurat installed, and data imported, try this:
+
+```{R}
+slotNames(pbmc) # a really helpful command for understanding what's inside a Seurat object
+```
+
+```
+# example of slotNames(pbmc)
+ [1] "assays"       "meta.data"    "active.assay" "active.ident" "graphs"       "neighbors"   
+ [7] "reductions"   "images"       "project.name" "misc"         "version"      "commands"    
+[13] "tools" 
+```
+
+Each of these can be individually accessed with the @ operator, but the type of data or object they represent can vary (could be a character vector, Matrix, dataframe etc).
+
+The assays represent the raw material, but the meta.data (which may have been automatically created purely at the time of creating the Seurat object), can hold some summary data and make it accessible without the user having to extract numerical vectors from the sparse matrix and use sum() functions.   The meta.data has two columns (at least) which have already done this.
+

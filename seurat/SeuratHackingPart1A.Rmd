@@ -1,0 +1,166 @@
+---
+title: 'Seurat Hacking Part 1A: Idents and Factors'
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output:
+  html_document:
+    df_print: paged
+---
+
+# Seurat's main R objects, factors and use of "idents"
+
+Seurat objects are a hierarchical set of objects, that mirrors the approaches taken in other areas of bioinformatics, in creating objects with structures that can be used to store, manipulate and retrieve entire workflows.  For example, the 'SingleCellExperiment' object and similar ideas used for Bioconductor projects.
+
+The data.frame in the meta.data slot, in particular, is intended by Seurat's authors to be frequently used for storing quantitative measures associated with individual cells, and with storing cell labels that can also be used for filtering and clustering particular groups of cells.  
+
+This filtering is facilitated by the fact that the vertial columns in the meta.data slot's data.frame can contain quantities or values to filter by, and the data.frame (unlike Assay object matrices) has cell barcodes as rownames.
+
+## Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+# The Seurat object and its 'meta.data' slot
+
+The most important data.frame in Seurat object is the one found at the meta.data slot, created at the time of the Seurat object creation, which can be accessed via, for example:
+pbmc@meta.data. (also check class(pbmc@meta.data) to confirm it is data.frame)
+
+The meta.data slot's data.frame is created at time of Seurat object creation: "CreateSeuratObject()" 
+
+"Seurat objects also store additional meta data, both at the cell and feature level (contained within individual assays). The object was designed to be as self-contained as possible"
+https://www.rdocumentation.org/packages/Seurat/versions/3.0.2/topics/Seurat-class
+
+The initial setup of this data.frame includes:
+(a)	cell barcodes as rownames.
+(b) a column titled 'orig.ident' (factor type)
+(c) summary cell statistics: 'nCount_assayname' (numeric type) and 'nFeature_assayname' (integer type).  I am not sure why the numeric value columns differ in type.
+
+The dataframe's column entries (e.g. column nCount_RNA) are not individual cell counts in the original .mtx file.  They are a summary statistics ('sum') of all of those count entries for each cell.  
+
+The raw data in the .mtx matrix is most directly associated with the sparse matrix in the Assay inside the Seurat project object.
+
+Since this is a data.frame, you can refer to summary data for a specific cell like this: 
+
+```pbmc@meta.data$nCount_RNA[cell_index]```
+
+However, curiously, you can also access this as if 'pbmc' referred to the dataframe directly, like:
+
+```{R}
+pbmc$nCount_RNA[cell_index]
+```
+
+
+## A data.frame
+
+The default meta.data data.frame contains an 'orig.ident' column (factor data type) that contains the 'identity' labels for cells (for classification, labelling, visualisation).  If no information is supplied at the time of creation, every element in this column is filled with the project name.
+
+The orig.ident column has data.type "factor".  Notice that the data type applies to columns of the data frame.  They represent more fundamental sets of data in R: factors, or numeric vectors, or character vectors.  In each case, these are different data types. 
+
+You can see here how a data.frame resembles a set of primary R data types, represented by columns.   The rows represent names that can substitute for indexes to the elements of these columns.  pbmc[barcode,colname] is a reference to a row,col in a dataframe.  If you were to type class(colname) it would reveal the data type of that column.
+
+Each column specifies the 'data type'.  The data.frame permits these defined data types, in columns, to be different (unlike a Matrix)
+
+## Factor data type and levels
+
+The default data type for orig.ident (the default column of the meta.data data.frame used for cell 'identities') is a 'factor'.  
+
+A factor is a list-like R data set with a particular expectation about its source elements: they will be drawn from a base set of non-repeated category elements, called the 'levels' (the factor itself may have, and will usually have, duplicates of one or more of these elements).  {For example, imagine that you have a data set of cricket wickets: the 'levels' will be the ways a batter can get out}.  Levels of a factor can be specified as part of the factor() function, but will be inferred from the data if not provided."
+
+A factor is not actually the same as a simple list.  Internally, R uses the 'levels' as the strings, but then allocates a numerical index value to each 'level'.  The factor itself is a numerically-coded vector, where the numbers correspond to the category labels of the levels.  The factor() function in R will try and enforce consistency of factor contents to levels by preventing the addition of an entry to a factor unless it is also one of the levels.  Levels can be modified first, to enable this to occur.
+
+Knowing how factors work, and why, is important to understand why the 'factor' data type was chosen by Seurat's authors as the data for the 'identities' to be used with clustering (i.e. levels are allocated to individual cells, and these levels represent common labels for cell clusters for plotting etc)
+
+# Cell groups (clustering) data: identities,the active.ident, and Idents()
+
+The documentation for Seurat's object class suggests that the Seurat object reflects a concern with two broad scientific methods:
+1.	Storing raw data and updated data (scaled, normalised etc) : in Assay objects.
+2.  Managing grouping or clustering categories for cells: by recording cell groups in a meta.data (data.frame) column, one that has specified groups ('identities') for each cell.  
+
+The default data type for orig.ident column in the default data.frame (meta.data) is a 'factor', which is a significant choice for the purpose of using it to assist with clustering visualisation.
+
+The 'active.ident' slot is described as the 'active cluster identity' in Seurat documentation.  It is set using Idents().  From this, we can gather that the intention was to be able to:
+(a) create new data.frame columns in meta.data some of which might contain category (cluster identity) information.
+(b) set the active identity column in the dataframe with Idents(pbmc)
+(c) retrieve the name of that identity column (or the data itself) using pbmc@active.ident
+
+See https://www.rdocumentation.org/packages/Seurat/versions/3.0.2/topics/Seurat-class
+
+## Use of Factors for storing cell 'identities' in Seurat
+
+The Seurat treatment of 'identities' assumes you are familiar with the data concepts in R relating to a 'factor' data set and its 'levels'.  
+
+Long-term users of R will already know that the origin of the 'factor' concept in R is associated with setting labels or categories for grouping of data.   The number of possible values (category labels) for a factor is called the number of levels.  
+
+Seurat assumes identities will be stored in the data.frame that has cells as rownames.   The identities are stored in an R 'factor' with the same length as the row number.
+
+The cell group categories are exactly analogies to the 'levels' in an R factor.  This is why there is sometimes a reference to the use of the levels(x) function - this is the R function that will report the minimal set of unique category values found in the 'factor' being used for the cell identities.  
+
+The schemes used for identities, and the levels, need not always be complicated.  For example, if the only element in the 'factor' (orig.ident) for its whole length is the project name, then its only 'level' is also the project name.
+
+## Managing factors used for cell identities: the Idents() pointer and the meta.data data.frame
+
+The design of Seurat objects assumes that:
+
+1. There will be a 'factor' data type that is included as one of the columns of the Seurat object's main data.frame (pbmc@meta.data).  The cellnames are already specified in the data.frame (barcodes).  The factor's length corresponds to the number of unique cells in the Seurat project, and its levels will represent the categories.
+2. Cell categories will be used for filtering, plotting data and other analytical tasks.
+3. The Idents(Seurat object) function can be used set the 'factor' to be used for identities.  You assign a factor to the Idents() object.  This can be an existing factor in another column of the data.frame, or new data.
+4.  If you assign a non-factor vector to Ident() (that nonetheless is in a dataframe of same length, or with same cells as rownames), then the Seurat object forces it to be factor type, and will try and automatically infer the levels.  You could still modify those factor levels at any time.
+
+For some Seurat plotting functions (like VlnPlot), you can specify (subset) the plot to some of the identity classes in the active identity factor (i.e. a subset of the levels). e.g. idents=c(a,b....)
+
+A consequence of the name of your Seurat object being used for a data.frame in its meta.data slot is that any expression using that name and $ notation will actually refer to a column of the meta.data dataframe.   
+
+For example, this is your initial identity data column:
+```{R}
+pbmc$orig.ident
+```
+You can access meta.data easily this way, or create new columns for further meta.data by assigning an appropriate vector to something with a name like pbmc$newname.
+
+The Idents() function is used to set (point to) the active column of the dataframe assumed to be a factor with cell-categories store in a factor.   Some examples here: https://satijalab.org/seurat/archive/v3.0/interaction_vignette.html
+
+You can, in theory, choose any column of the meta.data data frame to use as the source data for a set of cell identities.   
+
+If you need to, it is possible to create a new column in the meta.data data frame, then use Idents() to point to that.  Since Idents(pbmc) will also return a column of the data.frame, you can also store this for later by assigning it to a new column in the meta.data data.frame.
+
+Curiously, you can create a new column in this meta.data data frame by simply adding a column name to the name of the Seurat object (implicitly referring to the meta.data data.frame)
+
+e.g. 
+```{R}
+pbmc$CellType<-Idents(pbmc)
+```
+
+This line will create a new column in the data frame ("CellType") and it will fill this with the values of the current column of the data frame that Idents(pbmc) points to.  This might be, for example, the 'orig.ident' column.  
+
+The manipulations of the meta.data data.frame are as flexible as R permits.  You could even make a new data frame column from the 'nCount' column like this:
+
+```{R}
+pbmc$phenoA<-pbmc$nCount_RNA
+```
+
+There is now a new column in the meta.data called 'phenoA', and it duplicates the nCount column.
+
+You can, in theory, set this numeric vector as your identity data for the cells:
+```{R}
+Ident(pbmc)<-pbmc$phenoA
+```
+
+However, if you compare these:
+```{R}
+class(Idents(pbmc))  # this is a 'factor'
+class(pbmc$phenoA)  # this is 'numeric'
+```
+
+you will see that although the data.frame column 'phenoA' is still numeric, the identities based on this have been stored internally as a 'factor'.   If you set a data.frame column (old or new) from the Idents(pbmc) function, the new column will necessarily have a 'factor' type, since Idents() forces the type to be factor.  The original data is unaffected.
+
+Further, Seurat includes the parameter 'idents=' in some functions that allow you to specify the class of cell from which you can subset the data (i.e. the 'idents=' permits you to specify one or more levels of the current identity 'factor').

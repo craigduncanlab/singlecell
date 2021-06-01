@@ -1,0 +1,92 @@
+---
+title: "Seurat Hacking Appendix: Create Object Debugging"
+author: "Craig Duncan"
+date: "11-14 March 2021; 6 April 2021"
+output: html_notebook
+---
+
+# Basic setup for exploring Seurat with these notes
+
+```{R}
+# install.packages('Seurat')
+library(dplyr)
+library(Seurat) 
+library(Matrix)
+
+# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
+# Create Seurat object
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+```
+
+
+# Debugging some anomalies in Seurat Object creation 
+
+At one stage, I had many other nCount/nFeature differences in the Seurat object meta data that should not be explained by the removal of these 4 entries.  Is it because I did not amend the number of entries?
+So I re-ran it with:
+ 32738 2700 2286880 in the top row instead of 
+ 32738 2700 2286884
+
+This still doesn't explain it.  Is it because there is some 'wrapping' of entries in a matrix, in the R environment, that causes a ripple effect?
+
+One way to check this is to reinsert the above 4 entries, but just to be '0' in them.  
+
+32722 1608 0
+32709 1608 0
+32706 1608 0
+32703 1608 0
+
+This is not really what is expected for a sparse matrix, but see what happens here.  Note also that the features 32722 may occur many times (for many cells), so modifying the presence/absence of those would also have changed those feature counts (should reduce?).
+
+It is also possible that the minimum number of features, counts will change.  However, I would have expected that reducing counts for these four entries would have reduced the metadata statistics (when, in fact, there are many counts and features that increase by 1 or 2 when these four entries are set to 0).
+
+Seurat objects will do internal 'parsing' on the input .mtx files here, to ensure that the same body of cells are represented.  Practically, this means you need the same cells appearing in the .mtx file, even if the counts are different?
+
+Check this by redoing it, but replacing some of the counts with a big number (e.g. replace every count of '73' with 730, and reinstate the total number of entries)
+
+## Back to basics experiment
+
+I've copied over the hg19 files (all 3 of them) into a new folder called  hg19c.  I then run this code to add a new assay, based on the new data, and 
+
+Seurat then updates the meta data.  I check it with this R command to inspect the first few lines of meta.data slot's data.frame:
+
+```{R}
+a<-pbmc@meta.data
+a
+```
+
+First few lines of console output:
+```
+                 orig.ident nCount_RNA nFeature_RNA nCount_trimmed nFeature_trimmed
+AAACATACAACCAC-1     pbmc3k       2419          779           2421              781
+AAACATTGAGCTAC-1     pbmc3k       4903         1352           4903             1352
+AAACATTGATCAGC-1     pbmc3k       3147         1129           3149             1131
+AAACCGTGCTTCCG-1     pbmc3k       2639          960           2639              960
+AAACCGTGTATGCG-1     pbmc3k        980          521            981              522
+AAACGCACTGGTAC-1     pbmc3k       2163          781           2164              782
+
+
+```
+
+Here's what's odd - the nCounts and nFeatures, which we would expect to be unchanged, are different for each of the Assays (just 1 or 2, but often).
+
+Here's why: the CreateSeuratObject() function for the first Assay, has the minimum qualifiers, but the simple 'CreateAssay' function I used did not.
+
+```{R}
+#Compare this: 
+pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
+
+# to this:
+newassay <- CreateAssayObject(counts = trimdata)
+
+```
+
+The reason that the new asset counts are *higher* is that there is slightly less filtering being performed on the second Assay creation step.
+
+To be consistent the CreateAssayObject needs this:
+
+```{R}
+newassay <- CreateAssayObject(counts = trimdata,min.cells = 3, min.features = 200)
+```
