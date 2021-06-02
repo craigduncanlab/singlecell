@@ -13,5 +13,7 @@ The rest of the guides in this repo are a bit wordy, since I wrote them in a str
 Please send me any feedback via github or software[at]craigduncan.com.au
 
 Craig Duncan
+
 Perth, WA
+
 2 June 2021

@@ -47,13 +47,11 @@ Read in the data.  This workflow is based on the input of data from hg19 folder 
 pbmc.counts <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
 ```
 
-Make your Seurat Object from the pbmc.counts data and normalise:
+Make your Seurat Object from the pbmc.counts data :
 ```{R}
 pbmc <- CreateSeuratObject(counts = pbmc.counts)
-pbmc <- NormalizeData(object = pbmc)
 ```
 
-Where is the NormalizeData stored?
 
 At this stage we have two matrices in the "Assay" object, namely count and data:
 ```{R}
@@ -72,7 +70,13 @@ colnames(pbmc@assays$RNA) # this RNA assay has cell names for its columns
 rownames(pbmc@assays$RNA) # the gene names in the count
 ```
 
+Normalise the data (updates one of expression matrices in active.assay (here: 'RNA'))
 
+```{R}
+pbmc <- NormalizeData(object = pbmc)
+```
+
+Begin differential expression analysis:
 
 ```{R}
 pbmc <- FindVariableFeatures(object = pbmc)
@@ -95,3 +99,19 @@ Now plot:
 ```{R}
 DimPlot(object = pbmc, reduction = "tsne")
 ```
+
+For the clustering analysis, there won't be any cell classes or subsets unless they've been automatically created in the FindVariableFeatures step.
+
+Initially, the 'idents' (the column holding your cell classes/classification data) is set to whatever is in this slot:
+
+```{R}
+pbmc@active.ident # output a factor (lists category for each cell)
+```
+
+The default 'factor' or category might be the project name, rather than the Seurat object name.
+
+To set your own identities you will use Ident(object=pbmc) to access the active identity factor (you use this in an R expression to set your new factors for selected cells).
+
+e.g. Ident(object=pbmc)<-"new.idents" or for a subset of cells Idents(object = object, cells = 1:10) <- "new.idents"
+
+I'll deal with the way in which these are used separately.
