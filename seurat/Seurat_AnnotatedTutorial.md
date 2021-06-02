@@ -95,14 +95,3 @@ Now plot:
 ```{R}
 DimPlot(object = pbmc, reduction = "tsne")
 ```
-
-# Breakdown of these stages - what's happening to the Seurat object?
-
-The first two steps create the Seurat object, then normalising the data will do two things (min):
-1. Add a new assay into the Seurat object.
-2. Add new meta-data columns for the nCounts and nFeatures?
-
-```{R}
-pbmc <- CreateSeuratObject(counts = pbmc.counts)
-pbmc <- NormalizeData(object = pbmc)
-```
