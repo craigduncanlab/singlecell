@@ -13,6 +13,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 We need at least R version 4 installed to run Seurat.
 
+Change the extension of this file to .Rmd in this repo so you can run it in R Studio.  It's a markdown file here so that it displays nicely in Github.
+
 Having done that, we start by downloading and installing the 'pbmc3k' data in a local directory (it needs to match the Read10X location below).
 
 ```{R}
@@ -20,22 +22,26 @@ Having done that, we start by downloading and installing the 'pbmc3k' data in a 
 library(dplyr)
 library(Seurat) 
 library(Matrix)
+```
+Go get your data to test:
 
-# Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
-# download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
-# When you have downloaded the data and put it into the data folder and subfolders as described below, run this script:
+1. Load the PBMC dataset [note Seurat comes with a pbmc_small example but since it has already had some preprocessing steps applied to it, this file provides an illustration with less in-built assumptions]
+
+2. Download the pbmc data as recommended at the [SeuratTutePage](https://satijalab.org/seurat/archive/v3.0/pbmc3k_tutorial.html).  Seurat comes pre-installed with only a small version of this data (pbmc_small). 
+
+When you have downloaded the data and put it into the data folder and subfolders as described above, run this script:
+
+```{R}
 pbmc.data <- Read10X(data.dir = "data/pbmc3k/filtered_gene_bc_matrices/hg19/")
 # Create Seurat object
 pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3, min.features = 200)
 ```
 
-This summary workflow will crunch the count data, but it doesn't dwell on the preceding data preparation work that is done in the initial sequencing process or for the initial genes-per-cell counting (perhaps using CellRanger software, which internally uses STAR) as contained in the 10X count-data files (the .mtx, barcodes and genes/features files).
-
-Change the extension of this file to .Rmd in this repo so you can run it in R Studio.  It's a markdown file here so that it displays nicely in Github.
-
 # Visual help (Anatomy of Seurat Object)
 
 ![Seurat Object Anatomy](images/SeuratAnatomy.png)
+
+This summary workflow (below) will crunch the count data, but it doesn't dwell on the preceding data preparation work that is done in the initial sequencing process or for the initial genes-per-cell counting (perhaps using CellRanger software, which internally uses STAR) as contained in the 10X count-data files (the .mtx, barcodes and genes/features files).  The first couple of steps repeat the data load from abov.
 
 # Compressed Seurat workflow
 
