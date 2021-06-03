@@ -41,7 +41,7 @@ pbmc <- CreateSeuratObject(counts = pbmc.data, project = "pbmc3k", min.cells = 3
 
 ![Seurat Object Anatomy](images/SeuratAnatomy.png)
 
-This summary workflow (below) will crunch the count data, but it doesn't dwell on the preceding data preparation work that is done in the initial sequencing process or for the initial genes-per-cell counting (perhaps using CellRanger software, which internally uses STAR) as contained in the 10X count-data files (the .mtx, barcodes and genes/features files).  The first couple of steps repeat the data load from abov.
+This summary workflow (below) will crunch the count data, but it doesn't dwell on the preceding data preparation work that is done in the initial sequencing process or for the initial genes-per-cell counting (perhaps using CellRanger software, which internally uses STAR) as contained in the 10X count-data files (the .mtx, barcodes and genes/features files).  The first couple of steps repeat the data load from above.
 
 # Compressed Seurat workflow
 
