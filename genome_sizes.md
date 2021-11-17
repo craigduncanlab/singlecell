@@ -262,7 +262,7 @@ A recent pre-print by Schley et al, titled 'The Ecology of Palm Genomes: Repeat-
 
 The research refelcts on the variation in the number of repeating sections of the genome, which will in some cases pad out its length.
 
-It's interesting that the paper uses differnt language and metaphors for the genome (first modelled as 'machinery', but now being reconsidered as an interacting system): 
+It's interesting that the paper uses different language and metaphors for the genome (first modelled as 'machinery', but now being investigated through the model of a dynamic, interacting system): 
 
 ```
 Genomes may be seen as ecosystems ‘populated’ by repeats, each of which interacts with other
