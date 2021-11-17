@@ -2,7 +2,7 @@
 
 (c) Craig Duncan 2020-1. A work in progress.
 
-Created 15 August 2020.  Last updated 8 February 2021.
+Created 15 August 2020.  Last updated 17 November 2021.
 
 # An illustration
 
@@ -27,8 +27,55 @@ Wheat, barley, rye, pea?
 
 nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/books/NBK208347/](https://www.ncbi.nlm.nih.gov/books/NBK208347/) and [here](https://www.inspection.gc.ca/plant-health/grains-and-field-crops/list-of-grains-and-field-crops/eng/1323244558875/1323244642996)
 
-The Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are diploid, so there are 5 chromosome pairs (10 chromosomes) per cell.
-Arabidopsis Genome Initiative. Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature. 2000 Dec;408(6814):796-815. DOI: 10.1038/35048692.
+# The organisation of DNA molecules in organisms, genetic traits, the concept of the genome and genome size
+
+This is a short introductory note to explain what we mean by the concept of a genome's size.
+
+Back in the days of Medel, it was proposed that some observable and easily distinguishable physical traits of parent organisms were apparent or not apparent in offspring.  By studying this, Medel inspired a theory that combinations of some 'gene' that was linked to each trait, that was inherited from parents.   This gave rise to the study of 'genetics', which originally was the study of observable characteristics of offspring and their relationship to the parent organism's physical characeristics.  
+
+At its heart, genetics is interested in biological information transfer.  The precise physical mechanisms of bioligical information transfer were not originally known.   Over time, the initial abstract and mathematical interest in transfer of physical traits has been supplemented by detailed information about the chemical, molecular and biological basis for transmitting information from one generation of organism to the next.
+
+In Mendel's time, there was a significant observation about the *regular proportions* in which characteristics from parent organisms might appear in offspring, at least for some traits.  Mendel observed that there were mathematical ratios in the rate of appearance of that trait in the next generation.  What he observed, in those cases, was the inheritence of a physical characteristic was not arbitrarily or randomly distributed.  This suggested a biological process of some simple binary choice was involved in determining those physical characteristics.  Mendel did not know how the binary choices that determined the next generation actually occurred, but there was enough information to develop a theory that there was something called a 'dominant gene' and a 'recessive gene'. 
+
+Later, it became known that there were specific molecules in each cell of an organism that contained information from each parent, and which would also remain and be transferred to the next generation of offspring.   We now know that there are molecules, strands of DNA in each organisms 'cells', that contain a linear sequence of genetic material (information from each parent, encoded in one or more sub-sections of DNA molecules called 'genes').  Generally, we can substitute the word 'information' for gene and it still makes sense, if we are talking about 'binary' physical traits.
+
+These separate DNA strands/molecules/lengths are sometimes bound up and compressed, at other times extended and 'open'.  
+
+In humans and many other complex organisms, there is not merely one long strand of DNA in each cell.  There are many strands, and the lengths of DNA that are found in those strands will vary.  However, some important observations about the sets of DNA molecules present in a plant or animal cell have been made:
+
+1. The length of each individual DNA strand, and the distribution of lengths of DNA for an organism is predictable for each organism.
+2. There can be more than one DNA strand with the same length, in the same cell.
+3. For almost all uniquely identified lengths of DNA molecule found in the cell, there will be not one but two DNA molecules of that length present.
+4. It is rarer to find mismatched lengths of DNA in a cell: there may be only one pair of 'unmatched length'.
+
+This is not an accident, but a result of biological processes.  The lengths of DNA, in general, are a match for a single copy of that DNA strand from each parent organism.  This means, for example, that if we can pair up each DNA molecule of the same length in the cell, we can then organise it further by putting the DNA inherited from the 'male' parent on one side and the DNA from the 'female' parent on the other side.   
+
+(This set of DNA threads from a particular parent is not 'the DNA' of the parent, because each parent individual was, in fact, biologically determined by its own set of diverse DNA molecules from its own parents and not merely the genetic information that it passed on to its offspring.)
+
+What we now know is that there are different lengths of DNA, and also that in many cells, there are sometimes matching lengths of DNA that contain the same kind of information in the same order, but the encoding of the properties or traits at a particular position may vary slightly.  
+
+If an organism had cells in which there was only one copy of each unique DNA strand of a particular length is unique to an organism, we would call the cell a 'haploid' cell.  This actually occurs in sex cells (gametes), used for production of a new cell capable of producing a new organism with genetic material from 2 parent organisms. [Ref](https://www.genome.gov/genetics-glossary/haploid)
+
+This is related to the term 'haploid number', which is used to explain how many distinct DNA molecules there are that contain all of the minimum genetic genetic information needed for the definition of that organism (whether in each cell or in the gametes). For example, the Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are diploid (Ref 1).   We can say that it has 10 lengths of unique DNA molecules in each cell, which when grouped by length, should make 5 pairs.  The haploid number can be thought of as the number of sets of DNA we have if we grouped all DNA molecules of the same length together.
+
+In the history of science, the observation of DNA molecules in a coiled state in cells was observed with coloured dye, leading them to be called 'chromosomes'.  It was on this basis that the pairs of DNA molecules inherited from each parent was first observed. 
+
+In some plants, the number of molecules of a particular DNA molecule length found in a cell can be greater than two, a quality that is called 'polyploidy'.  This does not mean that they are identical replicas (as they will usually not be in eukaryotic organisms).  This does, however, have implications for the amount of genetic information present in each cell, the variation in it, and the traits that might be expressed by the organism with such cells.
+
+It is useful at this point to differentiate the concept of the 'genome' and the 'genetic information' that might be contained in a cell.  The distinction lies in how we organise our understanding of the biological purpose of the information, and its similarities.  
+
+Firstly, genetic information is contained in the sequences of nitrogen bases (a set of 4 small molecular chains) present in *all* the DNA molecules present in a cell.  For any length of DNA, any matching molecule with the same length has, in effect, an alternative 'code' for all the genetic traits associated with that length of DNA.  If we think of a length of DNA as a biological program or reference, then each DNA molecule of similar length, with its variations, is an alternative program.  How the cell deals with having copies of slightly different program in the cell at the same time requires more detailed explanation, but it is ultimately linked back to the Mendelian observations that some of these genetic properties inherited from the parent can co-exist (we now know, they co-exist in separate lengths of DNA in a cell), but in a physical sense, the expression of the encoded traits on a particular DNA molecule may be suppressed or be dominated by the properties encoded in a DNA molecule inherited from the other parent.
+
+The 'genome' is an abstract idea about the sequence of genetic information that focusses on providing a broader framwork for discussing the similarity or differences in the encoding of all the DNA molecules of the same length.  In this way, the genome has the same length as if we had only a single copy of each length of DNA in a cell (like in a haploid cell).  Unlike a physical haploid cell, the concept of a genome cannot be separated from the goal of explaining the diversity that exists in the encoding found on each length of DNA that might exist (a) in a single organism (b) across organisms of the same species (c) across similar organisms across time.  The relevance of this to the concept of 'genome size' is that the genome size for the same organism does not vary whether the DNA is found in a haploid, diploid or polyploid cell.  For the genome, the amount of DNA is not the concern, it is how it is organised to determine particular traits or other physical attributes.
+
+To further explain this difference, organisms exist with a set of varied DNA molecules in their cells, some of which are the same length and are alternative sources for biological processes (and some of which will suppress each other).  To 'clone' an individual does not mean : 'replicating a single set of DNA strands that contains a single set of genetic information' (that is more like a 'genome').  Rather, to clone an organism with diploid cells would require copying over a set of DNA strands (the genetic material) that, collectively, defines the biology of the individual, by its collective presence and interaction.   Simply putting two identical sets of DNA in the one cell might not work: even in the natural world, diversity of parents seems to help with the health of the offspring.
+
+In the process of reproduction through gametes, the substitution of specific elements of genetic code from parent organisms to produce a single, new, genetic sequence from the parent DNA material *does* occur.  A sex cell (gamete) in a human does contain DNA information similar to a 'genome', which is then passed on to the next generation, but in the offspring that contain diploid cells, this information/DNA will always exist simultaneously with other DNA threads (from the other parent) in each cell.
+
+How large a sequence of DNA material is swapped out from one parent's DNA in the production of sex cells may vary.  In studies of the genome, however, the interest may not be so much in the mechanism by which smaller parts of DNA vary, but whether they are significant.  For example, in genetics, the way in which individual elements of a single DNA thread can vary in relation to nitrogen base pairs is commonly defined as 'single nucleotide polymorphism'.   This is studied to determine if just single substitutions can have a significant effect on biological function or disease. 
+
+Ref:
+1. Arabidopsis Genome Initiative. Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature. 2000 Dec;408(6814):796-815. DOI: 10.1038/35048692.
 
 https://www.nature.com/articles/35048692.pdf
 [Arabidopsis genome paper (2000)](https://www.nature.com/articles/35048692)
@@ -60,7 +107,7 @@ Conventional wisdom [e.g. Dietzel lab](http://www.dietzellab.de/goodies/numbers.
 
 Number of base pairs?
 
-The reference to base pairs in the 'human genome' is to the amount of genetic material needed to define the human species in 'haploid' (gamete) cells (like germ cells: eggs and sperm).  This is the minimum amount of sequential 'code' that describes the genetic material, but that's not actually how DNA is packed into most of the other, 'somatic' cells, which contain two copies of helical DNA, inherited from each of the parents, and this explains our chromosome 'pairs'.  So in somatic cells, there is 2 x 3.26Gb of genetic material and this is the total 'amount' of DNA that is commonly referred to when the length comparisons for ~2.3m are made. 
+The reference to base pairs in the 'human genome' is to the amount of genetic material needed to define the human species in 'haploid' (gamete) cells (like germ cells: eggs and sperm).  This is the minimum amount of sequential 'code' that describes the genetic material, but that's not actually how DNA is packed into most of the other, 'somatic' cells, which contain two copies of helical DNA, inherited from each of the parents, and this explains our chromosome 'pairs'.  So in somatic cells, there is 2 x 3.26Gb of genetic material and this is the total 'amount' of DNA that is commonly referred to when the length comparisons for ~2.3m are made.  *In other words, the physical length of our DNA (molecules) present in a cell is always going to be at least twice the length of the genome, if it were physically represented*
 
 (2 x 3.26 x 10^9) bp x 0.34 x 10^-9 (nanometres, nm) = 6.52 x 0.34 = 2.22m
 
@@ -181,7 +228,7 @@ DOI: 10.1159/000338820
 
 Assembly Issues
  - Sequencing - entire genome is sequenced many times over
- - Assembly : attempt to assemble connected (contiguous) bases (for all chromosomes)
+ - Assembly : attempt to assemble connected (contiguous) bases (for all chromosomes).  *There is a lot more genetic material than the genome size predicts*
  - SNPs : For diploid organism, this is a reference to differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*. 
  - phased assembly: ability to identify gamete sources for all SNPs. 
 
