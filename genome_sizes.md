@@ -41,7 +41,7 @@ In Mendel's time, there was a significant observation about the *regular proport
 
 Later, it became known that there were specific molecules in each cell of an organism that contained information from each parent, and which would also remain and be transferred to the next generation of offspring.   We now know that there are molecules, strands of DNA in each organisms 'cells', that contain a linear sequence of genetic material (information from each parent, encoded in one or more sub-sections of DNA molecules called 'genes').  Generally, we can substitute the word 'information' for gene and it still makes sense, if we are talking about 'binary' physical traits.
 
-## Obsrevations about genetic material in the context of genetics
+## Observations about genetic material in the context of genetics
 
 These separate DNA strands/molecules/lengths are sometimes bound up and compressed, at other times extended and 'open'.  
 
@@ -67,6 +67,12 @@ In some plants, the number of molecules of a particular DNA molecule length foun
 It is useful at this point to differentiate the concept of the 'genome' and the 'genetic information' that might be contained in a cell.  The distinction lies in how we organise our understanding of the biological purpose of the information, and its similarities.  
 
 Firstly, genetic information is contained in the sequences of nitrogen bases (a set of 4 small molecular chains) present in *all* the DNA molecules present in a cell.  For any length of DNA, any matching molecule with the same length has, in effect, an alternative 'code' for all the genetic traits associated with that length of DNA.  If we think of a length of DNA as a biological program or reference, then each DNA molecule of similar length, with its variations, is an alternative program.  How the cell deals with having copies of slightly different program in the cell at the same time requires more detailed explanation, but it is ultimately linked back to the Mendelian observations that some of these genetic properties inherited from the parent can co-exist (we now know, they co-exist in separate lengths of DNA in a cell), but in a physical sense, the expression of the encoded traits on a particular DNA molecule may be suppressed or be dominated by the properties encoded in a DNA molecule inherited from the other parent.
+
+There is some research, conducted on fish, that suggests that a single copy of a genome is not, in fact, sufficient by itself to produce healthy individuals (possibly due to some beneficial interaction between the DNA threads of similar length in the diploid cells). This is despite the earlier dogma: "According to genetic theory, the genes in one set of homologous chromosomes should be sufficient to encode all the structures and physiological functions of an individual" (Ref1)
+
+Refs
+
+1. Luo, Diploid-dependent regulation of gene expression: a genetic cause of abnormal development in fish haploid embryos, Heredity [Nature 2003](https://www.nature.com/articles/6800263)
 
 ## Genome
 
@@ -96,7 +102,7 @@ https://www.nature.com/articles/35048692.pdf
 
 Until recently, perfect reproduction of the biological basis for an individuals' 'genome' wasn't possible, because it was itself an abstraction of a diploid cell into a haploid cell-equivalent genome:
 
- - "most [genome] assemblers output a “mosaic” genome sequence that arbitrarily alternates between parental alleles8. " (Ref 1) or
+ - "most [genome] assemblers output a “mosaic” genome sequence that arbitrarily alternates between parental alleles8. " (Ref 1) 
  - 'Human genomes are typically assembled as consensus sequences that lack information on parental haplotypes.' (Ref 2)
  - "Many approaches, however, generate either an unphased or only partially resolved representation of a diploid genome, in which polymorphisms are detected but not assigned to one or the other of the homologous chromosomes." (Ref 2).
 
@@ -104,15 +110,31 @@ In some ways, the definition of a 'genome' should not be equated to the work don
 
 The language adopted has been to express the individual's variation in the genetic material in each of the pairs of DNA threads as 'variation'.   This is then restated in expanded terms as 'polymorphism' (which is variation with reference to some idealised base genome).  In fact, genetic variation in DNA molecules *is* the natural state of the biological content in cells. 
 
+Significantly, as Soifer (Ref2) stated at p2912:
+
+"Human reference genome versions (including the current standard reference genome, GRCh38) are a mosaic of sequence data from many (mostly Caucasian) individual diploid humans"
+
+The latest research claims to have been able to reconstruct all of the genetic material in a person's DNA into a genome-framework (see Soifer, Ref2) and also Porubsky(2021). (Ref 3).
+
+Refs
+1. (2016), Phased Diploid Genome Assembly with Single Molecule Real-Time Sequencing, [Chin et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5503144/)
+2. (2021), Fully Phased Sequence of a Diploid Human Genome Determined de Novo from the DNA of a Single Individual, [Soifer et al](https://pubmed.ncbi.nlm.nih.gov/32631951/)
+3. (2021) Fully phased human genome assembly without parental data using single-cell strand sequencing and long reads, Nature Biotechnology, [Nature](https://www.nature.com/articles/s41587-020-0719-5)
+
 ## Implications of polyploidy for genome assembly and computation
 
-These distinctions between the genome and attempts to capture an individual organism's DNA *within the framework of the genome* are important when we discuss sequencing methods, and how much work or computation is required.  The language of 'genomics' means that a complete picture of the DNA threads present in an organisms cells may be expressed in terms of variation (polymorphisms) rather than state (i.e. what exists, in what chromosome, without discussion of variation).
+These distinctions between the genome and attempts to capture an individual organism's DNA *within the framework of the genome* are important when we discuss sequencing methods, and how much work or computation is required.  
+
+The language of 'genomics' means that a complete picture of the DNA threads present in an organisms cells may be expressed in terms of variation (polymorphisms) rather than state (i.e. what exists, in what chromosome, without discussion of variation).  If some of the polymorphisms are thrown away, in favour of a 'consensus' genome, then we still have an approximation of the actual genetic material of the organism that was sequenced.
 
 If we want to express a plant's diversity in genomic information across the individual DNA threads, we not only have to sample more genetic material, but we also have to try and arrange this in some kind of manner for all the different DNA threads.   This might not even be possible in all cases, based on the vailable information.  It is even more difficult, from a computational point of view, when we have lots of genetic material, which we do when we have multiple copies of DNA threads present in the cell (as we do with polyploid species like wheat).  We can assess the amount of genetic material in a broad sense by multiplying the genome size by the polploidy number.
+
+There have been recent successes in being able to reconstruct genomes inclusive of the individual haploid components, in plant species like pear.  This also produced the observation that the reference genome used for the pear had about 8% of its content inserted from the other DNA thread (Ref3)
  
 Refs
 1. (2016), Phased Diploid Genome Assembly with Single Molecule Real-Time Sequencing, [Chin et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5503144/)
 2. (2021), Fully Phased Sequence of a Diploid Human Genome Determined de Novo from the DNA of a Single Individual, [Soifer et al](https://pubmed.ncbi.nlm.nih.gov/32631951/)
+3. [
 
 # Relative sizes
 
@@ -387,7 +409,7 @@ Diploid organisms:
 Kaul, S., Koo, H. L., Jenkins, J., Rizzo, M., Rooney, T., Tallon, L. J., ... Somerville, C. (2000). Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature, 408(6814), 796-815. https://doi.org/10.1038/35048692 [Link](https://www.nature.com/articles/35048692)
 
 Haploids:
- - bee (male drones)
+ - bee (male drone cells are uniquely haploid)
 
 Polyploids:
  - Wheat
