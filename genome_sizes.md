@@ -84,11 +84,13 @@ To further explain this difference between the 'genetic material' (biological ma
 
 ## Relationship between number of DNA molecules in cells and the genome
 
-The relationship between the number of distinct DNA molecules (think 'chromosomes') that can define a single genome and the amount of genetic material actually in a cell is expressed in the the term 'haploid number'.   The haploid number can be thought of as the number of sets of DNA we have if we grouped all DNA molecules of the same length together, and retained one element from each of them.  If there are two sets of DNA in diploid cells and the parents supply each of these sets, we can think of the haploid number as the number of DNA molecules in each cell supplied by each parent.
+The relationship between the number of distinct DNA molecules (think 'chromosomes') that can define a single genome and the amount of genetic material actually in a cell is expressed in the the term 'haploid number'.   The haploid number can be thought of as the number of unique molecules of DNA that we might find if we retained only one of the multiple sets of DNA molecules that pair together, and have the same length.   The 'haploid' refers to the simplifying assumption (i.e. we reduce diploid, or polyploid cells with multiple sets of DNA into a single set somehow). 
 
-Humans have a haploid number of 23, but there are actually 46 DNA molecules in each cell.
+Also, if there are two sets of DNA in diploid cells and the parents supply each of these sets, we can think of the haploid number as the number of DNA molecules in each cell supplied by each parent.
 
-Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are also diploid (Ref 1).   It has 10 separate DNA molecules in each cell, but these exist as 5 pairs of DNA molecules with the same length.
+For example, humans have a haploid number of 23, but there are actually 46 individual DNA molecules in each of diploid cell.
+
+Arabidopsis Thaliana genome has haploid number of 5, but there are 10 individual DNA molecules in each of its diploid cells. (Ref 1).   
 
 Ref:
 1. Arabidopsis Genome Initiative. Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature. 2000 Dec;408(6814):796-815. DOI: 10.1038/35048692.
@@ -105,6 +107,8 @@ Until recently, perfect reproduction of the biological basis for an individuals'
  - "most [genome] assemblers output a “mosaic” genome sequence that arbitrarily alternates between parental alleles8. " (Ref 1) 
  - 'Human genomes are typically assembled as consensus sequences that lack information on parental haplotypes.' (Ref 2)
  - "Many approaches, however, generate either an unphased or only partially resolved representation of a diploid genome, in which polymorphisms are detected but not assigned to one or the other of the homologous chromosomes." (Ref 2).
+
+Be aware that the term 'haplotype' can refer to all of the DNA material inherited from a single parent organism (as above) or it can refer to alleles, traits or even single nucleotide polymorphisms that tend to exist together (often related to a parent, but not necessarily). [Wiki Ref](https://en.wikipedia.org/wiki/Haplotype)
 
 In some ways, the definition of a 'genome' should not be equated to the work done when sequencing that actual genetic material found in an organism's cells (which is larger and more varied than the broader concept of the genome).
 
