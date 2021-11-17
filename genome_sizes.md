@@ -260,6 +260,17 @@ A recent pre-print by Schley et al, titled 'The Ecology of Palm Genomes: Repeat-
 
 [Schley et al, 2021](https://www.biorxiv.org/content/10.1101/2021.11.04.467295v1)
 
+The research refelcts on the variation in the number of repeating sections of the genome, which will in some cases pad out its length.
+
+It's interesting that the paper uses differnt language and metaphors for the genome (first modelled as 'machinery', but now being reconsidered as an interacting system): 
+
+```
+Genomes may be seen as ecosystems ‘populated’ by repeats, each of which interacts with other
+repeats, genes, regulatory sequences and the genomic machinery (e.g., nuclear components involved
+in recombination, replication and DNA repair (Venner et al., 2009; Stitzer et al., 2021)).
+```
+This idea seems to have arisen out of an analogy for how much 'carrying capacity' a genome has for populations of repeats, analogous to the concept of the 'carrying capacity' of an ecosystem for populations of organisms.  To find a link between environmental dynamics and genome content and dynamics would be yet another addition to our understanding of how biological information at the most fundamenal level can be influenced by the environment.
+
 # Wheat size and relative sizes for ploidy
 
 Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or diploid genome progenitors, as follows:
