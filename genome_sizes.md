@@ -31,13 +31,17 @@ nb useful index of common names and Latin terms [https://www.ncbi.nlm.nih.gov/bo
 
 This is a short introductory note to explain what we mean by the concept of a genome's size.
 
+## Genetics
+
 Back in the days of Medel, it was proposed that some observable and easily distinguishable physical traits of parent organisms were apparent or not apparent in offspring.  By studying this, Medel inspired a theory that combinations of some 'gene' that was linked to each trait, that was inherited from parents.   This gave rise to the study of 'genetics', which originally was the study of observable characteristics of offspring and their relationship to the parent organism's physical characeristics.  
 
-At its heart, genetics is interested in biological information transfer.  The precise physical mechanisms of bioligical information transfer were not originally known.   Over time, the initial abstract and mathematical interest in transfer of physical traits has been supplemented by detailed information about the chemical, molecular and biological basis for transmitting information from one generation of organism to the next.
+At its heart, genetics is interested in biological information transfer.  The precise physical mechanisms of biological information transfer were not originally known.   Over time, the initial abstract and mathematical interest in transfer of physical traits has been supplemented by detailed information about the chemical, molecular and biological basis for transmitting information from one generation of organism to the next.
 
 In Mendel's time, there was a significant observation about the *regular proportions* in which characteristics from parent organisms might appear in offspring, at least for some traits.  Mendel observed that there were mathematical ratios in the rate of appearance of that trait in the next generation.  What he observed, in those cases, was the inheritence of a physical characteristic was not arbitrarily or randomly distributed.  This suggested a biological process of some simple binary choice was involved in determining those physical characteristics.  Mendel did not know how the binary choices that determined the next generation actually occurred, but there was enough information to develop a theory that there was something called a 'dominant gene' and a 'recessive gene'. 
 
 Later, it became known that there were specific molecules in each cell of an organism that contained information from each parent, and which would also remain and be transferred to the next generation of offspring.   We now know that there are molecules, strands of DNA in each organisms 'cells', that contain a linear sequence of genetic material (information from each parent, encoded in one or more sub-sections of DNA molecules called 'genes').  Generally, we can substitute the word 'information' for gene and it still makes sense, if we are talking about 'binary' physical traits.
+
+## Obsrevations about genetic material in the context of genetics
 
 These separate DNA strands/molecules/lengths are sometimes bound up and compressed, at other times extended and 'open'.  
 
@@ -56,8 +60,6 @@ What we now know is that there are different lengths of DNA, and also that in ma
 
 If an organism had cells in which there was only one copy of each unique DNA strand of a particular length is unique to an organism, we would call the cell a 'haploid' cell.  This actually occurs in sex cells (gametes), used for production of a new cell capable of producing a new organism with genetic material from 2 parent organisms. [Ref](https://www.genome.gov/genetics-glossary/haploid)
 
-This is related to the term 'haploid number', which is used to explain how many distinct DNA molecules there are that contain all of the minimum genetic genetic information needed for the definition of that organism (whether in each cell or in the gametes). For example, the Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are diploid (Ref 1).   We can say that it has 10 lengths of unique DNA molecules in each cell, which when grouped by length, should make 5 pairs.  The haploid number can be thought of as the number of sets of DNA we have if we grouped all DNA molecules of the same length together.
-
 In the history of science, the observation of DNA molecules in a coiled state in cells was observed with coloured dye, leading them to be called 'chromosomes'.  It was on this basis that the pairs of DNA molecules inherited from each parent was first observed. 
 
 In some plants, the number of molecules of a particular DNA molecule length found in a cell can be greater than two, a quality that is called 'polyploidy'.  This does not mean that they are identical replicas (as they will usually not be in eukaryotic organisms).  This does, however, have implications for the amount of genetic information present in each cell, the variation in it, and the traits that might be expressed by the organism with such cells.
@@ -66,13 +68,21 @@ It is useful at this point to differentiate the concept of the 'genome' and the 
 
 Firstly, genetic information is contained in the sequences of nitrogen bases (a set of 4 small molecular chains) present in *all* the DNA molecules present in a cell.  For any length of DNA, any matching molecule with the same length has, in effect, an alternative 'code' for all the genetic traits associated with that length of DNA.  If we think of a length of DNA as a biological program or reference, then each DNA molecule of similar length, with its variations, is an alternative program.  How the cell deals with having copies of slightly different program in the cell at the same time requires more detailed explanation, but it is ultimately linked back to the Mendelian observations that some of these genetic properties inherited from the parent can co-exist (we now know, they co-exist in separate lengths of DNA in a cell), but in a physical sense, the expression of the encoded traits on a particular DNA molecule may be suppressed or be dominated by the properties encoded in a DNA molecule inherited from the other parent.
 
-The 'genome' is an abstract idea about the sequence of genetic information that focusses on providing a broader framwork for discussing the similarity or differences in the encoding of all the DNA molecules of the same length.  In this way, the genome has the same length as if we had only a single copy of each length of DNA in a cell (like in a haploid cell).  Unlike a physical haploid cell, the concept of a genome cannot be separated from the goal of explaining the diversity that exists in the encoding found on each length of DNA that might exist (a) in a single organism (b) across organisms of the same species (c) across similar organisms across time.  The relevance of this to the concept of 'genome size' is that the genome size for the same organism does not vary whether the DNA is found in a haploid, diploid or polyploid cell.  For the genome, the amount of DNA is not the concern, it is how it is organised to determine particular traits or other physical attributes.
+## Genome
 
-To further explain this difference, organisms exist with a set of varied DNA molecules in their cells, some of which are the same length and are alternative sources for biological processes (and some of which will suppress each other).  To 'clone' an individual does not mean : 'replicating a single set of DNA strands that contains a single set of genetic information' (that is more like a 'genome').  Rather, to clone an organism with diploid cells would require copying over a set of DNA strands (the genetic material) that, collectively, defines the biology of the individual, by its collective presence and interaction.   Simply putting two identical sets of DNA in the one cell might not work: even in the natural world, diversity of parents seems to help with the health of the offspring.
+The 'genome' is an abstract concept for discussing the similarity or differences in the encoding of all the DNA molecules of the same length, in the set of DNA molecules that exist within the cells of a given organism or species.  The concept of a genome is related to the goal of explaining the diversity that exists in the encoding found on each length of DNA that might exist (a) in a single organism (b) across organisms of the same species (c) across similar organisms across time.  
 
-In the process of reproduction through gametes, the substitution of specific elements of genetic code from parent organisms to produce a single, new, genetic sequence from the parent DNA material *does* occur.  A sex cell (gamete) in a human does contain DNA information similar to a 'genome', which is then passed on to the next generation, but in the offspring that contain diploid cells, this information/DNA will always exist simultaneously with other DNA threads (from the other parent) in each cell.
+The genome concept reduces the genetic information in a diploid cell to analysis of the encoding of each of the single strands of DNA that exist in that cell.  The relevance of this to the concept of 'genome size' is that it is irrelevant to the genome size whether the DNA is found in a haploid, diploid or polyploid cell.  For the genome, the amount of DNA is not the concern, it is how it is organised to determine particular traits or other physical attributes.
 
-How large a sequence of DNA material is swapped out from one parent's DNA in the production of sex cells may vary.  In studies of the genome, however, the interest may not be so much in the mechanism by which smaller parts of DNA vary, but whether they are significant.  For example, in genetics, the way in which individual elements of a single DNA thread can vary in relation to nitrogen base pairs is commonly defined as 'single nucleotide polymorphism'.   This is studied to determine if just single substitutions can have a significant effect on biological function or disease. 
+To further explain this difference between the 'genetic material' (biological material) that is found in a cell and the genome, consider that living organisms exist with a set of varied DNA molecules in their cells, some of which are the same length and are alternative sources for biological processes (and some of which will suppress each other).  The genome is a way of understanding this diversity, but it is only a model or framework for helping us to organise our understanding of it.
+
+## Relationship between number of DNA molecules in cells and the genome
+
+The relationship between the number of distinct DNA molecules (think 'chromosomes') that can define a single genome and the amount of genetic material actually in a cell is expressed in the the term 'haploid number'.   The haploid number can be thought of as the number of sets of DNA we have if we grouped all DNA molecules of the same length together, and retained one element from each of them.  If there are two sets of DNA in diploid cells and the parents supply each of these sets, we can think of the haploid number as the number of DNA molecules in each cell supplied by each parent.
+
+Humans have a haploid number of 23, but there are actually 46 DNA molecules in each cell.
+
+Arabidopsis Thaliana genome has haploid number of 5, and its somatic cell chromosomes are also diploid (Ref 1).   It has 10 separate DNA molecules in each cell, but these exist as 5 pairs of DNA molecules with the same length.
 
 Ref:
 1. Arabidopsis Genome Initiative. Analysis of the genome sequence of the flowering plant Arabidopsis thaliana. Nature. 2000 Dec;408(6814):796-815. DOI: 10.1038/35048692.
@@ -81,6 +91,28 @@ https://www.nature.com/articles/35048692.pdf
 [Arabidopsis genome paper (2000)](https://www.nature.com/articles/35048692)
 
 [Paris Polyphylla paper (2020)](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
+
+## What do we mean by sequencing a 'genome' when there are 'diploid' cells?
+
+Until recently, perfect reproduction of the biological basis for an individuals' 'genome' wasn't possible, because it was itself an abstraction of a diploid cell into a haploid cell-equivalent genome:
+
+ - "most [genome] assemblers output a “mosaic” genome sequence that arbitrarily alternates between parental alleles8. " (Ref 1) or
+ - 'Human genomes are typically assembled as consensus sequences that lack information on parental haplotypes.' (Ref 2)
+ - "Many approaches, however, generate either an unphased or only partially resolved representation of a diploid genome, in which polymorphisms are detected but not assigned to one or the other of the homologous chromosomes." (Ref 2).
+
+In some ways, the definition of a 'genome' should not be equated to the work done when sequencing that actual genetic material found in an organism's cells (which is larger and more varied than the broader concept of the genome).
+
+The language adopted has been to express the individual's variation in the genetic material in each of the pairs of DNA threads as 'variation'.   This is then restated in expanded terms as 'polymorphism' (which is variation with reference to some idealised base genome).  In fact, genetic variation in DNA molecules *is* the natural state of the biological content in cells. 
+
+## Implications of polyploidy for genome assembly and computation
+
+These distinctions between the genome and attempts to capture an individual organism's DNA *within the framework of the genome* are important when we discuss sequencing methods, and how much work or computation is required.  The language of 'genomics' means that a complete picture of the DNA threads present in an organisms cells may be expressed in terms of variation (polymorphisms) rather than state (i.e. what exists, in what chromosome, without discussion of variation).
+
+If we want to express a plant's diversity in genomic information across the individual DNA threads, we not only have to sample more genetic material, but we also have to try and arrange this in some kind of manner for all the different DNA threads.   This might not even be possible in all cases, based on the vailable information.  It is even more difficult, from a computational point of view, when we have lots of genetic material, which we do when we have multiple copies of DNA threads present in the cell (as we do with polyploid species like wheat).  We can assess the amount of genetic material in a broad sense by multiplying the genome size by the polploidy number.
+ 
+Refs
+1. (2016), Phased Diploid Genome Assembly with Single Molecule Real-Time Sequencing, [Chin et al](https://www.ncbi.nlm.nih.gov/pmc/articles/PMC5503144/)
+2. (2021), Fully Phased Sequence of a Diploid Human Genome Determined de Novo from the DNA of a Single Individual, [Soifer et al](https://pubmed.ncbi.nlm.nih.gov/32631951/)
 
 # Relative sizes
 
@@ -229,19 +261,19 @@ DOI: 10.1159/000338820
 Assembly Issues
  - Sequencing - entire genome is sequenced many times over
  - Assembly : attempt to assemble connected (contiguous) bases (for all chromosomes).  *There is a lot more genetic material than the genome size predicts*
- - SNPs : For diploid organism, this is a reference to differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*. 
+ - SNPs : For diploid organism, this is often used to refer to differences in single bases between the two chromosomes contributed by the parents (in gametes). *single nucleotide polymorphisms*.   Be aware that this is based on the 'genomic' framework, namely that these are variations with comparison to the concept of there being a single 'genome' with information variants.
  - phased assembly: ability to identify gamete sources for all SNPs. 
 
-The tendency or organisms to inherit more than one 'genome' sequences tell us how many replicated sequencies of DNA material we are likely to find.  The sequence in each chromosome is comparable (i.e. this explains SNPs) and so involves the potential to swap out genetic material at the same place in the sequence.   Bearing this in mind, there is a difference between:
+The tendency or organisms to inherit more than one 'genome' sequences (otherwise known as a 'DNA molecule' or 'chromosome') tell us how many replicated sequencies of DNA material we are likely to find.  There is a difference between:
 
-(a) the size of the genome in haploid cells; and
-(b) the genetic material based on the number of complete sets of chromosomes (i.e the carriers of the full genome) that appear in somatic cells ("ploidy").
+(a) the size of the genome that is analogous to haploid cells; and
+(b) the genetic material actually present in a cell, based on the number of complete sets of chromosomes (i.e the carriers of the full genome) that appear in somatic cells ("ploidy").
 
 This might create confusion in terminology when referring to 'DNA Content':
 
 Suda, Jan & Krahulcová, Anna & Trávníček, Pavel & Krahulec, František. (2006). Ploidy Level versus DNA Ploidy Level: An Appeal for Consistent Terminology. TAXON. 55. 447-450. 10.2307/25065591. 
 
-'Ploidy' itself is just a multiple of a single set of the chromosomes, expressed per cell.  e.g. 'Diploid' means two sets of chromosomes *per cell*.   In calculating the total number of chromosomes we can express this in terms of a single set of chromosomes (monoploid, often abbreviated to 'x'), or in terms of chromsomes in gametes (or haploid chromosome number 'n').  For adult organisms that are diploid, the 'x' and 'n' numbers are the same.
+'Ploidy' itself is just a multiple of a single set of the chromosomes, expressed per cell.  e.g. 'Diploid' means two sets of chromosomes *per cell*.   
 
 Some examples of counting chromosomes and the terminology used:
 
@@ -271,7 +303,7 @@ in recombination, replication and DNA repair (Venner et al., 2009; Stitzer et al
 ```
 This idea seems to have arisen out of an analogy for how much 'carrying capacity' a genome has for populations of repeats, analogous to the concept of the 'carrying capacity' of an ecosystem for populations of organisms.  To find a link between environmental dynamics and genome content and dynamics would be yet another addition to our understanding of how biological information at the most fundamenal level can be influenced by the environment.
 
-# Wheat size and relative sizes for ploidy
+# Wheat genome size and relative sizes for ploidy
 
 Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or diploid genome progenitors, as follows:
 
