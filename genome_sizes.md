@@ -207,6 +207,12 @@ Some examples of counting chromosomes and the terminology used:
 | |Haploid/gamete (n) |  23 | Monoploid |
 | |Somatic cells (2n)| 46|  Diploid |
 
+# Effect of aridity on genome sizes
+
+A recent pre-print by Schley et al, titled 'The Ecology of Palm Genomes: Repeat-associated genome size expansion is constrained by aridity', suggests that in Palms, at least, the wetter environments may contribute to larger genome sizes than arid environments.
+
+[Schley et al, 2021](https://www.biorxiv.org/content/10.1101/2021.11.04.467295v1)
+
 # Wheat size and relative sizes for ploidy
 
 Wheat is an interesting story in genetic evolution and hybridisation, since it contains 3 sets of chromosome pairs broadly identifiable with three ancient species and/or diploid genome progenitors, as follows:
