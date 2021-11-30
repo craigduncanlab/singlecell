@@ -505,3 +505,11 @@ Laurasiatheria (∼2.8 pg
 [P.Polyphilla](https://www.biorxiv.org/content/10.1101/2020.06.01.126920v1)
 
 
+# Tools for predicting genome size
+
+Recent tools from Edwards Lab as discussed at ABACBS 2021 lightning talks [DepthSizer](http://edwardslab.blogspot.com/2021/11/abacbs2021-lightning-talk-depthsizer.html)
+
+[DepthSizer Github](https://github.com/slimsuite/depthsizer)
+
+
+
