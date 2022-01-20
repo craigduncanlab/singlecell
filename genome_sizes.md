@@ -2,7 +2,7 @@
 
 (c) Craig Duncan 2020-1. A work in progress.
 
-Created 15 August 2020.  Last updated 17 November 2021.
+Created 15 August 2020.  Last updated 20 January 2022.
 
 # An illustration
 
@@ -170,6 +170,8 @@ The reference to base pairs in the 'human genome' is to the amount of genetic ma
 nb: A more recent (2019) academic discussion of DNA metrics is contained here:
 
 Piovesan, A., Pelleri, M.C., Antonaros, F. et al. On the length, weight and GC content of the human genome. BMC Res Notes 12, 106 (2019). https://doi.org/10.1186/s13104-019-4137-z   [link](https://bmcresnotes.biomedcentral.com/articles/10.1186/s13104-019-4137-z)
+
+nb a recent published article has considered reasons for biased GC content in plants (monocot grasses), and concludes it may be affected by the extent of past gene duplications: [2022,Bowers et al, GC content of plant genes is linked to past gene duplications](https://journals.plos.org/plosone/article?id=10.1371/journal.pone.0261748)
 
 Relevant data from that article:
 
