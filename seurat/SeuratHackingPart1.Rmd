@@ -251,7 +251,7 @@ See https://satijalab.org/seurat/archive/v3.1/multimodal_vignette.html
 
 Seurat stores the sparse matrix data as a 'matrix', but stores the metadata as a 'dataframe'.  This is because the metadata, for each cell, could include categorical or numerical data and so you can't use a matrix file (requires heterogenous data, i.e. numerical values for counts)
 
-Specifically, he Seurat data is stored in an S4 object (Object orientated in R).  This is useful if you want to know how to get your referencing right.
+Specifically, the Seurat data is stored in an S4 object (Object orientated in R).  This is useful if you want to know how to get your referencing right.
 
 In Seurat, SubsetData is a function that can subset on cells, or on genes (depending on what parameters you give it)
 
